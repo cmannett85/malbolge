@@ -1,2 +1,2 @@
 # malbolge
-Malbolge virtual machine
+A virtual machine to execute Malbolge programs.

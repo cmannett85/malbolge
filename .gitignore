@@ -1,0 +1,8 @@
+docs/doxygen/
+build/
+*.creator.user
+*.txt.user
+.vscode/
+.vs/
+
+CMakeSettings.json
