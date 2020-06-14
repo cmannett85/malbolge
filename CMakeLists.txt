@@ -17,6 +17,7 @@ set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/math/ipow.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/math/tritset.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/math/ternary.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/virtual_memory.hpp
 )
 
 set(SRCS

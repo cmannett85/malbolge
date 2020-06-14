@@ -17,6 +17,7 @@ list(APPEND SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/math/ipow_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/math/tritset_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/math/ternary_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/virtual_memory_test.cpp
 )
 
 list(APPEND FOR_IDE

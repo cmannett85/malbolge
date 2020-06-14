@@ -11,7 +11,7 @@
 using namespace malbolge;
 using namespace malbolge::literals;
 
-BOOST_AUTO_TEST_SUITE(tritset)
+BOOST_AUTO_TEST_SUITE(tritset_suite)
 
 BOOST_AUTO_TEST_CASE(constants)
 {
