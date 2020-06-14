@@ -14,7 +14,7 @@
 
 using namespace malbolge;
 
-BOOST_AUTO_TEST_SUITE(ipow)
+BOOST_AUTO_TEST_SUITE(ipow_suite)
 
 BOOST_AUTO_TEST_CASE(squares)
 {

@@ -149,9 +149,10 @@ public:
      */
     ternary& rotate(std::size_t i = 1);
 
-    /** Crazy operation.
+    /** @em The operation.
      *
-     * Each trit is used as input to a 2D LUT, which is mapped into the output:
+     * Also referred to as the "crazy" operation. Each trit is used as input to
+     * a 2D LUT, which is mapped into the output:
      * <table>
      * <tr><td> <th>b0 <th>b1 <th>b2
      * <tr><th>a0 <td>1 <td>0 <td> 0
@@ -160,9 +161,9 @@ public:
      * </table>
      *
      * @param other Instance to operate against
-     * @return Crazy operation result
+     * @return Operation result
      */
-    ternary crazy(const ternary& other) const;
+    ternary op(const ternary& other) const;
 
 private:
     underlying_type v_;

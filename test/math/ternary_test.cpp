@@ -10,7 +10,7 @@
 using namespace malbolge;
 using namespace malbolge::literals;
 
-BOOST_AUTO_TEST_SUITE(ternary)
+BOOST_AUTO_TEST_SUITE(ternary_suite)
 
 BOOST_AUTO_TEST_CASE(default_constructor)
 {
@@ -177,10 +177,10 @@ BOOST_AUTO_TEST_CASE(rotate)
     );
 }
 
-BOOST_AUTO_TEST_CASE(crazy)
+BOOST_AUTO_TEST_CASE(op)
 {
     auto f = [](math::ternary a, math::ternary b, math::ternary expected) {
-        BOOST_CHECK_EQUAL(a.crazy(b), expected);
+        BOOST_CHECK_EQUAL(a.op(b), expected);
     };
 
     test::data_set(
@@ -199,4 +199,3 @@ BOOST_AUTO_TEST_CASE(crazy)
 }
 
 BOOST_AUTO_TEST_SUITE_END()
-
