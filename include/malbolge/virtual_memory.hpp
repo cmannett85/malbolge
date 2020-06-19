@@ -3,8 +3,8 @@
  * See LICENSE file
  */
 
-#ifndef VIRTUAL_MEMORY_HPP
-#define VIRTUAL_MEMORY_HPP
+#ifndef VIRTUAL_MEMORY_MALBOLGE_HPP
+#define VIRTUAL_MEMORY_MALBOLGE_HPP
 
 #include "malbolge/math/ternary.hpp"
 
@@ -269,6 +269,9 @@ public:
      * Initialises the virtual memory by loading the program data and then
      * filling the remaining with the ternary operation on the two previous
      * elements.  Therefore it is an error if the program length is one ternary.
+     *
+     * @note If the program data size is greater than math::ternary::max+1 then
+     * it will silently wrap around the memory space
      * @tparam InputIt Program data iterator type
      * @param first Iterator to first element in program data
      * @param last Iterator to one-past-the-end element in program data
@@ -282,16 +285,12 @@ public:
     explicit virtual_memory(InputIt first, InputIt last) :
         mem_{std::make_unique<base::element_type>()}
     {
-        if (last < first) {
-            throw std::invalid_argument{"Program data input iterators are "
-                                        "backwards"};
-        }
-
         const auto program_length = std::distance(first, last);
         if (program_length < 2) {
             throw std::invalid_argument{"Program data must be at least 2 "
                                         "characters"};
         }
+
         if (static_cast<std::size_t>(program_length) > size()) {
             throw std::invalid_argument{"Program data must be less than "
                                         "math::ternary::max"};
@@ -564,4 +563,4 @@ private:
 };
 }
 
-#endif // VIRTUAL_MEMORY_HPP
+#endif // VIRTUAL_MEMORY_MALBOLGE_HPP

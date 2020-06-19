@@ -212,9 +212,9 @@ private:
 template <std::size_t N, typename T>
 inline std::ostream& operator<<(std::ostream& stream, const tritset<N, T>& t)
 {
-    stream << "{d:" << t.to_base10() << ", t:";
+    stream << "{d:" << std::dec << t.to_base10() << ", t:";
     for (auto i : std::views::iota(0u, N) | std::views::reverse) {
-        stream << static_cast<int>(t[i]);
+        stream << std::dec << static_cast<int>(t[i]);
     }
 
     return stream << "}";

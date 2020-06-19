@@ -18,10 +18,13 @@ set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/math/tritset.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/math/ternary.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/virtual_memory.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/cpu_instruction.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/loader.hpp
 )
 
 set(SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/src/math/ternary.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/loader.cpp
 )
 
 set(FOR_IDE
