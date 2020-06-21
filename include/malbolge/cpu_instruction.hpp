@@ -31,7 +31,8 @@ enum type : char
     /** Rotate the data pointer value.
      */
     rotate = '*',
-    /** Perform the ternary op on the data pointer value.
+    /** Perform the ternary op on the data pointer value and contents of the A
+     * register.
      */
     op = 'p',
     /** Read an ASCII value from stdin and store in the accumulator register.
@@ -53,10 +54,6 @@ enum type : char
      * but this is the only nop value allowed during program load.
      */
     nop = 'o',
-
-    /** Number of instructions
-     */
-    NUM_INSTRUCTIONS = 8
 };
 
 /** An array of all the CPU instructions.
@@ -73,13 +70,11 @@ constexpr auto all = std::array{
     stop,
     nop
 };
-
-static_assert(std::tuple_size<decltype(all)>::value == NUM_INSTRUCTIONS,
-              "NUM_INSTRUCTIONS does not match cpu_instructions::all size");
 }
 
 /** True if @a instruction is a valid Malbolge CPU instruction.
  *
+ * @tparam T Instruction type, must be implicitly convertible to char
  * @param instruction Instruction to test
  * @return True if valid
  */
@@ -91,14 +86,21 @@ constexpr bool is_cpu_instruction(T instruction)
     });
 }
 
+/** The [min, max] interval of graphical characters in ASCII.
+ */
+constexpr auto graphical_ascii_range = std::pair<char, char>{33, 126};
+
 /** True if @a c is within the graphical ASCII range [33, 126].
  *
+ * @tparam T Character type, must be comparable to char
  * @param c Character to test
  * @return True if graphical ASCII
  */
-constexpr bool is_graphical_ascii(char c)
+template <typename T>
+constexpr bool is_graphical_ascii(T c)
 {
-    return c >= 33 && c <= 126;
+    return c >= graphical_ascii_range.first &&
+           c <= graphical_ascii_range.second;
 }
 }
 

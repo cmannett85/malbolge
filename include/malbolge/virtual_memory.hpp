@@ -15,6 +15,8 @@
 namespace malbolge
 {
 /** Represents the virtual machines memory.
+ *
+ * This class can not be copied, but can be moved.
  */
 class virtual_memory
 {

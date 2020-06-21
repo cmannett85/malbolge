@@ -47,8 +47,6 @@ virtual_memory load_impl(InputIt first, InputIt last)
  * @tparam InputIt Input iterator type
  * @param first Iterator to the first element
  * @param last Iterator to the one-past-the-end element
- * @param max_size Number of elements between @a first and @a last.  This is not
- * essential but if set correctly can dramatically optimise memory allocation
  * @return Virtual memory image with the program at the start
  * @throw std::invalid_argument Thrown if the program contains errors
  */

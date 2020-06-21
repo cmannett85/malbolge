@@ -136,6 +136,29 @@ BOOST_AUTO_TEST_CASE(addition)
     );
 }
 
+BOOST_AUTO_TEST_CASE(subtraction)
+{
+    auto f = [](math::ternary a, math::ternary b, auto expected) {
+        BOOST_CHECK_EQUAL(a - b, expected);
+
+        a -= b;
+        BOOST_CHECK_EQUAL(a, expected);
+    };
+
+    test::data_set(
+        f,
+        {
+            std::tuple{ 0u,  0u,  0u},
+            std::tuple{42u,  0u, 42u},
+            std::tuple{42u, 10u, 32u},
+            std::tuple{42u, 42u,  0u},
+            std::tuple{math::ternary::max, 0u, math::ternary::max},
+            std::tuple{math::ternary::max, 1u, math::ternary::max-1},
+            std::tuple{math::ternary::max, 5u, math::ternary::max-5},
+        }
+    );
+}
+
 BOOST_AUTO_TEST_CASE(modulo)
 {
     auto f = [](math::ternary a, math::ternary b, auto expected) {
