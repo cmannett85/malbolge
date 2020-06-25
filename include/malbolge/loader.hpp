@@ -7,7 +7,10 @@
 #define LOADER_MALBOLGE_HPP
 
 #include "malbolge/virtual_memory.hpp"
+#include "malbolge/virtual_cpu.hpp"
 #include "malbolge/cpu_instruction.hpp"
+
+#include "test_helpers.hpp"
 
 #include <filesystem>
 #include <ranges>
@@ -23,20 +26,25 @@ using namespace std::string_literals;
 template <typename InputIt>
 virtual_memory load_impl(InputIt first, InputIt last)
 {
-    const auto is_space = [](auto b) {
-        return !std::isspace(b);
+    // It would be nice to be able to use ranges here, but there didn't seem
+    // to be a way of calculating the final index of a character reliably.
+    // Whereas a simple for-loop does it quite effectively
+    const auto is_whitespace = [](auto b) {
+        return std::isspace(b);
     };
-    const auto is_valid_instruction = [](auto b) {
-        if (!is_cpu_instruction(b)) {
-            throw std::logic_error{"Invalid instruction in program: "s +
-                                   std::to_string(static_cast<int>(b))};
-        }
-        return true;
-    };
+    last = std::remove_if(first, last, is_whitespace);
 
-    return virtual_memory(std::ranges::subrange{first, last} |
-                          std::views::filter(is_space) |
-                          std::views::filter(is_valid_instruction));
+    auto i = 0u;
+    for (auto it = first; it != last; ++it, ++i) {
+        auto& b = *it;
+        b = pre_cipher_instruction(b, i);
+        if (!is_cpu_instruction(b)) {
+            throw std::invalid_argument{"Invalid instruction in program: "s +
+                                        std::to_string(static_cast<int>(b))};
+        }
+    }
+
+    return virtual_memory(first, last);
 }
 }
 
