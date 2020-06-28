@@ -25,6 +25,9 @@ BOOST_AUTO_TEST_SUITE(loader_suite)
 BOOST_AUTO_TEST_CASE(load_test)
 {
     auto f = [](auto program_data, auto parse_data, auto throws) {
+        auto orig_program_data = program_data;
+
+        BOOST_TEST_MESSAGE("In memory");
         try {
             auto vmem = load(program_data);
             if (throws) {
@@ -40,14 +43,15 @@ BOOST_AUTO_TEST_CASE(load_test)
             }
         }
 
+        BOOST_TEST_MESSAGE("From disk");
         try {
             {
                 auto stream = std::ofstream{};
                 stream.exceptions(std::ios::badbit | std::ios::failbit);
                 stream.open(tmp_path, std::ios::trunc | std::ios::binary);
 
-                std::copy(program_data.begin(),
-                          program_data.end(),
+                std::copy(orig_program_data.begin(),
+                          orig_program_data.end(),
                           stream_iterator{stream});
             }
 
@@ -72,13 +76,11 @@ BOOST_AUTO_TEST_CASE(load_test)
             pdata_t{{},
                     {},
                     true},
-            pdata_t{{cpu_instruction::set_code_ptr},
+            pdata_t{{40},
                     {},
                     true},
-            pdata_t{{cpu_instruction::set_code_ptr,
-                     cpu_instruction::set_data_ptr},
-                    {cpu_instruction::set_code_ptr,
-                     cpu_instruction::set_data_ptr},
+            pdata_t{{40, 39},
+                    {40, 39},
                     false},
             pdata_t{{' ', '\0'},
                     {},
@@ -86,15 +88,11 @@ BOOST_AUTO_TEST_CASE(load_test)
             pdata_t{{' ', '\t', '\n'},
                     {},
                     true},
-            pdata_t{{' ', '\t', '\n',
-                     cpu_instruction::set_code_ptr},
-                    {cpu_instruction::set_code_ptr},
+            pdata_t{{' ', '\t', '\n', 40},
+                    {40},
                     true},
-            pdata_t{{' ', '\t', '\n',
-                     cpu_instruction::set_code_ptr,
-                     cpu_instruction::set_data_ptr},
-                    {cpu_instruction::set_code_ptr,
-                     cpu_instruction::set_data_ptr},
+            pdata_t{{' ', '\t', '\n', 40, 39},
+                    {40, 39},
                     false},
         }
     );

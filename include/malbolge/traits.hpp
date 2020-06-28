@@ -3,8 +3,7 @@
  * See LICENSE file
  */
 
-#ifndef TRAITS_MALBOLGE_HPP
-#define TRAITS_MALBOLGE_HPP
+#pragma once
 
 #include <type_traits>
 
@@ -44,5 +43,3 @@ template <auto Value>
 using integral_constant = std::integral_constant<std::decay_t<decltype(Value)>, Value>;
 }
 }
-
-#endif // TRAITS_MALBOLGE_HPP

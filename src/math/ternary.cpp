@@ -10,9 +10,9 @@ using namespace malbolge;
 namespace
 {
 constexpr auto op_cipher = std::array{
-    std::array<std::uint8_t, math::trit::base>{1u, 0u, 0u},
-    std::array<std::uint8_t, math::trit::base>{1u, 0u, 2u},
-    std::array<std::uint8_t, math::trit::base>{2u, 2u, 1u},
+    std::array<std::uint8_t, math::trit::base>{1u, 1u, 2u},
+    std::array<std::uint8_t, math::trit::base>{0u, 0u, 2u},
+    std::array<std::uint8_t, math::trit::base>{0u, 2u, 1u},
 };
 }
 
