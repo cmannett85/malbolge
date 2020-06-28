@@ -3,8 +3,7 @@
  * See LICENSE file
  */
 
-#ifndef TERNARY_MATH_MALBOLGE_HPP
-#define TERNARY_MATH_MALBOLGE_HPP
+#pragma once
 
 #include "malbolge/math/tritset.hpp"
 
@@ -86,11 +85,13 @@ public:
 
     /** Explicit conversion operator for the decimal value.
      *
-     * @return Decimal value
+     * @tparam T Type to convert to
+     * @return Decimal value converted to T
      */
-    explicit operator underlying_type() const
+    template <typename T>
+    explicit operator T() const
     {
-        return v_;
+        return static_cast<T>(v_);
     }
 
     /** Return a tritset equivalent to this value.
@@ -120,6 +121,26 @@ public:
     ternary& operator+=(const ternary& other)
     {
         return *this = *this + other;
+    }
+
+    /** Subtraction operator.
+     *
+     * @param other Instance to subtract
+     * @return A copy of @a other subtracted from this
+     */
+    ternary operator-(const ternary& other) const
+    {
+        return other.v_ > v_ ? max - (other.v_ - v_) : v_ - other.v_;
+    }
+
+    /** Subtraction assignment operator.
+     *
+     * @param other Instance to subtract
+     * @return A reference to this
+     */
+    ternary& operator-=(const ternary& other)
+    {
+        return *this = *this - other;
     }
 
     /** Modulo operator.
@@ -181,5 +202,3 @@ inline std::ostream& operator<<(std::ostream& stream, const ternary& t)
 }
 }
 }
-
-#endif // TERNARY_MATH_MALBOLGE_HPP

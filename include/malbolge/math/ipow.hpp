@@ -3,8 +3,7 @@
  * See LICENSE file
  */
 
-#ifndef IPOW_MATH_MALBOLGE_HPP
-#define IPOW_MATH_MALBOLGE_HPP
+#pragma once
 
 #include <boost/mp11.hpp>
 
@@ -65,5 +64,3 @@ constexpr R ipow(B&& base, E&& expo)
 }
 }
 }
-
-#endif // IPOW_MATH_MALBOLGE_HPP

@@ -3,8 +3,7 @@
  * See LICENSE file
  */
 
-#ifndef TRITSET_MATH_MALBOLGE_HPP
-#define TRITSET_MATH_MALBOLGE_HPP
+#pragma once
 
 #include "malbolge/math/ipow.hpp"
 #include "malbolge/traits.hpp"
@@ -113,6 +112,31 @@ public:
                 break;
             }
             q /= trit::base;
+        }
+    }
+
+    /** Convert a string in ternary form to a ternary.
+     *
+     * The string must be contain only the characters [0-2].
+     *
+     * For compile-time ternarys in string form, use the trit literal.
+     * @param str Input string
+     * @exception std::invalid_argument Thrown if str contains invalid
+     * characters, or contains more characters than width
+     */
+    explicit tritset(const std::string& str) :
+        v_{0}
+    {
+        if (str.size() > width) {
+            throw std::invalid_argument{"Too many characters in string"};
+        }
+
+        auto i = 0u;
+        for (auto c : str | std::views::reverse) {
+            if (c != '0' && c != '1' && c != '2') {
+                throw std::invalid_argument{"Invalid character in string"};
+            }
+            set(i++, c);
         }
     }
 
@@ -259,5 +283,3 @@ constexpr auto operator"" _trit()
 }
 }
 }
-
-#endif // TRITSET_MATH_MALBOLGE_HPP

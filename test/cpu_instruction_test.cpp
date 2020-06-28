@@ -26,8 +26,8 @@ BOOST_AUTO_TEST_CASE(type)
             std::tuple{cpu_instruction::set_code_ptr,   'i'},
             std::tuple{cpu_instruction::rotate,         '*'},
             std::tuple{cpu_instruction::op,             'p'},
-            std::tuple{cpu_instruction::read,           '<'},
-            std::tuple{cpu_instruction::write,          '/'},
+            std::tuple{cpu_instruction::read,           '/'},
+            std::tuple{cpu_instruction::write,          '<'},
             std::tuple{cpu_instruction::stop,           'v'},
             std::tuple{cpu_instruction::nop,            'o'},
         }

@@ -37,7 +37,7 @@ BOOST_AUTO_TEST_CASE(constructor)
 {
     using tritset = math::tritset<5u>;
 
-    auto f = [](auto dec, auto trit) {
+    auto f = [](auto dec, auto trit, auto trit_str) {
         auto a = tritset{};
         for (auto i = 0u; i < tritset::width; ++i) {
             a.set(i, trit[i]);
@@ -54,18 +54,41 @@ BOOST_AUTO_TEST_CASE(constructor)
             BOOST_CHECK_EQUAL(a[i], b[i]);
             BOOST_CHECK_EQUAL(b[i], trit[i]);
         }
+
+        auto c = tritset{trit_str};
+        BOOST_CHECK_EQUAL(a, c);
+        BOOST_CHECK_EQUAL(c.to_base10(), dec % (tritset::max+1));
     };
 
     test::data_set(
         f,
         {
-            std::tuple{27u,  01000_trit},
-            std::tuple{26u,  00222_trit},
-            std::tuple{2u,   00002_trit},
-            std::tuple{81u,  10000_trit},
-            std::tuple{83u,  10002_trit},
-            std::tuple{243u, 00000_trit},
-            std::tuple{242u, 22222_trit},
+            std::tuple{27u,  01000_trit, "01000"},
+            std::tuple{26u,  00222_trit, "00222"},
+            std::tuple{2u,   00002_trit, "00002"},
+            std::tuple{81u,  10000_trit, "10000"},
+            std::tuple{83u,  10002_trit, "10002"},
+            std::tuple{243u, 00000_trit, "00000"},
+            std::tuple{242u, 22222_trit, "22222"},
+        }
+    );
+
+    BOOST_TEST_MESSAGE("Bad string constructor");
+    auto bad = [](auto trit_str) {
+        try {
+            auto t = tritset{trit_str};
+            BOOST_FAIL("Should have thrown: " << t);
+        } catch (std::exception&) {}
+    };
+
+    test::data_set(
+        bad,
+        {
+            std::tuple{"000000"},
+            std::tuple{ "30000"},
+            std::tuple{ "00300"},
+            std::tuple{ "00003"},
+            std::tuple{ "hello"},
         }
     );
 }

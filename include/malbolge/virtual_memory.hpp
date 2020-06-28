@@ -3,8 +3,7 @@
  * See LICENSE file
  */
 
-#ifndef VIRTUAL_MEMORY_MALBOLGE_HPP
-#define VIRTUAL_MEMORY_MALBOLGE_HPP
+#pragma once
 
 #include "malbolge/math/ternary.hpp"
 
@@ -15,6 +14,8 @@
 namespace malbolge
 {
 /** Represents the virtual machines memory.
+ *
+ * This class can not be copied, but can be moved.
  */
 class virtual_memory
 {
@@ -562,5 +563,3 @@ private:
     base mem_;
 };
 }
-
-#endif // VIRTUAL_MEMORY_MALBOLGE_HPP

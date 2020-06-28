@@ -7,6 +7,7 @@ set(Boost_USE_MULTITHREADED ON)
 find_package(Boost 1.67 REQUIRED COMPONENTS
     unit_test_framework
 )
+find_package(Threads REQUIRED)
 
 list(APPEND HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/test_helpers.hpp
@@ -20,10 +21,13 @@ list(APPEND SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/virtual_memory_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/cpu_instruction_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/loader_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/virtual_cpu_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/utility/raii_test.cpp
 )
 
 list(APPEND FOR_IDE
-
+    ${CMAKE_CURRENT_SOURCE_DIR}/programs/hello_world.mal
+    ${CMAKE_CURRENT_SOURCE_DIR}/programs/echo.mal
 )
 
 add_executable(malbolge_test ${HEADERS} ${SRCS} ${FOR_IDE})
@@ -45,11 +49,16 @@ target_include_directories(malbolge_test
 
 target_link_libraries(malbolge_test
     PUBLIC Boost::unit_test_framework
+    PUBLIC Threads::Threads
 )
 
 target_compile_definitions(malbolge_test
     PUBLIC BOOST_TEST_DYN_LINK
     PUBLIC TEST_BUILD
 )
+
+message("Copying over example programs")
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/programs
+     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 add_test(NAME malbolge_test COMMAND malbolge_test -l test_suite)

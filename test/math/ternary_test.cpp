@@ -15,6 +15,7 @@ BOOST_AUTO_TEST_SUITE(ternary_suite)
 BOOST_AUTO_TEST_CASE(default_constructor)
 {
     BOOST_CHECK_EQUAL(math::ternary{}, 0u);
+    BOOST_CHECK_EQUAL(math::ternary::max, 59048u);
 }
 
 BOOST_AUTO_TEST_CASE(constructor)
@@ -136,6 +137,29 @@ BOOST_AUTO_TEST_CASE(addition)
     );
 }
 
+BOOST_AUTO_TEST_CASE(subtraction)
+{
+    auto f = [](math::ternary a, math::ternary b, auto expected) {
+        BOOST_CHECK_EQUAL(a - b, expected);
+
+        a -= b;
+        BOOST_CHECK_EQUAL(a, expected);
+    };
+
+    test::data_set(
+        f,
+        {
+            std::tuple{ 0u,  0u,  0u},
+            std::tuple{42u,  0u, 42u},
+            std::tuple{42u, 10u, 32u},
+            std::tuple{42u, 42u,  0u},
+            std::tuple{math::ternary::max, 0u, math::ternary::max},
+            std::tuple{math::ternary::max, 1u, math::ternary::max-1},
+            std::tuple{math::ternary::max, 5u, math::ternary::max-5},
+        }
+    );
+}
+
 BOOST_AUTO_TEST_CASE(modulo)
 {
     auto f = [](math::ternary a, math::ternary b, auto expected) {
@@ -186,14 +210,14 @@ BOOST_AUTO_TEST_CASE(op)
     test::data_set(
         f,
         {
-            std::tuple{0000001000_trit, 0000000100_trit, 1111111011_trit},
-            std::tuple{0000000222_trit, 2200000002_trit, 0011111221_trit},
-            std::tuple{0000000002_trit, 0020000000_trit, 1101111112_trit},
-            std::tuple{0000010000_trit, 1000000000_trit, 0111111111_trit},
-            std::tuple{0000010002_trit, 0002000001_trit, 1110111112_trit},
+            std::tuple{0000001000_trit, 0000000100_trit, 1111110111_trit},
+            std::tuple{0000000222_trit, 2200000002_trit, 2211111001_trit},
+            std::tuple{0000000002_trit, 0020000000_trit, 1121111110_trit},
+            std::tuple{0000010000_trit, 1000000000_trit, 1111101111_trit},
+            std::tuple{0000010002_trit, 0002000001_trit, 1112101112_trit},
             std::tuple{0000000000_trit, 0000000000_trit, 1111111111_trit},
             std::tuple{2222222222_trit, 2222222222_trit, 1111111111_trit},
-            std::tuple{0001112220_trit, 0120120120_trit, 1001022211_trit},
+            std::tuple{0001112220_trit, 0120120120_trit, 1120020211_trit},
         }
     );
 }
