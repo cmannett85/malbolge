@@ -12,6 +12,12 @@ project(malbolge
         DESCRIPTION "Malbolge virtual machine"
         HOMEPAGE_URL "https://github.com/cmannett85/malbolge")
 
+set(Boost_USE_MULTITHREADED ON)
+find_package(Boost 1.67 REQUIRED COMPONENTS
+    program_options
+)
+find_package(Threads REQUIRED)
+
 set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/traits.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/math/ipow.hpp
@@ -30,10 +36,36 @@ set(SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/src/virtual_cpu.cpp
 )
 
+# Source files specific to the exe, rather than for the unit tests too
+set(MAIN_SRCS
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp
+)
+
 set(FOR_IDE
     ${CMAKE_CURRENT_SOURCE_DIR}/README.md
     ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE
     ${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile
+)
+
+add_executable(malbolge ${HEADERS} ${SRCS} ${MAIN_SRCS} ${FOR_IDE})
+
+target_compile_features(malbolge PUBLIC cxx_std_20)
+set_target_properties(malbolge PROPERTIES CXX_EXTENSIONS OFF)
+
+target_compile_options(malbolge PRIVATE
+     $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:
+          -Werror -Wall -Wextra>
+     $<$<CXX_COMPILER_ID:MSVC>:
+          /W4>
+)
+
+target_include_directories(malbolge
+    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+
+target_link_libraries(malbolge
+    PUBLIC Boost::program_options
+    PUBLIC Threads::Threads
 )
 
 enable_testing()
