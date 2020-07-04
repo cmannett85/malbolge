@@ -1,0 +1,16 @@
+/* Cam Mannett 2020
+ *
+ * See LICENSE file
+ */
+
+#pragma once
+
+namespace malbolge
+{
+/** Malbolge version as a SymVers-style string.
+ *
+ * This value is set automatically by the build system.
+ */
+constexpr auto version_string = "${PROJECT_VERSION}.${GIT_REV}";
+}
+

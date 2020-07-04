@@ -4,6 +4,7 @@
  */
 
 #include "malbolge/loader.hpp"
+#include "malbolge/version.hpp"
 
 #include <boost/program_options.hpp>
 
@@ -70,12 +71,14 @@ int main(int argc, char* argv[])
     logging::init_logging();
     auto vcounter = verbose_counter{};
 
-    auto desc = po::options_description{"Malbolge virtual machine\n"
+    auto desc = po::options_description{
+        "Malbolge virtual machine v"s + version_string + "\n"
         "Usage:\n\tmalbolge <file>"
         "\n\tcat <file> | malbolge\n\n"
         "Arguments"};
     desc.add_options()
         ("help,h",      "Help message")
+        ("version",     "Application version")
         ("file,f",      po::value<std::string>(), "Input file")
         ("verbose,v",   po::value<verbose_counter>(&vcounter)
                             ->default_value(verbose_counter{})
@@ -96,6 +99,13 @@ int main(int argc, char* argv[])
 
         if (vm.count("help")) {
             std::cout << desc << std::endl;
+            return EXIT_SUCCESS;
+        }
+
+        if (vm.count("version")) {
+            std::cout << "Malbolge Virtual Machine v"
+                      << version_string
+                      << "\nCopyright Cam Mannett 2020" << std::endl;
             return EXIT_SUCCESS;
         }
 

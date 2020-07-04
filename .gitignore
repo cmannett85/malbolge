@@ -1,8 +1,14 @@
+# Generated Doxygen documentation
 docs/doxygen/
+
+# Versioning file (generated on build)
+include/malbolge/version.hpp
+
+# IDE cruft
 build/
 *.creator.user
 *.txt.user
 .vscode/
 .vs/
 
-CMakeSettings.json
+

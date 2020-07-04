@@ -8,9 +8,10 @@ cmake_minimum_required(VERSION 3.12)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/ccache.cmake)
 
 project(malbolge
-        VERSION 1.0
+        VERSION 0.0.1
         DESCRIPTION "Malbolge virtual machine"
-        HOMEPAGE_URL "https://github.com/cmannett85/malbolge")
+        HOMEPAGE_URL "https://github.com/cmannett85/malbolge"
+        LANGUAGES CXX)
 
 set(Boost_USE_MULTITHREADED ON)
 find_package(Boost 1.73 REQUIRED COMPONENTS
@@ -53,7 +54,22 @@ set(FOR_IDE
     ${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile
 )
 
-add_executable(malbolge ${HEADERS} ${SRCS} ${MAIN_SRCS} ${FOR_IDE})
+set(VERSION_FILE
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/version.hpp
+)
+
+set_source_files_properties(${VERSION_FILE}
+    PROPERTIES GENERATED TRUE)
+
+add_executable(malbolge ${HEADERS} ${SRCS} ${MAIN_SRCS} ${FOR_IDE} ${VERSION_FILE})
+
+# Always regenerate the versioning information (this only causes a recompilation
+# upon a version change)
+add_dependencies(malbolge gen_version)
+add_custom_target(gen_version
+    ALL
+    COMMAND ${CMAKE_COMMAND} -DORIG_BASE_PATH=${CMAKE_CURRENT_SOURCE_DIR} -DPROJECT_VERSION=${PROJECT_VERSION} -DVERSION_FILE=${VERSION_FILE} -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/version.cmake
+)
 
 target_compile_features(malbolge PUBLIC cxx_std_20)
 set_target_properties(malbolge PROPERTIES CXX_EXTENSIONS OFF)
