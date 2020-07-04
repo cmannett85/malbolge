@@ -58,8 +58,7 @@ set(VERSION_FILE
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/version.hpp
 )
 
-set_source_files_properties(${VERSION_FILE}
-    PROPERTIES GENERATED TRUE)
+set_source_files_properties(${VERSION_FILE} PROPERTIES GENERATED TRUE)
 
 add_executable(malbolge ${HEADERS} ${SRCS} ${MAIN_SRCS} ${FOR_IDE} ${VERSION_FILE})
 
@@ -94,6 +93,8 @@ target_link_libraries(malbolge
 target_compile_definitions(malbolge
     PUBLIC BOOST_LOG_DYN_LINK
 )
+
+install(TARGETS malbolge)
 
 enable_testing()
 add_subdirectory(test)
