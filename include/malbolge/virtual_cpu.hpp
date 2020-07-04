@@ -54,7 +54,6 @@ public:
      *
      * @param other Instance to move from
      * @return A reference to this
-     * @throw std::runtime_error Thrown if @a other is not in a READY state
      */
     virtual_cpu& operator=(virtual_cpu&& other);
 
@@ -76,9 +75,8 @@ public:
      * @param ostr Output stream
      * @return Future holding the result of the program, or an exception from
      * it
-     * @throw std::logic_error Thrown if there is logic error within the
-     * program.
-     * @throw std::runtime_error Thrown if the program has already ran
+     * @throw execution_exception Thrown if there is logic error within the
+     * program, or if the program has already ran
      */
     std::future<void> run(std::istream& istr = std::cin,
                           std::ostream& ostr = std::cout);

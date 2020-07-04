@@ -121,18 +121,14 @@ constexpr auto post_cipher = R"(5z]&gqtyfr$(we4{WP)H-Zn,[%\3dL+Q;>U!pJS72FhOA1C)
  * @tparam T Input character type
  * @param input Input character
  * @param index Index of the character in the program data
- * @return The ciphered instruction
- * @throw std::invalid_argument Thrown if input is not a graphical ASCII
- * value
+ * @return The ciphered instruction, or an empty optional if @a input is not
+ * within in the graphical ASCII range
  */
 template <typename T>
-char pre_cipher_instruction(T input, std::size_t index)
+std::optional<char> pre_cipher_instruction(T input, std::size_t index)
 {
     if (!is_graphical_ascii(input)) {
-        throw std::invalid_argument{
-            std::string{"Non-whitespace character must be graphical ASCII: "} +
-            std::to_string(static_cast<int>(input))
-        };
+        return {};
     }
 
     const auto i = (input - graphical_ascii_range.first + index) %
@@ -144,17 +140,14 @@ char pre_cipher_instruction(T input, std::size_t index)
  *
  * @tparam T Input character type
  * @param input Input character
- * @return The ciphered instruction
- * @throw std::invalid_argument Thrown if input is not a graphical ASCII
- * value
+ * @return The ciphered instruction, or an empty optional if @a input is not
+ * within in the graphical ASCII range
  */
 template <typename T>
-char post_cipher_instruction(T input)
+std::optional<char> post_cipher_instruction(T input)
 {
     if (!is_graphical_ascii(input)) {
-        throw std::invalid_argument{
-            std::string{"Non-whitespace character must be graphical ASCII: "} +
-                        std::to_string(static_cast<int>(input))};
+        return {};
     }
 
     input -= graphical_ascii_range.first;

@@ -6,6 +6,7 @@
 #pragma once
 
 #include "malbolge/math/ternary.hpp"
+#include "malbolge/exception.hpp"
 
 #include <array>
 #include <span>
@@ -276,10 +277,8 @@ public:
      * @tparam InputIt Program data iterator type
      * @param first Iterator to first element in program data
      * @param last Iterator to one-past-the-end element in program data
-     * @throw std::invalid_argument Thrown if @a last is less than @a first
-     * @throw std::invalid_argument Thrown if program length is less than 2
-     * characters
-     * @throw std::invalid_argument Thrown if program length is greater than
+     * @throw parse_exception Thrown if program length is less than 2 characters
+     * @throw parse_exception Thrown if program length is greater than
      * math::ternary::max
      */
     template <typename InputIt>
@@ -288,13 +287,12 @@ public:
     {
         const auto program_length = std::distance(first, last);
         if (program_length < 2) {
-            throw std::invalid_argument{"Program data must be at least 2 "
-                                        "characters"};
+            throw parse_exception{"Program data must be at least 2 characters"};
         }
 
         if (static_cast<std::size_t>(program_length) > size()) {
-            throw std::invalid_argument{"Program data must be less than "
-                                        "math::ternary::max"};
+            throw parse_exception{"Program data must be less than "
+                                  "math::ternary::max"};
         }
 
         // Copy the program data in
@@ -315,9 +313,8 @@ public:
      * @endcode
      * @tparam R Range type
      * @param program_data Program data
-     * @throw std::invalid_argument Thrown if program length is less than 2
-     * characters
-     * @throw std::invalid_argument Thrown if program length is greater than
+     * @throw parse_exception Thrown if program length is less than 2 characters
+     * @throw parse_exception Thrown if program length is greater than
      * math::ternary::max
      */
     template <typename R>
@@ -333,9 +330,8 @@ public:
      * @endcode
      * @tparam T List value type
      * @param program_data Program data
-     * @throw std::invalid_argument Thrown if program length is less than 2
-     * characters
-     * @throw std::invalid_argument Thrown if program length is greater than
+     * @throw parse_exception Thrown if program length is less than 2 characters
+     * @throw parse_exception Thrown if program length is greater than
      * math::ternary::max
      */
     template <typename T>

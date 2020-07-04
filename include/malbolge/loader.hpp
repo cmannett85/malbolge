@@ -8,6 +8,9 @@
 #include "malbolge/virtual_memory.hpp"
 #include "malbolge/virtual_cpu.hpp"
 #include "malbolge/cpu_instruction.hpp"
+#include "malbolge/exception.hpp"
+#include "malbolge/algorithm/remove_from_range.hpp"
+#include "malbolge/logging.hpp"
 
 #include <filesystem>
 #include <ranges>
@@ -26,23 +29,41 @@ virtual_memory load_impl(InputIt first, InputIt last)
     static_assert(!std::is_const_v<std::iter_value_t<InputIt>>,
                   "InputIt must not be a const iterator");
 
-    // It would be nice to be able to use ranges here, but there didn't seem
-    // to be a way of calculating the final index of a character reliably.
-    // Whereas a simple for-loop does it quite effectively
-    const auto is_whitespace = [](auto b) {
-        return std::isspace(b);
-    };
-    last = std::remove_if(first, last, is_whitespace);
-
+    auto loc = source_location{};
     auto i = 0u;
-    for (auto it = first; it != last; ++it, ++i) {
-        auto instr = pre_cipher_instruction(*it, i);
-        if (!is_cpu_instruction(instr)) {
-            throw std::invalid_argument{"Invalid instruction in program at "s +
-                                        std::to_string(i) + ": " +
-                                        std::to_string(static_cast<int>(instr))};
+    for (auto it = first; it != last;) {
+        if (std::isspace(*it)) {
+            if (*it == '\n') {
+                ++loc.line;
+                loc.column = 1;
+            } else {
+                ++loc.column;
+            }
+
+            last = remove_from_range(it, last);
+            continue;
         }
+
+        auto instr = pre_cipher_instruction(*it, i);
+        if (!instr) {
+            throw parse_exception{"Non-whitespace character must be graphical "
+                                      "ASCII: " +
+                                      std::to_string(static_cast<int>(*it)),
+                                  loc};
+        }
+
+        if (!is_cpu_instruction(*instr)) {
+            throw parse_exception{"Invalid instruction in program: " +
+                                      std::to_string(static_cast<int>(*instr)),
+                                  loc};
+        }
+        ++loc.column;
+        ++it;
+        ++i;
     }
+
+    BOOST_LOG_SEV(logging::source::get(), logging::DEBUG)
+        << "Loaded size: " << std::distance(first, last);
 
     return virtual_memory(first, last);
 }
@@ -57,18 +78,12 @@ virtual_memory load_impl(InputIt first, InputIt last)
  * @param first Iterator to the first element
  * @param last Iterator to the one-past-the-end element
  * @return Virtual memory image with the program at the start
- * @throw std::invalid_argument Thrown if the program contains errors
+ * @throw parse_exception Thrown if the program contains errors
  */
 template <typename InputIt>
 virtual_memory load(InputIt first, InputIt last)
 {
-    using namespace std::string_literals;
-
-    try {
-        return detail::load_impl(std::move(first), std::move(last));
-    } catch (std::exception& e) {
-        throw std::invalid_argument{"Failed to load program: "s + e.what()};
-    }
+    return detail::load_impl(std::move(first), std::move(last));
 }
 
 /** Loads the program data in @a range.
@@ -84,7 +99,7 @@ virtual_memory load(InputIt first, InputIt last)
  * @tparam Range Range type
  * @param range Range instance
  * @return Virtual memory image with the program at the start
- * @throw std::invalid_argument Thrown if the program contains errors
+ * @throw parse_exception Thrown if the program contains errors
  */
 template <typename R,
           std::enable_if_t<!std::is_same_v<std::decay_t<R>,
@@ -99,7 +114,7 @@ virtual_memory load(R&& range)
  *
  * @param path Path to text file containing the program
  * @return Virtual memory image with the program at the start
- * @throw std::invalid_argument Thrown if the program cannot be read or contains
+ * @throw parse_exception Thrown if the program cannot be read or contains
  * errors
  */
 virtual_memory load(const std::filesystem::path& path);
@@ -108,7 +123,7 @@ virtual_memory load(const std::filesystem::path& path);
  *
  * This is used for 'piping' data in from a terminal.
  * @return Virtual memory image with the program at the start
- * @throw std::invalid_argument Thrown if the program contains errors
+ * @throw parse_exception Thrown if the program contains errors
  */
 virtual_memory load_from_cin();
 }

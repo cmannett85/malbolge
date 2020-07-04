@@ -4,7 +4,8 @@
 #
 
 set(Boost_USE_MULTITHREADED ON)
-find_package(Boost 1.67 REQUIRED COMPONENTS
+find_package(Boost 1.73 REQUIRED COMPONENTS
+    log
     unit_test_framework
 )
 find_package(Threads REQUIRED)
@@ -20,12 +21,14 @@ list(APPEND SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/math/ternary_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/virtual_memory_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/cpu_instruction_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/algorithm/remove_from_range_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/loader_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/virtual_cpu_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/raii_test.cpp
 )
 
 list(APPEND FOR_IDE
+    ${CMAKE_CURRENT_SOURCE_DIR}/programs/README.md
     ${CMAKE_CURRENT_SOURCE_DIR}/programs/hello_world.mal
     ${CMAKE_CURRENT_SOURCE_DIR}/programs/echo.mal
 )
@@ -48,12 +51,14 @@ target_include_directories(malbolge_test
 )
 
 target_link_libraries(malbolge_test
+    PUBLIC Boost::log
     PUBLIC Boost::unit_test_framework
     PUBLIC Threads::Threads
 )
 
 target_compile_definitions(malbolge_test
     PUBLIC BOOST_TEST_DYN_LINK
+    PUBLIC BOOST_LOG_DYN_LINK
     PUBLIC TEST_BUILD
 )
 
