@@ -13,13 +13,17 @@ project(malbolge
         HOMEPAGE_URL "https://github.com/cmannett85/malbolge")
 
 set(Boost_USE_MULTITHREADED ON)
-find_package(Boost 1.67 REQUIRED COMPONENTS
+find_package(Boost 1.73 REQUIRED COMPONENTS
     program_options
+    log
 )
 find_package(Threads REQUIRED)
 
 set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/traits.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/logging.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/algorithm/remove_from_range.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/exception.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/math/ipow.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/math/tritset.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/math/ternary.hpp
@@ -31,6 +35,8 @@ set(HEADERS
 )
 
 set(SRCS
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/logging.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/exception.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/math/ternary.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/loader.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/virtual_cpu.cpp
@@ -65,7 +71,12 @@ target_include_directories(malbolge
 
 target_link_libraries(malbolge
     PUBLIC Boost::program_options
+    PUBLIC Boost::log
     PUBLIC Threads::Threads
+)
+
+target_compile_definitions(malbolge
+    PUBLIC BOOST_LOG_DYN_LINK
 )
 
 enable_testing()

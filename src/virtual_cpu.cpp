@@ -6,6 +6,8 @@
 #include "malbolge/virtual_cpu.hpp"
 #include "malbolge/cpu_instruction.hpp"
 #include "malbolge/utility/raii.hpp"
+#include "malbolge/exception.hpp"
+#include "malbolge/logging.hpp"
 
 using namespace malbolge;
 using namespace std::string_literals;
@@ -37,9 +39,12 @@ virtual_cpu& virtual_cpu::operator=(virtual_cpu&& other)
 std::future<void> virtual_cpu::run(std::istream& istr, std::ostream& ostr)
 {
     if (*state_ != execution_state::READY) {
-        throw std::runtime_error{"vCPU is not in a ready state"};
+        throw execution_exception{"vCPU is not in a ready state", 0};
     }
     *state_ = execution_state::RUNNING;
+
+    BOOST_LOG_SEV(logging::source::get(), logging::DEBUG)
+        << "Starting program";
 
     auto promise = std::promise<void>{};
     auto fut = promise.get_future();
@@ -49,12 +54,18 @@ std::future<void> virtual_cpu::run(std::istream& istr, std::ostream& ostr)
                            p = std::move(promise),
                            &istr,
                            &ostr]() mutable {
+        BOOST_LOG_SEV(logging::source::get(), logging::VERBOSE_DEBUG)
+            << "Program thread started";
+
         auto a = math::ternary{};   // Accumulator register
         auto c = vmem.begin();     // Code pointer
         auto d = vmem.begin();     // Data pointer
 
         auto exception = false;
         auto stopped_setter = utility::raii{[&]() {
+            BOOST_LOG_SEV(logging::source::get(), logging::VERBOSE_DEBUG)
+                << "Program thread exiting";
+
             *state = execution_state::STOPPED;
             if (!exception) {
                 p.set_value();
@@ -62,7 +73,8 @@ std::future<void> virtual_cpu::run(std::istream& istr, std::ostream& ostr)
         }};
 
         // Loop forever, but increment the pointers on each iteration
-        for (; true; ++c, ++d) {
+        auto step = std::size_t{0};
+        for (; true; ++c, ++d, ++step) {
             if (*state == execution_state::STOPPED) {
                 return;
             }
@@ -70,7 +82,19 @@ std::future<void> virtual_cpu::run(std::istream& istr, std::ostream& ostr)
             try {
                 // Pre-cipher the instruction
                 auto instr = pre_cipher_instruction(*c, c - vmem.begin());
-                switch (instr) {
+                if (!instr) {
+                    throw execution_exception{
+                        "Pre-cipher non-whitespace character must be graphical "
+                            "ASCII: " + std::to_string(static_cast<int>(*c)),
+                        step
+                    };
+                }
+
+                BOOST_LOG_SEV(logging::source::get(), logging::VERBOSE_DEBUG)
+                    << "Step: " << step << ", pre-cipher instr: "
+                    << static_cast<int>(*instr);
+
+                switch (*instr) {
                 case cpu_instruction::set_data_ptr:
                     d = vmem.begin() + static_cast<std::size_t>(*d);
                     break;
@@ -107,10 +131,22 @@ std::future<void> virtual_cpu::run(std::istream& istr, std::ostream& ostr)
                 }
 
                 // Post-cipher the instruction
-                *c = post_cipher_instruction(*c);
+                auto pc = post_cipher_instruction(*c);
+                if (!pc) {
+                    throw execution_exception{
+                        "Post-cipher non-whitespace character must be graphical "
+                            "ASCII: " + std::to_string(static_cast<int>(*c)),
+                        step
+                    };
+                }
+                *c = *pc;
+
+                BOOST_LOG_SEV(logging::source::get(), logging::VERBOSE_DEBUG)
+                    << "\tPost-op regs - a: " << a
+                    << ", c[" << std::distance(vmem.begin(), c) << "]: " << *c
+                    << ", d[" << std::distance(vmem.begin(), d) << "]: " << *d;
             } catch (std::exception& e) {
-                auto new_e = std::logic_error{"Execution failure: "s + e.what()};
-                auto e_ptr = std::make_exception_ptr(std::move(new_e));
+                auto e_ptr = std::make_exception_ptr(std::move(e));
                 p.set_exception(std::move(e_ptr));
                 exception = true;
                 return;
@@ -123,6 +159,8 @@ std::future<void> virtual_cpu::run(std::istream& istr, std::ostream& ostr)
 
 void virtual_cpu::stop()
 {
+    BOOST_LOG_SEV(logging::source::get(), logging::DEBUG)
+        << "Early exit requested";
     *state_ = execution_state::STOPPED;
 }
 

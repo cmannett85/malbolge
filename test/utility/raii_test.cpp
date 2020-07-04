@@ -9,9 +9,9 @@
 
 using namespace malbolge;
 
-BOOST_AUTO_TEST_SUITE(raii_suite)
+BOOST_AUTO_TEST_SUITE(utility_suite)
 
-BOOST_AUTO_TEST_CASE(constructor)
+BOOST_AUTO_TEST_CASE(raii_test)
 {
     auto fired = false;
     {
