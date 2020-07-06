@@ -11,16 +11,18 @@
 
 namespace malbolge
 {
+/** Namespace for logging types and functions. 
+ */
 namespace logging
 {
 /** Log level.
  */
 enum level {
-    VERBOSE_DEBUG,  /// Verbose debug logging level
-    DEBUG,          /// Debug logging level
-    INFO,           /// Informational logging level
-    ERROR,          /// Error logging level
-    NUM_LOG_LEVELS  /// Number of log levels
+    VERBOSE_DEBUG,  ///< Verbose debug logging level
+    DEBUG,          ///< Debug logging level
+    INFO,           ///< Informational logging level
+    ERROR,          ///< Error logging level
+    NUM_LOG_LEVELS  ///< Number of log levels
 };
 
 /** String conversion for @a lvl.
@@ -45,11 +47,9 @@ inline std::ostream& operator<<(std::ostream& stream, level lvl)
  */
 using source_type = boost::log::sources::severity_logger_mt<level>;
 
-/** Defines the global logging source instance.
- */
 BOOST_LOG_GLOBAL_LOGGER(source, source_type)
 
-/** Initialise the logging system
+/** Initialise the logging system.
  *
  * Sets the minimum log level to ERROR.
  */

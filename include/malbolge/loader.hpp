@@ -73,7 +73,7 @@ virtual_memory load_impl(InputIt first, InputIt last)
  *
  * The data is modified in place, so the iterators must not be const.
  * @note <TT>std::iterator_traits<InputIt>::value_type</TT> needs to be
- * explicitly convertible <TT>cpu_instruction::type</TT>.
+ * explicitly convertible to <TT>cpu_instruction::type</TT>.
  * @tparam InputIt Input iterator type
  * @param first Iterator to the first element
  * @param last Iterator to the one-past-the-end element
@@ -94,7 +94,7 @@ virtual_memory load(InputIt first, InputIt last)
  * @endcode
  * The data is modified in place, so the created iterators must not be const.
  *
- * @note <TT>R:value_type</TT> needs to be explicitly convertible
+ * @note <TT>R:value_type</TT> needs to be explicitly convertible to
  * <TT>cpu_instruction::type</TT>.
  * @tparam Range Range type
  * @param range Range instance

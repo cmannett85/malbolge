@@ -160,7 +160,7 @@ public:
      */
     auto operator<=>(const tritset& other) const = default;
 
-    /** Return a decimal presentation of the current value.
+    /** Return a decimal representation of the current value.
      *
      * @return Decimal
      */
@@ -200,8 +200,7 @@ public:
         return *this;
     }
 
-    /** Rotates the trits to the right, 'popped' trits are pushed onto the most
-     * significant position.
+    /** Rotates the trits to the right (i.e. least-significant).
      *
      * @param i Number of positions to rotate, modulo-ed to width before use
      * @return A reference to this
