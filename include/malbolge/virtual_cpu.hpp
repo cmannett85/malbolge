@@ -24,10 +24,10 @@ public:
     /** Execution state.
      */
     enum class execution_state {
-        READY,      /// Ready to run
-        RUNNING,    /// Program running
-        STOPPED,    /// Program stopped
-        NUM_STATES  /// Number of execution states
+        READY,      ///< Ready to run
+        RUNNING,    ///< Program running
+        STOPPED,    ///< Program stopped
+        NUM_STATES  ///< Number of execution states
     };
 
     /** Constructor.

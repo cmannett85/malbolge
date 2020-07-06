@@ -58,8 +58,8 @@ std::future<void> virtual_cpu::run(std::istream& istr, std::ostream& ostr)
             << "Program thread started";
 
         auto a = math::ternary{};   // Accumulator register
-        auto c = vmem.begin();     // Code pointer
-        auto d = vmem.begin();     // Data pointer
+        auto c = vmem.begin();      // Code pointer
+        auto d = vmem.begin();      // Data pointer
 
         auto exception = false;
         auto stopped_setter = utility::raii{[&]() {

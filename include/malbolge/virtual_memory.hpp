@@ -29,8 +29,8 @@ public:
 
     /** Iterator class.
      *
-     * Following the rules of Malbolge's vmem (https://en.wikipedia.org/wiki/
-     * Malbolge#Memory), incrementing pointers past the end wraps them back
+     * Following the rules of Malbolge's vmem (https://en.wikipedia.org/wiki/Malbolge#Memory),
+     * incrementing pointers past the end wraps them back
      * round to zero.  This of course means that an <TT>end()</TT> will never be
      * reached, so loops like this:
      * @code
@@ -49,13 +49,13 @@ public:
     class iterator_generic
     {      
     public:
-        using difference_type   = virtual_memory::base::element_type::difference_type;  /// Difference type
+        using difference_type   = virtual_memory::base::element_type::difference_type;  ///< Difference type
         using value_type        = std::conditional_t<IsConstant,
                                                      const virtual_memory::value_type,
-                                                     virtual_memory::value_type>;       /// Value type
-        using pointer           = value_type*;                      /// Pointer to value type
-        using reference         = value_type&;                      /// Reference to value type
-        using iterator_category = std::random_access_iterator_tag;  /// Iterator category
+                                                     virtual_memory::value_type>;       ///< Value type
+        using pointer           = value_type*;                      ///< Pointer to value type
+        using reference         = value_type&;                      ///< Reference to value type
+        using iterator_category = std::random_access_iterator_tag;  ///< Iterator category
 
         /** Copy constructor.
          *
@@ -126,7 +126,7 @@ public:
         /** Pre-decrement operator.
          *
          * If decrementing results in this iterator being equal to
-         * <TT>begin()</TT>, then the iterator is set to <TT>end()-1</TT>.
+         * <TT>begin()-1</TT>, then the iterator is set to <TT>end()-1</TT>.
          * @return A reference to this
          */
         iterator_generic& operator--()
@@ -138,7 +138,7 @@ public:
         /** Post-decrement operator.
          *
          * If decrementing results in this iterator being equal to
-         * <TT>begin()</TT>, then the iterator is set to <TT>end()-1</TT>.
+         * <TT>begin()-1</TT>, then the iterator is set to <TT>end()-1</TT>.
          * @return A copy of the iterator before the decrement
          */
         iterator_generic operator--(int)
@@ -195,7 +195,7 @@ public:
 
         /** Subtraction assignment operator.
          *
-         * Deccrementing beyond the end of the memory space will cause the
+         * Decrementing beyond the end of the memory space will cause the
          * pointer to wrap around.
          * @param offset Element offset, may be negative
          * @return A reference to this
@@ -255,16 +255,16 @@ public:
         span::iterator current_;
     };
 
-    using size_type              = base::element_type::size_type;           /// Size type
-    using difference_type        = base::element_type::difference_type;     /// Pointer difference type
-    using reference              = base::element_type::reference;           /// Reference type
-    using const_reference        = base::element_type::const_reference;     /// Const reference type
-    using pointer                = base::element_type::pointer;             /// Pointer type
-    using const_pointer          = base::element_type::const_pointer;       /// Conts pointer type
-    using iterator               = iterator_generic<false>;                 /// Iterator type
-    using const_iterator         = iterator_generic<true>;                  /// Const iterator type
-    using reverse_iterator       = std::reverse_iterator<iterator>;         /// Reverse iterator type
-    using const_reverse_iterator = std::reverse_iterator<const_iterator>;   /// Const reverse iterator type
+    using size_type              = base::element_type::size_type;           ///< Size type
+    using difference_type        = base::element_type::difference_type;     ///< Pointer difference type
+    using reference              = base::element_type::reference;           ///< Reference type
+    using const_reference        = base::element_type::const_reference;     ///< Const reference type
+    using pointer                = base::element_type::pointer;             ///< Pointer type
+    using const_pointer          = base::element_type::const_pointer;       ///< Conts pointer type
+    using iterator               = iterator_generic<false>;                 ///< Iterator type
+    using const_iterator         = iterator_generic<true>;                  ///< Const iterator type
+    using reverse_iterator       = std::reverse_iterator<iterator>;         ///< Reverse iterator type
+    using const_reverse_iterator = std::reverse_iterator<const_iterator>;   ///< Const reverse iterator type
 
     /** Constructor.
      *
@@ -272,8 +272,6 @@ public:
      * filling the remaining with the ternary operation on the two previous
      * elements.  Therefore it is an error if the program length is one ternary.
      *
-     * @note If the program data size is greater than math::ternary::max+1 then
-     * it will silently wrap around the memory space
      * @tparam InputIt Program data iterator type
      * @param first Iterator to first element in program data
      * @param last Iterator to one-past-the-end element in program data

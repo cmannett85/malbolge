@@ -36,8 +36,8 @@ struct source_location
         column{c}
     {}
 
-    math::ternary::underlying_type line;    /// Line number
-    math::ternary::underlying_type column;  /// Column number
+    math::ternary::underlying_type line;    ///< Line number
+    math::ternary::underlying_type column;  ///< Column number
 };
 
 /** An optional source_location alias.

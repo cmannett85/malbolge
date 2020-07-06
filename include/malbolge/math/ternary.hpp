@@ -163,23 +163,47 @@ public:
         return *this = *this % other;
     }
 
-    /** Trit right shift.
+    /** Rotates the trits to the right (i.e. least-significant).
      *
-     * @param i Number of trits to shift to the right
+     * 
+     * @param i Number of positions to rotate, modulo-ed to width before use
      * @return A reference to this
      */
     ternary& rotate(std::size_t i = 1);
 
     /** @em The operation.
      *
-     * Also referred to as the "crazy" operation. Each trit is used as input to
-     * a 2D LUT, which is mapped into the output:
+     * Each trit is used as input to a 2D LUT, which is mapped into the output:
      * <table>
-     * <tr><td> <th>b0 <th>b1 <th>b2
-     * <tr><th>a0 <td>1 <td>0 <td> 0
-     * <tr><th>a1 <td>1 <td>0 <td> 2
-     * <tr><th>a2 <td>2 <td>2 <td> 1
-     * </table>
+     * <tr>
+     *    <td colspan="2" rowspan="2"></td>
+     *    <th colspan="3" style="text-align:center">a</td>
+     *  </tr>
+     *  <tr>
+     *    <th>0</td>
+     *    <th>1</td>
+     *    <th>2</td>
+     *  </tr>
+     *  <tr>
+     *    <th style="text-align:center" rowspan="3">b</td>
+     *    <th>0</td>
+     *    <td>1</td>
+     *    <td>0</td>
+     *    <td>0</td>
+     *  </tr>
+     *  <tr>
+     *    <th>1</td>
+     *    <td>1</td>
+     *    <td>0</td>
+     *    <td>2</td>
+     *  </tr>
+     *  <tr>
+     *    <th>2</td>
+     *    <td>2</td>
+     *    <td>2</td>
+     *    <td>1</td>
+     *  </tr>
+     *  </table>
      *
      * @param other Instance to operate against
      * @return Operation result
