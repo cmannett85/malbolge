@@ -1,0 +1,44 @@
+# Copyright Cam Mannett 2020
+#
+# See LICENSE file
+# 
+
+# This workflow runs a barrage of tests in order to valid a PR
+name: pr_checker
+
+on:
+  pull_request:
+    branches: [ master ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # Builds the unit tests and executes them
+  unit_tests:
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+      
+    - name: Update packages
+      run: |
+        sudo apt-get install g++-10
+        sudo add-apt-repository ppa:mhier/libboost-latest
+        sudo apt install libboost1.73-dev
+      
+    - name: Make out-of-source build directory
+      run: mkdir ${GITHUB_WORKSPACE}/../build_unit_tests
+
+    - name: Configure
+      run: |
+        cd ${GITHUB_WORKSPACE}/../build_unit_tests
+        cmake -DCMAKE_CXX_COMPILER=g++-10 ${GITHUB_WORKSPACE}
+        make -j8 malbolge_tests
+        
+    - name: Run
+      run: |
+        cd ${GITHUB_WORKSPACE}/../build_unit_tests/test
+        ./malbolge_test -l test_suite
