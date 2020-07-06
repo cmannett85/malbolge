@@ -4,7 +4,7 @@
 # 
 
 # This workflow runs a barrage of tests in order to valid a PR
-name: pr_checker
+name: Pull Request Checker
 
 on:
   pull_request:
@@ -36,7 +36,7 @@ jobs:
       run: |
         cd ${GITHUB_WORKSPACE}/../build_unit_tests
         cmake -DCMAKE_CXX_COMPILER=g++-10 ${GITHUB_WORKSPACE}
-        make -j8 malbolge_tests
+        make -j8 malbolge_test
         
     - name: Run
       run: |
