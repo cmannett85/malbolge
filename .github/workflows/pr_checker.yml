@@ -23,22 +23,37 @@ jobs:
       with:
         fetch-depth: 1
       
+    # Annoyingly I can't find a PPA with the latest lcov, so I have to download
+    # the deb manually.  This shouldn't be necessary once the Ubuntu 20.04
+    # runner comes out of preview
     - name: Update packages
       run: |
-        sudo apt-get install g++-10
+        wget http://mirrors.kernel.org/ubuntu/pool/universe/l/lcov/lcov_1.14-2_all.deb
         sudo add-apt-repository ppa:mhier/libboost-latest
-        sudo apt install libboost1.73-dev
-      
-    - name: Make out-of-source build directory
-      run: mkdir ${GITHUB_WORKSPACE}/../build_unit_tests
+        sudo apt install g++-10 libboost1.73-dev ./lcov_1.14-2_all.deb
 
     - name: Configure
       run: |
+        mkdir ${GITHUB_WORKSPACE}/../build_unit_tests
         cd ${GITHUB_WORKSPACE}/../build_unit_tests
-        cmake -DCMAKE_CXX_COMPILER=g++-10 ${GITHUB_WORKSPACE}
-        make -j8 malbolge_test
+        cmake -DCMAKE_CXX_COMPILER=g++-10 -DCOVERAGE=ON ${GITHUB_WORKSPACE}
+        make -j4 malbolge_test
         
-    - name: Run
+    - name: Run unit tests
       run: |
         cd ${GITHUB_WORKSPACE}/../build_unit_tests/test
         ./malbolge_test -l test_suite
+
+    - name: Calculate unit test coverage
+      run: |
+        cd ${GITHUB_WORKSPACE}/../build_unit_tests/test/CMakeFiles/malbolge_test.dir
+        lcov --directory . --capture --output-file temp.info --rc geninfo_gcov_tool=gcov-10
+        lcov --remove temp.info "/usr/include/*" --output-file malbolge.info
+
+    - name: Check unit test coverage
+      run: |
+        cd ${GITHUB_WORKSPACE}/../build_unit_tests/test/CMakeFiles/malbolge_test.dir
+        NEW_COVERAGE="$(lcov --summary malbolge.info | awk 'NR==3 {print $2+0}')"
+        OLD_COVERAGE="$(cat ${GITHUB_WORKSPACE}/test/old_coverage)"
+        echo "New coverage: ${NEW_COVERAGE}%, previous coverage: ${OLD_COVERAGE}%"
+        if (( $(echo "($NEW_COVERAGE - $OLD_COVERAGE) < -1.0" | bc -l) )); then exit 1; fi
