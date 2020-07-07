@@ -31,9 +31,9 @@ target_compile_definitions(malbolge_address_sanitizer
 )
 
 target_compile_options(malbolge_address_sanitizer
-    PRIVATE -fsanitize=address -fno-omit-frame-pointer
+    PRIVATE -fsanitize=address -fno-omit-frame-pointer -fsanitize=undefined
 )
 
 target_link_options(malbolge_address_sanitizer
-    PRIVATE -fsanitize=address
+    PRIVATE -fsanitize=address -fsanitize=undefined
 )
