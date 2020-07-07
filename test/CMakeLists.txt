@@ -45,6 +45,19 @@ target_compile_options(malbolge_test PRIVATE
           /W4>
 )
 
+option(COVERAGE "Enable test coverage instrumentation" OFF)
+if (COVERAGE)
+    message(STATUS "Enabled unit test coverage instrumentation")
+    if ("${CXX_COMPILER_ID}" STREQUAL "MSVC")
+        message(FATAL_ERROR "MSVC not available for instrumentation")
+    endif()
+
+    target_compile_options(malbolge_test PRIVATE --coverage)
+    target_link_libraries(malbolge_test
+        PUBLIC gcov
+    )
+endif()
+
 target_include_directories(malbolge_test
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../include
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
@@ -59,10 +72,9 @@ target_link_libraries(malbolge_test
 target_compile_definitions(malbolge_test
     PUBLIC BOOST_TEST_DYN_LINK
     PUBLIC BOOST_LOG_DYN_LINK
-    PUBLIC TEST_BUILD
 )
 
-message("Copying over example programs")
+message(STATUS "Copying over example programs")
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/programs
      DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
