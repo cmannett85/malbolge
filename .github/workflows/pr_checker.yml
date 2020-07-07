@@ -46,14 +46,5 @@ jobs:
 
     - name: Calculate unit test coverage
       run: |
-        cd ${GITHUB_WORKSPACE}/../build_unit_tests/test/CMakeFiles/malbolge_test.dir
-        lcov --directory . --capture --output-file temp.info --rc geninfo_gcov_tool=gcov-10
-        lcov --remove temp.info "/usr/include/*" --output-file malbolge.info
-
-    - name: Check unit test coverage
-      run: |
-        cd ${GITHUB_WORKSPACE}/../build_unit_tests/test/CMakeFiles/malbolge_test.dir
-        NEW_COVERAGE="$(lcov --summary malbolge.info | awk 'NR==3 {print $2+0}')"
-        OLD_COVERAGE="$(cat ${GITHUB_WORKSPACE}/test/old_coverage)"
-        echo "New coverage: ${NEW_COVERAGE}%, previous coverage: ${OLD_COVERAGE}%"
-        if (( $(echo "($NEW_COVERAGE - $OLD_COVERAGE) < -1.0" | bc -l) )); then exit 1; fi
+        cd ${GITHUB_WORKSPACE}/test
+        ./calculate_test_coverage.sh ${GITHUB_WORKSPACE}/../build_unit_tests
