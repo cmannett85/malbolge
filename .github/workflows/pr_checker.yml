@@ -16,9 +16,7 @@ jobs:
   unit_tests:
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
       with:
         fetch-depth: 1
@@ -36,15 +34,40 @@ jobs:
       run: |
         mkdir ${GITHUB_WORKSPACE}/../build_unit_tests
         cd ${GITHUB_WORKSPACE}/../build_unit_tests
-        cmake -DCMAKE_CXX_COMPILER=g++-10 -DCOVERAGE=ON ${GITHUB_WORKSPACE}
-        make -j4 malbolge_test
-        
-    - name: Run unit tests
+        cmake -DCMAKE_CXX_COMPILER=g++-10 -DCMAKE_BUILD_TYPE=Debug ${GITHUB_WORKSPACE}
+        make -j4 malbolge_test_coverage
+  
+    - name: Run
       run: |
         cd ${GITHUB_WORKSPACE}/../build_unit_tests/test
-        ./malbolge_test -l test_suite
+        ./malbolge_test_coverage -l test_suite
 
     - name: Calculate unit test coverage
       run: |
         cd ${GITHUB_WORKSPACE}/test
         ./calculate_test_coverage.sh ${GITHUB_WORKSPACE}/../build_unit_tests
+
+  address_sanitizer:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+
+    - name: Update packages
+      run: |
+        sudo add-apt-repository ppa:mhier/libboost-latest
+        sudo apt install g++-10 libboost1.73-dev llvm
+
+    - name: Configure
+      run: |
+        mkdir ${GITHUB_WORKSPACE}/../build_address_sanitizer
+        cd ${GITHUB_WORKSPACE}/../build_address_sanitizer
+        cmake -DCMAKE_CXX_COMPILER=g++-10 -DCMAKE_BUILD_TYPE=Debug ${GITHUB_WORKSPACE}
+        make -j4 malbolge_address_sanitizer
+
+    - name: Run
+      run: |
+        cd ${GITHUB_WORKSPACE}/../build_address_sanitizer
+        ./malbolge_address_sanitizer ${GITHUB_WORKSPACE}/test/programs/hello_world.mal

@@ -52,6 +52,7 @@ set(FOR_IDE
     ${CMAKE_CURRENT_SOURCE_DIR}/README.md
     ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE
     ${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile
+    ${CMAKE_CURRENT_SOURCE_DIR}/.github/workflows/pr_checker.yml
 )
 
 set(VERSION_FILE
@@ -60,41 +61,13 @@ set(VERSION_FILE
 
 set_source_files_properties(${VERSION_FILE} PROPERTIES GENERATED TRUE)
 
-add_executable(malbolge ${HEADERS} ${SRCS} ${MAIN_SRCS} ${FOR_IDE} ${VERSION_FILE})
-
-# Always regenerate the versioning information (this only causes a recompilation
-# upon a version change)
-add_dependencies(malbolge gen_version)
 add_custom_target(gen_version
     ALL
     COMMAND ${CMAKE_COMMAND} -DORIG_BASE_PATH=${CMAKE_CURRENT_SOURCE_DIR} -DPROJECT_VERSION=${PROJECT_VERSION} -DVERSION_FILE=${VERSION_FILE} -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/version.cmake
 )
 
-target_compile_features(malbolge PUBLIC cxx_std_20)
-set_target_properties(malbolge PROPERTIES CXX_EXTENSIONS OFF)
-
-target_compile_options(malbolge PRIVATE
-     $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:
-          -Werror -Wall -Wextra>
-     $<$<CXX_COMPILER_ID:MSVC>:
-          /W4>
-)
-
-target_include_directories(malbolge
-    PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
-)
-
-target_link_libraries(malbolge
-    PUBLIC Boost::program_options
-    PUBLIC Boost::log
-    PUBLIC Threads::Threads
-)
-
-target_compile_definitions(malbolge
-    PUBLIC BOOST_LOG_DYN_LINK
-)
-
-install(TARGETS malbolge)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/standard_executable.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/address_sanitizer.cmake)
 
 enable_testing()
 add_subdirectory(test)

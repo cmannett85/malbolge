@@ -19,7 +19,7 @@ GCOV=${2:-gcov-10}
 
 OLD_COVERAGE="$(cat ./old_coverage)"
 
-cd ${BUILD_DIR}/test/CMakeFiles/malbolge_test.dir
+cd ${BUILD_DIR}/test/CMakeFiles/malbolge_test_coverage.dir
 lcov --directory . --capture --output-file temp.info --rc geninfo_gcov_tool=${GCOV}
 lcov --remove temp.info "/usr/include/*" --output-file malbolge.info
 
