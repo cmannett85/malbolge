@@ -30,7 +30,7 @@ jobs:
         sudo add-apt-repository ppa:mhier/libboost-latest
         sudo apt install g++-10 libboost1.73-dev ./lcov_1.14-2_all.deb
 
-    - name: Configure
+    - name: Build
       run: |
         mkdir ${GITHUB_WORKSPACE}/../build_unit_tests
         cd ${GITHUB_WORKSPACE}/../build_unit_tests
@@ -60,7 +60,7 @@ jobs:
         sudo add-apt-repository ppa:mhier/libboost-latest
         sudo apt install g++-10 libboost1.73-dev llvm
 
-    - name: Configure
+    - name: Build
       run: |
         mkdir ${GITHUB_WORKSPACE}/../build_address_sanitizer
         cd ${GITHUB_WORKSPACE}/../build_address_sanitizer
@@ -71,3 +71,28 @@ jobs:
       run: |
         cd ${GITHUB_WORKSPACE}/../build_address_sanitizer
         ./malbolge_address_sanitizer ${GITHUB_WORKSPACE}/test/programs/hello_world.mal
+
+  thread_sanitizer:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+
+    - name: Update packages
+      run: |
+        sudo add-apt-repository ppa:mhier/libboost-latest
+        sudo apt install g++-10 libboost1.73-dev llvm
+
+    - name: Build
+      run: |
+        mkdir ${GITHUB_WORKSPACE}/../build_thread_sanitizer
+        cd ${GITHUB_WORKSPACE}/../build_thread_sanitizer
+        cmake -DCMAKE_CXX_COMPILER=g++-10 -DCMAKE_BUILD_TYPE=Release ${GITHUB_WORKSPACE}
+        make -j4 malbolge_thread_sanitizer
+
+    - name: Run
+      run: |
+        cd ${GITHUB_WORKSPACE}/../build_thread_sanitizer
+        ./malbolge_thread_sanitizer ${GITHUB_WORKSPACE}/test/programs/hello_world.mal

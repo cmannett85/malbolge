@@ -68,6 +68,7 @@ add_custom_target(gen_version
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/standard_executable.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/address_sanitizer.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/thread_sanitizer.cmake)
 
 enable_testing()
 add_subdirectory(test)
