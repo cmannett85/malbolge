@@ -10,7 +10,6 @@ on:
   pull_request:
     branches: [ master ]
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # Builds the unit tests and executes them
   unit_tests:
@@ -47,6 +46,7 @@ jobs:
         cd ${GITHUB_WORKSPACE}/test
         ./calculate_test_coverage.sh ${GITHUB_WORKSPACE}/../build_unit_tests
 
+  # Runs ASan, LSan, and UBSan on the code
   address_sanitizer:
     runs-on: ubuntu-latest
 
@@ -72,6 +72,7 @@ jobs:
         cd ${GITHUB_WORKSPACE}/../build_address_sanitizer
         ./malbolge_address_sanitizer ${GITHUB_WORKSPACE}/test/programs/hello_world.mal
 
+  # Runs TSan on the code
   thread_sanitizer:
     runs-on: ubuntu-latest
 
@@ -97,6 +98,7 @@ jobs:
         cd ${GITHUB_WORKSPACE}/../build_thread_sanitizer
         ./malbolge_thread_sanitizer ${GITHUB_WORKSPACE}/test/programs/hello_world.mal
 
+  # Makes sure there is no errors when generating the documentation
   documentation:
     runs-on: ubuntu-latest
 
