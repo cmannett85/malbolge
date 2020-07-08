@@ -10,14 +10,14 @@
 
 namespace malbolge
 {
-/** Virtual machine processor instructions.
- *
- * Only these instructions are allowed during program load, once running any
- * non-whitespace ASCII not in this enum is considered a nop.
+/** Namespace for virtual machine processor instructions.
  */
 namespace cpu_instruction
 {
 /** Instruction enumeration.
+ * 
+ * Only these instructions are allowed during program load, once running any
+ * non-whitespace ASCII not in this enum is considered a nop.
  */
 enum type : char
 {
