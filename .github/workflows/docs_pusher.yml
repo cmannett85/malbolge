@@ -1,0 +1,36 @@
+# Copyright Cam Mannett 2020
+#
+# See LICENSE file
+# 
+
+# This workflow uses Doxygen to generate HTML API documentation, which is then
+# pushed to the project's GitHub Pages
+name: Documentation Generator
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  documentation.:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+
+    - name: Update packages
+      run: |
+        sudo apt install doxygen graphviz
+      
+    - name: Generate
+      run: |
+        cd ${GITHUB_WORKSPACE}/docs
+        doxygen
+
+    - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ${GITHUB_WORKSPACE}/docs/doxygen/html

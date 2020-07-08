@@ -29,6 +29,9 @@ $ malbolge -vvv ./test/programs/hello_world.mal  2> logging.txt
 Hello World!
 ```
 
+## API Documentation
+API documentation for Malbolge is available [here](https://cmannett85.github.io/malbolge/).
+
 ---
 
 ## What is Malbolge?
