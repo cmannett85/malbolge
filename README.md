@@ -1,2 +1,0 @@
-# malbolge
-Malbolge virtual machine
