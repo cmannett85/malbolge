@@ -33,9 +33,10 @@ jobs:
     - name: Build
       id: build
       run: |
-        echo "::set-output name=build_path::${GITHUB_WORKSPACE}/../release"
-        mkdir ${{steps.build.outputs.build_path}}
-        cd ${{steps.build.outputs.build_path}}
+        build_path=${GITHUB_WORKSPACE}/../release
+        echo "::set-output name=build_path::${build_path}"
+        mkdir ${build_path}
+        cd ${build_path}
         cmake -DCMAKE_CXX_COMPILER=g++-10 -DCMAKE_BUILD_TYPE=Release ${GITHUB_WORKSPACE}
         make -j4 malbolge
 
