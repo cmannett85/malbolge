@@ -31,3 +31,23 @@ target_compile_definitions(malbolge
 )
 
 install(TARGETS malbolge)
+
+# CPack package configuration
+set(CPACK_PACKAGE_VENDOR "Cam Mannett")
+set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE)
+set(CPACK_RESOURCE_FILE_README ${CMAKE_CURRENT_SOURCE_DIR}/README.md)
+set(CPACK_GENERATOR
+    DEB
+    TGZ
+    STGZ
+)
+# .deb specific. The dependencies stink, because for some insane reason
+# Ubuntu adds the version to the boost package names, so if you have v1.74
+# installed the dependencies will fail...
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER ${CPACK_PACKAGE_VENDOR})
+set(CPACK_DEBIAN_PACKAGE_SECTION "interpreters")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libboost-program_options-dev (>= ${BOOST_VERSION}) | libboost${BOOST_VERSION}, libboost-log-dev (>= ${BOOST_VERSION}) | libboost${BOOST_VERSION}")
+# .rpm specific.  Don't build by default as we currently can't be bothered
+# tested it
+set(CPACK_RPM_PACKAGE_LICENSE "MIT")
+include(CPack)

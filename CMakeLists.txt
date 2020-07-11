@@ -12,9 +12,11 @@ project(malbolge
         DESCRIPTION "Malbolge virtual machine"
         HOMEPAGE_URL "https://github.com/cmannett85/malbolge"
         LANGUAGES CXX)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+set(BOOST_VERSION 1.73)
 set(Boost_USE_MULTITHREADED ON)
-find_package(Boost 1.73 REQUIRED COMPONENTS
+find_package(Boost ${BOOST_VERSION} REQUIRED COMPONENTS
     program_options
     log
 )
