@@ -47,43 +47,43 @@ jobs:
         echo "::set-output name=sh_file::$(ls | grep .sh)"
 
     - name: Create GitHub release entry
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Malbolge ${{ github.ref }}
-          draft: false
-          prerelease: false
-          body: ${{steps.commit_msg.outputs.commit_msg}}
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Malbolge ${{ github.ref }}
+        draft: false
+        prerelease: false
+        body: ${{steps.commit_msg.outputs.commit_msg}}
 
     - name: Upload deb
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${GITHUB_WORKSPACE}/../release/${{steps.gen_release.outputs.deb_file}}
-          asset_name: ${{steps.gen_release.outputs.deb_file}}
-          asset_content_type: application/x-debian-package
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ${GITHUB_WORKSPACE}/../release/${{steps.gen_release.outputs.deb_file}}
+        asset_name: ${{steps.gen_release.outputs.deb_file}}
+        asset_content_type: application/x-debian-package
 
     - name: Upload tar.gz
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${GITHUB_WORKSPACE}/../release/${{steps.gen_release.outputs.targz_file}}
-          asset_name: ${{steps.gen_release.outputs.targz_file}}
-          asset_content_type: application/x-debian-package
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ${GITHUB_WORKSPACE}/../release/${{steps.gen_release.outputs.targz_file}}
+        asset_name: ${{steps.gen_release.outputs.targz_file}}
+        asset_content_type: application/x-debian-package
 
     - name: Upload self-extracting archive
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${GITHUB_WORKSPACE}/../release/${{steps.gen_release.outputs.sh_file}}
-          asset_name: ${{steps.gen_release.outputs.sh_file}}
-          asset_content_type: application/x-debian-package
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ${GITHUB_WORKSPACE}/../release/${{steps.gen_release.outputs.sh_file}}
+        asset_name: ${{steps.gen_release.outputs.sh_file}}
+        asset_content_type: application/x-debian-package
