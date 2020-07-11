@@ -31,16 +31,18 @@ jobs:
         sudo apt install g++-10 libboost1.73-dev
 
     - name: Build
+      id: build
       run: |
-        mkdir ${GITHUB_WORKSPACE}/../release
-        cd ${GITHUB_WORKSPACE}/../release
+        echo "::set-output name=build_path::${GITHUB_WORKSPACE}/../release"
+        mkdir ${{steps.build.outputs.build_path}}
+        cd ${{steps.build.outputs.build_path}}
         cmake -DCMAKE_CXX_COMPILER=g++-10 -DCMAKE_BUILD_TYPE=Release ${GITHUB_WORKSPACE}
         make -j4 malbolge
 
     - name: Generate release packages
       id: gen_release
       run: |
-        cd ${GITHUB_WORKSPACE}/../release
+        cd ${{steps.build.outputs.build_path}}
         cpack
         echo "::set-output name=deb_file::$(ls | grep .deb)"
         echo "::set-output name=targz_file::$(ls | grep .tar.gz)"
@@ -50,10 +52,10 @@ jobs:
       id: create_release
       uses: actions/create-release@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
       with:
-        tag_name: ${{ github.ref }}
-        release_name: Malbolge ${{ github.ref }}
+        tag_name: ${{github.ref}}
+        release_name: Malbolge ${{github.ref}}
         draft: false
         prerelease: false
         body: ${{steps.commit_msg.outputs.commit_msg}}
@@ -61,29 +63,29 @@ jobs:
     - name: Upload deb
       uses: actions/upload-release-asset@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ${GITHUB_WORKSPACE}/../release/${{steps.gen_release.outputs.deb_file}}
+        upload_url: ${{steps.create_release.outputs.upload_url}}
+        asset_path: ${{steps.build.outputs.build_path}}/${{steps.gen_release.outputs.deb_file}}
         asset_name: ${{steps.gen_release.outputs.deb_file}}
         asset_content_type: application/x-debian-package
 
     - name: Upload tar.gz
       uses: actions/upload-release-asset@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ${GITHUB_WORKSPACE}/../release/${{steps.gen_release.outputs.targz_file}}
+        upload_url: ${{steps.create_release.outputs.upload_url}}
+        asset_path: ${{steps.build.outputs.build_path}}/${{steps.gen_release.outputs.targz_file}}
         asset_name: ${{steps.gen_release.outputs.targz_file}}
         asset_content_type: application/x-debian-package
 
     - name: Upload self-extracting archive
       uses: actions/upload-release-asset@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ${GITHUB_WORKSPACE}/../release/${{steps.gen_release.outputs.sh_file}}
+        upload_url: ${{steps.create_release.outputs.upload_url}}
+        asset_path: ${{steps.build.outputs.build_path}}/${{steps.gen_release.outputs.sh_file}}
         asset_name: ${{steps.gen_release.outputs.sh_file}}
         asset_content_type: application/x-debian-package
