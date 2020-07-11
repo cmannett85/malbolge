@@ -24,6 +24,7 @@ jobs:
       id: commit_msg
       run: |
         MSG=$(git show -s --format=%s%n%n%b $(git log -2 --pretty=%H | tail -n 1))
+        echo $MSG
         MSG="${MSG//'%'/'%25'}"
         MSG="${MSG//$'\n'/'%0A'}"
         MSG="${MSG//$'\r'/'%0D'}"
