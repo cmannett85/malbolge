@@ -20,10 +20,14 @@ jobs:
       with:
         fetch-depth: 1
 
-    - name: Get commit message
+    - name: Get commit message and percent-encode
       id: commit_msg
       run: |
-        echo "::set-output name=commit_msg::$(git log -1 --pretty=%B)"
+        MSG=$(git show -s --format=%s%n%n%b $(git log -2 --pretty=%H | tail -n 1))
+        MSG="${MSG//'%'/'%25'}"
+        MSG="${MSG//$'\n'/'%0A'}"
+        MSG="${MSG//$'\r'/'%0D'}"
+        echo "::set-output name=commit_msg::${MSG}"
 
     - name: Update packages
       run: |
