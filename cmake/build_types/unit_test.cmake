@@ -4,7 +4,7 @@
 #
 
 set(Boost_USE_MULTITHREADED ON)
-find_package(Boost 1.73 REQUIRED COMPONENTS
+find_package(Boost ${BOOST_VERSION} REQUIRED COMPONENTS
     log
     unit_test_framework
 )
