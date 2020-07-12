@@ -146,4 +146,5 @@ jobs:
       run: |
         cd ${GITHUB_WORKSPACE}/../release
         sudo apt install ./malbolge-*.deb
+        malbolge ./test/programs/hello_world.mal
         sudo apt --assume-yes remove malbolge

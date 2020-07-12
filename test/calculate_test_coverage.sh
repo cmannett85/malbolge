@@ -8,7 +8,6 @@
 # Run from inside the test folder.
 # - First argument is the top-level build directory and is required
 # - Second argument is optional, and defined the gcov tool (defaults to gcov-10)
-
 if [ -z "$1" ]; then
     echo "Must pass build directory"
     exit 1

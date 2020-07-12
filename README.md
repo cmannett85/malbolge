@@ -1,3 +1,7 @@
+![Documentation Generator](https://github.com/cmannett85/malbolge/workflows/Documentation%20Generator/badge.svg) ![Release Builder](https://github.com/cmannett85/malbolge/workflows/Release%20Builder/badge.svg) ![Unit test coverage](https://img.shields.io/badge/coverage-00.0%25-red)
+
+---
+
 # malbolge
 A virtual machine to execute Malbolge programs, written in C++20 and dependent on Boost v1.73.
 
@@ -160,3 +164,27 @@ http://www.lscheffer.com/malbolge_spec.html
 
 #### Reference implementation
 http://www.lscheffer.com/malbolge_interp.html
+
+---
+
+## CI System
+The Malbolge project uses Github Actions to enfore strict code quality checks during a pull request:
+- Unit tests are ran
+- Unit test code coverage calculated and if it is >1% lower than the previous value, the PR is rejected (can be manually overridden)
+- Executable ran with a Hello World program and then checked with:
+  - AddressSanitizer
+  - LeakSanitizer
+  - UndefinedBehaviorSanitizer
+  - ThreadSanitizer
+- Documentation generated, if it fails (because the API has changed and the documentation comments not updated to match), then the PR is rejected
+- Release debian package and archives generated.  The debian package is installed, malbolge ran, and then uninstalled - any failure in that process will cause the PR to be rejected
+
+I dabbled in `clang-format`, but it only seemed to make the formatting worse, so that will have to be manually checked.  `clang-tidy` will be integrated once it supports C++20 ranges, currently v10 produces errors for them that cannot be suppressed.
+
+Once the PR is merged, the API documentation is generated and pushed to the [public documentation](https://cmannett85.github.io/malbolge) site.
+
+## Contributing
+Issues and PRs are always welcome, but seriously - why are you using it?
+
+### Can I integrate the source into my own project?
+Sure, but...  Err... **Why do you need it!?**
