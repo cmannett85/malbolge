@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Malbolge: malbolge</title>
+<title>Malbolge: Main Page</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -61,10 +61,21 @@ $(function() {
 
 <div class="header">
   <div class="headertitle">
-<div class="title">malbolge </div>  </div>
+<div class="title">Malbolge Documentation</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>A virtual machine to execute Malbolge programs, written in C++20 and dependent on Boost v1.73.</p>
+<div class="textblock"><div class="image">
+<object type="image/svg+xml" data="https://github.com/cmannett85/malbolge/workflows/Documentation%20Generator/badge.svg" alt="Documentation Generator"></object>
+</div>
+ <div class="image">
+<object type="image/svg+xml" data="https://github.com/cmannett85/malbolge/workflows/Release%20Builder/badge.svg" alt="Release Builder"></object>
+</div>
+ <div class="image">
+<img src="https://img.shields.io/badge/coverage-00.0%25-red" alt="Unit test coverage"/>
+</div>
+ <hr/>
+<h1>malbolge</h1>
+<p>A virtual machine to execute Malbolge programs, written in C++20 and dependent on Boost v1.73.</p>
 <p>Only tested using g++ v10.0.1 on Linux.</p>
 <h2>Usage</h2>
 <p>You can load from a file like this: </p><div class="fragment"><div class="line">malbolge my_prog.mal</div></div><!-- fragment --><p> The file extension is ignored. Or you pipe the output into it: </p><div class="fragment"><div class="line">cat my_prog.mal | malbolge</div></div><!-- fragment --><p> Like any terminal application, you access help with <code>--help</code>. You can also get log output (in stderr) via increasing the number of <code>-v</code> switches, e.g.: </p><div class="fragment"><div class="line">$ malbolge -vv ./test/programs/hello_world.mal </div><div class="line">2020-07-05 11:53:31.095433[INFO]: Loading file: &quot;./test/programs/hello_world.mal&quot;</div><div class="line">2020-07-05 11:53:31.095504[DEBUG]: File size: 132</div><div class="line">2020-07-05 11:53:31.095588[INFO]: File loaded</div><div class="line">2020-07-05 11:53:31.095652[DEBUG]: Loaded size: 131</div><div class="line">2020-07-05 11:53:31.122950[DEBUG]: Starting program</div><div class="line">Hello World!</div></div><!-- fragment --><p> You can increase logging up to 3 levels. As it is output into the error stream, you can split the logging output into a separate file to preserve the program output: </p><div class="fragment"><div class="line">$ malbolge -vvv ./test/programs/hello_world.mal  2&gt; logging.txt</div><div class="line">Hello World!</div></div><!-- fragment --><h2>API Documentation</h2>
@@ -143,7 +154,27 @@ $(function() {
 <h4>Specification</h4>
 <p><a href="http://www.lscheffer.com/malbolge_spec.html">http://www.lscheffer.com/malbolge_spec.html</a></p>
 <h4>Reference implementation</h4>
-<p><a href="http://www.lscheffer.com/malbolge_interp.html">http://www.lscheffer.com/malbolge_interp.html</a> </p>
+<p><a href="http://www.lscheffer.com/malbolge_interp.html">http://www.lscheffer.com/malbolge_interp.html</a> </p><hr/>
+<h2>CI System</h2>
+<p>The Malbolge project uses Github Actions to enfore strict code quality checks during a pull request:</p><ul>
+<li>Unit tests are ran</li>
+<li>Unit test code coverage calculated and if it is &gt;1% lower than the previous value, the PR is rejected (can be manually overridden)</li>
+<li>Executable ran with a Hello World program and then checked with:<ul>
+<li>AddressSanitizer</li>
+<li>LeakSanitizer</li>
+<li>UndefinedBehaviorSanitizer</li>
+<li>ThreadSanitizer</li>
+</ul>
+</li>
+<li>Documentation generated, if it fails (because the API has changed and the documentation comments not updated to match), then the PR is rejected</li>
+<li>Release debian package and archives generated. The debian package is installed, malbolge ran, and then uninstalled - any failure in that process will cause the PR to be rejected</li>
+</ul>
+<p>I dabbled in <code>clang-format</code>, but it only seemed to make the formatting worse, so that will have to be manually checked. <code>clang-tidy</code> will be integrated once it supports C++20 ranges, currently v10 produces errors for them that cannot be suppressed.</p>
+<p>Once the PR is merged, the API documentation is generated and pushed to the <a href="https://cmannett85.github.io/malbolge">public documentation</a> site.</p>
+<h2>Contributing</h2>
+<p>Issues and PRs are always welcome, but seriously - why are you using it?</p>
+<h3>Can I integrate the source into my own project?</h3>
+<p>Sure, but... Err... <b>Why do you need it!?</b> </p>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

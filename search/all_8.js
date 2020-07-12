@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['malbolge',['malbolge',['../index.html',1,'']]],
   ['literals',['literals',['../namespacemalbolge_1_1literals.html',1,'malbolge']]],
   ['logging',['logging',['../namespacemalbolge_1_1logging.html',1,'malbolge']]],
   ['malbolge',['malbolge',['../namespacemalbolge.html',1,'']]],
