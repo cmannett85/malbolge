@@ -18,6 +18,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
+        ref: ${{github.head_ref}}
         fetch-depth: 1
       
     # Annoyingly I can't find a PPA with the latest lcov, so I have to download
@@ -45,6 +46,18 @@ jobs:
       run: |
         cd ${GITHUB_WORKSPACE}/test
         ./calculate_test_coverage.sh ${GITHUB_WORKSPACE}/../build_unit_tests
+
+    - name: Update README unit test coverage badge
+      run: |
+        cd ${GITHUB_WORKSPACE}
+        BADGE_URL=$(./test/create_badge_url.sh -e)
+        sed -i -e "s/https:\/\/img\.shields\.io\/badge\/Unit_Test_Coverage-[0-9\.]\+%25-[a-z]\+/${BADGE_URL}/" ./README.md
+
+    - name: Push updated README and old_coverage
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: Updating README.md unit test coverage badge
+        file_pattern: README.md test/old_coverage
 
   # Runs ASan, LSan, and UBSan on the code
   address_sanitizer:
