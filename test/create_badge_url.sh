@@ -26,7 +26,7 @@ elif (( $(echo "$COVERAGE < 90" | bc -l) )); then
 fi
 
 if [ "$ESCAPE" == "0" ]; then
-    echo "https://img.shields.io/badge/coverage-${COVERAGE}%25-${COLOUR}"
+    echo "https://img.shields.io/badge/Unit_Test_Coverage-${COVERAGE}%25-${COLOUR}"
 else
-    echo "https:\/\/img\.shields\.io\/badge\/coverage-${COVERAGE}%25-${COLOUR}"
+    echo "https:\/\/img\.shields\.io\/badge\/Unit_Test_Coverage-${COVERAGE}%25-${COLOUR}"
 fi
