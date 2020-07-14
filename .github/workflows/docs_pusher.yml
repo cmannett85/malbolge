@@ -32,17 +32,5 @@ jobs:
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_token: ${{secrets.GITHUB_TOKEN}}
         publish_dir: ./docs/doxygen/html
-
-    - name: Update README unit test coverage badge
-      run: |
-        cd ${GITHUB_WORKSPACE}
-        BADGE_URL=$(./test/create_badge_url.sh -e)
-        sed -i -e "s/https:\/\/img\.shields\.io\/badge\/coverage-[0-9\.]\+%25-[a-z]\+/${BADGE_URL}/" ./README.md
-
-    - name: Push updated README
-      uses: stefanzweifel/git-auto-commit-action@v4
-      with:
-        commit_message: Updating README.md unit test coverage badge
-        file_pattern: README.md

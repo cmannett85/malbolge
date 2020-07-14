@@ -10,6 +10,9 @@ on:
   pull_request:
     branches: [ master ]
 
+env:
+  DOWNLOAD_DIR: ${GITHUB_WORKSPACE}/../download
+
 jobs:
   # Builds the unit tests and executes them
   unit_tests:
@@ -18,6 +21,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
+        ref: ${{github.head_ref}}
+        token: ${{secrets.PAT_TOKEN}}
         fetch-depth: 1
       
     # Annoyingly I can't find a PPA with the latest lcov, so I have to download
@@ -25,6 +30,8 @@ jobs:
     # runner comes out of preview
     - name: Update packages
       run: |
+        mkdir ${{ env.DOWNLOAD_DIR }}
+        cd ${{ env.DOWNLOAD_DIR }}
         wget http://mirrors.kernel.org/ubuntu/pool/universe/l/lcov/lcov_1.14-2_all.deb
         sudo add-apt-repository ppa:mhier/libboost-latest
         sudo apt install g++-10 libboost1.73-dev ./lcov_1.14-2_all.deb
@@ -45,6 +52,18 @@ jobs:
       run: |
         cd ${GITHUB_WORKSPACE}/test
         ./calculate_test_coverage.sh ${GITHUB_WORKSPACE}/../build_unit_tests
+
+    - name: Update README unit test coverage badge
+      run: |
+        cd ${GITHUB_WORKSPACE}
+        BADGE_URL=$(./test/create_badge_url.sh -e)
+        sed -i -e "s/https:\/\/img\.shields\.io\/badge\/Unit_Test_Coverage-[0-9\.]\+%25-[a-z]\+/${BADGE_URL}/" ./README.md
+
+    - name: Push updated README and old_coverage
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: Updating README.md unit test coverage badge
+        file_pattern: README.md test/old_coverage
 
   # Runs ASan, LSan, and UBSan on the code
   address_sanitizer:
