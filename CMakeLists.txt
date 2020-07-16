@@ -40,6 +40,7 @@ set(HEADERS
 set(SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/src/logging.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/exception.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/cpu_instruction.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/math/ternary.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/loader.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/virtual_cpu.cpp
