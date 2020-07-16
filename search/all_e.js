@@ -1,10 +1,16 @@
 var searchData=
 [
-  ['ternary',['ternary',['../classmalbolge_1_1math_1_1ternary.html',1,'malbolge::math::ternary'],['../classmalbolge_1_1math_1_1ternary.html#afa0beb2dcede71613e3f099bc9e0ba26',1,'malbolge::math::ternary::ternary(underlying_type value=0)'],['../classmalbolge_1_1math_1_1ternary.html#ae830845663c015d0bf297691a4bfb93c',1,'malbolge::math::ternary::ternary(const tritset&lt; N, T &gt; &amp;value)'],['../classmalbolge_1_1math_1_1ternary.html#a422503f9350e3a37af01bce12dceb12e',1,'malbolge::math::ternary::ternary(const ternary &amp;other)=default']]],
-  ['to_5fbase10',['to_base10',['../classmalbolge_1_1math_1_1tritset.html#a1440f8d07a9b89c6558f59f8df181ede',1,'malbolge::math::tritset']]],
-  ['to_5fstring',['to_string',['../namespacemalbolge.html#a21d5a5333d45ebe1cd5b2488cb3e2128',1,'malbolge::to_string()'],['../namespacemalbolge_1_1logging.html#a7ba491ab97393c8673a83b46e3779c7c',1,'malbolge::logging::to_string()']]],
-  ['to_5ftritset',['to_tritset',['../classmalbolge_1_1math_1_1ternary.html#a6197117216a0cd91da19525d49354082',1,'malbolge::math::ternary']]],
-  ['tritset',['tritset',['../classmalbolge_1_1math_1_1tritset.html',1,'malbolge::math::tritset&lt; N, T &gt;'],['../classmalbolge_1_1math_1_1tritset.html#a1abf92a1fc64bc72cea4513d86b7721f',1,'malbolge::math::tritset::tritset(T value=0)'],['../classmalbolge_1_1math_1_1tritset.html#a95f82870386b3cb0252edb2f7909966c',1,'malbolge::math::tritset::tritset(const std::string &amp;str)'],['../classmalbolge_1_1math_1_1tritset.html#a1d15e4e843f39c9ef30a9b9c70a1cbd6',1,'malbolge::math::tritset::tritset(const tritset &amp;other)=default']]],
-  ['tritset_5ftype',['tritset_type',['../classmalbolge_1_1math_1_1ternary.html#a79bdb4abed64c50e94739573a935d001',1,'malbolge::math::ternary']]],
-  ['type',['type',['../structmalbolge_1_1math_1_1trit_1_1min__width__type.html#a02540fd3f7244e977769cdfed9dde33e',1,'malbolge::math::trit::min_width_type']]]
+  ['set',['set',['../classmalbolge_1_1math_1_1tritset.html#af6a0e54c8c6c9ea0f6eeb0b62bfc2f9f',1,'malbolge::math::tritset']]],
+  ['set_5fcode_5fptr',['set_code_ptr',['../namespacemalbolge_1_1cpu__instruction.html#a0f9eeaa34725e4d574bfb4240a5322efa8dc4d779022f030e5ee120ae24223c10',1,'malbolge::cpu_instruction']]],
+  ['set_5fdata_5fptr',['set_data_ptr',['../namespacemalbolge_1_1cpu__instruction.html#a0f9eeaa34725e4d574bfb4240a5322efac24d7b6f84364e48a62a2105ef71bce8',1,'malbolge::cpu_instruction']]],
+  ['set_5flog_5flevel',['set_log_level',['../namespacemalbolge_1_1logging.html#a128a8655b9fd0c95e016d03ba9c78820',1,'malbolge::logging']]],
+  ['size',['size',['../classmalbolge_1_1virtual__memory.html#a7164e77309642350b05b09a0fd44d8b2',1,'malbolge::virtual_memory::size()'],['../namespacemalbolge_1_1cipher.html#a1c78f045cf7cd799bc0cca5510a54372',1,'malbolge::cipher::size()']]],
+  ['size_5ftype',['size_type',['../classmalbolge_1_1virtual__memory.html#a8b0027b1b848f9c90da799cf6e4be818',1,'malbolge::virtual_memory']]],
+  ['source_5flocation',['source_location',['../structmalbolge_1_1source__location.html',1,'malbolge::source_location'],['../structmalbolge_1_1source__location.html#a3b01a344f32ec27697ad3611e4233068',1,'malbolge::source_location::source_location()']]],
+  ['source_5ftype',['source_type',['../namespacemalbolge_1_1logging.html#a0b3345ef46e2d063dd91357b72f2a797',1,'malbolge::logging']]],
+  ['state',['state',['../classmalbolge_1_1virtual__cpu.html#a64bc3341ed665c611a9467491a520a3b',1,'malbolge::virtual_cpu']]],
+  ['step',['step',['../classmalbolge_1_1execution__exception.html#a98c3aff945848e343c883ffc43cc12e4',1,'malbolge::execution_exception']]],
+  ['stop',['stop',['../classmalbolge_1_1virtual__cpu.html#ae728d1a4d88a889dc2f71a09502a95b4',1,'malbolge::virtual_cpu::stop()'],['../namespacemalbolge_1_1cpu__instruction.html#a0f9eeaa34725e4d574bfb4240a5322efa537ab8955a0070191585b8ddf231e105',1,'malbolge::cpu_instruction::stop()']]],
+  ['stopped',['STOPPED',['../classmalbolge_1_1virtual__cpu.html#a6e6d243fefb70b081550b4ed4a4b9088a09d4d696b4e935115b9313e3c412509a',1,'malbolge::virtual_cpu']]],
+  ['system_5fexception',['system_exception',['../classmalbolge_1_1system__exception.html',1,'malbolge::system_exception'],['../classmalbolge_1_1system__exception.html#acee340d85b937e905f194992895143be',1,'malbolge::system_exception::system_exception()']]]
 ];

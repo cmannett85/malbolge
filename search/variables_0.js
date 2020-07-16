@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['base',['base',['../namespacemalbolge_1_1math_1_1trit.html#a584a1f0b94c74dd67af2ed17b24fa69f',1,'malbolge::math::trit']]]
+  ['all',['all',['../namespacemalbolge_1_1cpu__instruction.html#a2bd395a8e15849255b437bc01dd657ba',1,'malbolge::cpu_instruction']]]
 ];

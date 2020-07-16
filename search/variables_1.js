@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['column',['column',['../structmalbolge_1_1source__location.html#afcfdc5a541a64aa83525228d627f421d',1,'malbolge::source_location']]]
+  ['base',['base',['../namespacemalbolge_1_1math_1_1trit.html#a584a1f0b94c74dd67af2ed17b24fa69f',1,'malbolge::math::trit']]]
 ];

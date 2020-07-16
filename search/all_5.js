@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['has_5flocation',['has_location',['../classmalbolge_1_1parse__exception.html#a63683ad3998ecd1d702fe0032742b4ad',1,'malbolge::parse_exception']]]
+  ['graphical_5fascii_5frange',['graphical_ascii_range',['../namespacemalbolge.html#ae4d84f203ef3d78c728b68499080657c',1,'malbolge']]]
 ];

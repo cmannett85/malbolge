@@ -64,7 +64,8 @@ $(function() {
 <a href="#namespaces">Namespaces</a> &#124;
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#typedef-members">Typedefs</a> &#124;
-<a href="#func-members">Functions</a>  </div>
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
 <div class="title">malbolge Namespace Reference</div>  </div>
 </div><!--header-->
@@ -72,6 +73,10 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
 Namespaces</h2></td></tr>
+<tr class="memitem:namespacemalbolge_1_1cipher"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemalbolge_1_1cipher.html">cipher</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:namespacemalbolge_1_1cpu__instruction"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemalbolge_1_1cpu__instruction.html">cpu_instruction</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacemalbolge_1_1literals"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemalbolge_1_1literals.html">literals</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacemalbolge_1_1logging"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemalbolge_1_1logging.html">logging</a></td></tr>
@@ -108,6 +113,18 @@ Functions</h2></td></tr>
 <tr class="memitem:a41f0f4962f51b6b2cdd046a6abc65504"><td class="memTemplParams" colspan="2">template&lt;typename ForwardIt &gt; </td></tr>
 <tr class="memitem:a41f0f4962f51b6b2cdd046a6abc65504"><td class="memTemplItemLeft" align="right" valign="top">ForwardIt&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacemalbolge.html#a41f0f4962f51b6b2cdd046a6abc65504">remove_from_range</a> (ForwardIt it, ForwardIt last)</td></tr>
 <tr class="separator:a41f0f4962f51b6b2cdd046a6abc65504"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a060ef80ddffa3b90eeb312383f8e25eb"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a060ef80ddffa3b90eeb312383f8e25eb"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacemalbolge.html#a060ef80ddffa3b90eeb312383f8e25eb">is_cpu_instruction</a> (T instruction)</td></tr>
+<tr class="separator:a060ef80ddffa3b90eeb312383f8e25eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a842edbfeba136252eb64b737306456e4"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a842edbfeba136252eb64b737306456e4"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacemalbolge.html#a842edbfeba136252eb64b737306456e4">is_graphical_ascii</a> (T c)</td></tr>
+<tr class="separator:a842edbfeba136252eb64b737306456e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a834c0733461aafe710a4c63bec47b78d"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a834c0733461aafe710a4c63bec47b78d"><td class="memTemplItemLeft" align="right" valign="top">std::optional&lt; char &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacemalbolge.html#a834c0733461aafe710a4c63bec47b78d">pre_cipher_instruction</a> (T input, std::size_t index)</td></tr>
+<tr class="separator:a834c0733461aafe710a4c63bec47b78d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeb1ec5f872d2a259614fca9c103c6743"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:aeb1ec5f872d2a259614fca9c103c6743"><td class="memTemplItemLeft" align="right" valign="top">std::optional&lt; char &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacemalbolge.html#aeb1ec5f872d2a259614fca9c103c6743">post_cipher_instruction</a> (T input)</td></tr>
+<tr class="separator:aeb1ec5f872d2a259614fca9c103c6743"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a21d5a5333d45ebe1cd5b2488cb3e2128"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemalbolge.html#a21d5a5333d45ebe1cd5b2488cb3e2128">to_string</a> (const <a class="el" href="namespacemalbolge.html#a962762895be04c5fd57e55e462ea6c93">optional_source_location</a> &amp;loc)</td></tr>
 <tr class="separator:a21d5a5333d45ebe1cd5b2488cb3e2128"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4705d836942e3d9da2d7f620c712841a"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemalbolge.html#a4705d836942e3d9da2d7f620c712841a">operator&lt;&lt;</a> (std::ostream &amp;stream, const <a class="el" href="namespacemalbolge.html#a962762895be04c5fd57e55e462ea6c93">optional_source_location</a> &amp;loc)</td></tr>
@@ -124,6 +141,11 @@ Functions</h2></td></tr>
 <tr class="separator:a52697901d556d080cd37cd0d0f78f508"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a960b6ce70a4c7caf2b36341e1a3f0379"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemalbolge.html#a960b6ce70a4c7caf2b36341e1a3f0379">operator&lt;&lt;</a> (std::ostream &amp;stream, <a class="el" href="classmalbolge_1_1virtual__cpu.html#a6e6d243fefb70b081550b4ed4a4b9088">virtual_cpu::execution_state</a> state)</td></tr>
 <tr class="separator:a960b6ce70a4c7caf2b36341e1a3f0379"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:ae4d84f203ef3d78c728b68499080657c"><td class="memItemLeft" align="right" valign="top">constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemalbolge.html#ae4d84f203ef3d78c728b68499080657c">graphical_ascii_range</a> = std::pair&lt;char, char&gt;{33, 126}</td></tr>
+<tr class="separator:ae4d84f203ef3d78c728b68499080657c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Top-level namespace for all of malbolge. </p>
@@ -164,6 +186,94 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="a060ef80ddffa3b90eeb312383f8e25eb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a060ef80ddffa3b90eeb312383f8e25eb">&#9670;&nbsp;</a></span>is_cpu_instruction()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr bool malbolge::is_cpu_instruction </td>
+          <td>(</td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>instruction</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>True if <em>instruction</em> is a valid Malbolge CPU instruction.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>Instruction type, must be implicitly convertible to char </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">instruction</td><td>Instruction to test </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if valid </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="cpu__instruction_8hpp_source.html#l00085">85</a> of file <a class="el" href="cpu__instruction_8hpp_source.html">cpu_instruction.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a842edbfeba136252eb64b737306456e4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a842edbfeba136252eb64b737306456e4">&#9670;&nbsp;</a></span>is_graphical_ascii()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr bool malbolge::is_graphical_ascii </td>
+          <td>(</td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>c</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>True if <em>c</em> is within the graphical ASCII range [33, 126].</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>Character type, must be comparable to char </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">c</td><td>Character to test </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if graphical ASCII </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="cpu__instruction_8hpp_source.html#l00103">103</a> of file <a class="el" href="cpu__instruction_8hpp_source.html">cpu_instruction.hpp</a>.</p>
+
+</div>
+</div>
 <a id="a8f9fb5c2fc0cbf62bae3cbdff08e67dd"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8f9fb5c2fc0cbf62bae3cbdff08e67dd">&#9670;&nbsp;</a></span>load() <span class="overload">[1/3]</span></h2>
 
@@ -192,7 +302,7 @@ template&lt;typename InputIt &gt; </div>
       </table>
 </div><div class="memdoc">
 <p>Loads the program data between <em>first</em> and <em>last</em>.</p>
-<p>The data is modified in place, so the iterators must not be const. </p><dl class="section note"><dt>Note</dt><dd><code>std::iterator_traits&lt;InputIt&gt;::value_type</code> needs to be explicitly convertible to <code>cpu_instruction::type</code>. </dd></dl>
+<p>The data is modified in place, so the iterators must not be const. </p><dl class="section note"><dt>Note</dt><dd><code>std::iterator_traits&lt;InputIt&gt;::value_type</code> needs to be explicitly convertible to <code><a class="el" href="namespacemalbolge_1_1cpu__instruction.html#a0f9eeaa34725e4d574bfb4240a5322ef">cpu_instruction::type</a></code>. </dd></dl>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">InputIt</td><td>Input iterator type </td></tr>
@@ -237,7 +347,7 @@ template&lt;typename R , std::enable_if_t&lt;!std::is_same_v&lt; std::decay_t&lt
 </div><div class="memdoc">
 <p>Loads the program data in <em>range</em>.</p>
 <p>This is equivalent to </p><div class="fragment"><div class="line"><a class="code" href="namespacemalbolge.html#a8f9fb5c2fc0cbf62bae3cbdff08e67dd">load</a>(std::begin(range), std::end(range));</div></div><!-- fragment --><p> The data is modified in place, so the created iterators must not be const.</p>
-<dl class="section note"><dt>Note</dt><dd><code>R:value_type</code> needs to be explicitly convertible to <code>cpu_instruction::type</code>. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd><code>R:value_type</code> needs to be explicitly convertible to <code><a class="el" href="namespacemalbolge_1_1cpu__instruction.html#a0f9eeaa34725e4d574bfb4240a5322ef">cpu_instruction::type</a></code>. </dd></dl>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Range</td><td>Range type </td></tr>
@@ -403,6 +513,89 @@ template&lt;typename R , std::enable_if_t&lt;!std::is_same_v&lt; std::decay_t&lt
 
 </div>
 </div>
+<a id="aeb1ec5f872d2a259614fca9c103c6743"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeb1ec5f872d2a259614fca9c103c6743">&#9670;&nbsp;</a></span>post_cipher_instruction()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt;char&gt; malbolge::post_cipher_instruction </td>
+          <td>(</td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>input</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Performs a post-instruction cipher on <em>input</em>.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>Input character type </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">input</td><td>Input character </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The ciphered instruction, or an empty optional if <em>input</em> is not within in the graphical ASCII range </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="cpu__instruction_8hpp_source.html#l00161">161</a> of file <a class="el" href="cpu__instruction_8hpp_source.html">cpu_instruction.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a834c0733461aafe710a4c63bec47b78d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a834c0733461aafe710a4c63bec47b78d">&#9670;&nbsp;</a></span>pre_cipher_instruction()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt;char&gt; malbolge::pre_cipher_instruction </td>
+          <td>(</td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>input</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::size_t&#160;</td>
+          <td class="paramname"><em>index</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Performs a pre-instruction cipher on <em>input</em>.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>Input character type </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">input</td><td>Input character </td></tr>
+    <tr><td class="paramname">index</td><td>Index of the character in the program data </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The ciphered instruction, or an empty optional if <em>input</em> is not within in the graphical ASCII range </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="cpu__instruction_8hpp_source.html#l00142">142</a> of file <a class="el" href="cpu__instruction_8hpp_source.html">cpu_instruction.hpp</a>.</p>
+
+</div>
+</div>
 <a id="a41f0f4962f51b6b2cdd046a6abc65504"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a41f0f4962f51b6b2cdd046a6abc65504">&#9670;&nbsp;</a></span>remove_from_range()</h2>
 
@@ -474,6 +667,24 @@ template&lt;typename ForwardIt &gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>String equivalent to it </dd></dl>
+
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="ae4d84f203ef3d78c728b68499080657c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae4d84f203ef3d78c728b68499080657c">&#9670;&nbsp;</a></span>graphical_ascii_range</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr auto malbolge::graphical_ascii_range = std::pair&lt;char, char&gt;{33, 126}</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>The [min, max] interval of graphical characters in ASCII. </p>
+
+<p class="definition">Definition at line <a class="el" href="cpu__instruction_8hpp_source.html#l00094">94</a> of file <a class="el" href="cpu__instruction_8hpp_source.html">cpu_instruction.hpp</a>.</p>
 
 </div>
 </div>
