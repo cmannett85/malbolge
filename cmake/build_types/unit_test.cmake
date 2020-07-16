@@ -30,6 +30,7 @@ list(APPEND FOR_IDE
     ${CMAKE_CURRENT_SOURCE_DIR}/programs/README.md
     ${CMAKE_CURRENT_SOURCE_DIR}/programs/hello_world.mal
     ${CMAKE_CURRENT_SOURCE_DIR}/programs/echo.mal
+    ${CMAKE_CURRENT_SOURCE_DIR}/calculate_test_coverage.sh
 )
 
 add_executable(malbolge_test EXCLUDE_FROM_ALL ${HEADERS} ${SRCS} ${FOR_IDE})
