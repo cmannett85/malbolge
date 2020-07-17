@@ -72,7 +72,7 @@ int main(int argc, char* argv[])
     auto vcounter = verbose_counter{};
 
     auto desc = po::options_description{
-        "Malbolge virtual machine v"s + version_string + "\n"
+        "Malbolge virtual machine v"s + project_version + "\n"
         "Usage:\n\tmalbolge <file>"
         "\n\tcat <file> | malbolge\n\n"
         "Arguments"};
