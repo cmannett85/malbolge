@@ -43,7 +43,7 @@ public:
     }
 
 private:
-    callable_type f_;
+    [[no_unique_address]] callable_type f_;
 };
 }
 }
