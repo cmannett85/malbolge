@@ -11,9 +11,8 @@ execute_process(
     WORKING_DIRECTORY ${ORIG_BASE_PATH}
 )
 
-message(STATUS "Git revision: ${GIT_REV}")
-
 string(STRIP ${GIT_REV} GIT_REV)
+message(STATUS "Project revision: ${PROJECT_VERSION}.${GIT_REV}")
 
 configure_file(
     ${ORIG_BASE_PATH}/cmake/version.hpp.in
