@@ -22,7 +22,15 @@ jobs:
 
     - name: Update packages
       run: |
-        sudo apt install doxygen graphviz
+        sudo add-apt-repository ppa:mhier/libboost-latest
+        sudo apt install doxygen graphviz g++-10 libboost1.73-dev
+
+    - name: Build
+      run: |
+        mkdir ${GITHUB_WORKSPACE}/../release
+        cd ${GITHUB_WORKSPACE}/../release
+        cmake -DCMAKE_CXX_COMPILER=g++-10 -DCMAKE_BUILD_TYPE=Release ${GITHUB_WORKSPACE}
+        make -j4 malbolge
       
     - name: Generate
       run: |
