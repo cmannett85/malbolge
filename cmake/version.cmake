@@ -22,3 +22,20 @@ configure_file(
 execute_process(
     COMMAND ${CMAKE_COMMAND} -E copy_if_different ${VERSION_FILE_TMP} ${VERSION_FILE}
 )
+
+# Update the project version in the Doxyfile too
+file(READ ${ORIG_BASE_PATH}/docs/Doxyfile DOXYFILE_DATA)
+
+string(
+    REGEX REPLACE
+    "PROJECT_NUMBER         = [0-9]*\\.[0-9]*\\.[0-9]*"
+    "PROJECT_NUMBER         = ${PROJECT_VERSION}"
+    UPDATED_DOXYFILE_DATA
+    "${DOXYFILE_DATA}"
+)
+string(COMPARE NOTEQUAL ${DOXYFILE_DATA} ${UPDATED_DOXYFILE_DATA} SAVE)
+
+if(NOT "${DOXYFILE_DATA}" STREQUAL "${UPDATED_DOXYFILE_DATA}")
+message(STATUS "Updating Doxyfile project version")
+file(WRITE ${ORIG_BASE_PATH}/docs/Doxyfile ${UPDATED_DOXYFILE_DATA})
+endif()   
