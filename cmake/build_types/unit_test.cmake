@@ -5,7 +5,6 @@
 
 set(Boost_USE_MULTITHREADED ON)
 find_package(Boost ${BOOST_VERSION} REQUIRED COMPONENTS
-    log
     unit_test_framework
 )
 
@@ -51,14 +50,12 @@ target_include_directories(malbolge_test
 )
 
 target_link_libraries(malbolge_test
-    PUBLIC Boost::log
     PUBLIC Boost::unit_test_framework
     PUBLIC Threads::Threads
 )
 
 target_compile_definitions(malbolge_test
     PUBLIC BOOST_TEST_DYN_LINK
-    PUBLIC BOOST_LOG_DYN_LINK
 )
 
 message(STATUS "Copying over example programs")

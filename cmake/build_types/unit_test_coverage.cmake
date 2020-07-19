@@ -19,7 +19,6 @@ target_include_directories(malbolge_test_coverage
 )
 
 target_link_libraries(malbolge_test_coverage
-    PUBLIC Boost::log
     PUBLIC Boost::unit_test_framework
     PUBLIC Threads::Threads
     PUBLIC gcov
@@ -27,7 +26,6 @@ target_link_libraries(malbolge_test_coverage
 
 target_compile_definitions(malbolge_test_coverage
     PUBLIC BOOST_TEST_DYN_LINK
-    PUBLIC BOOST_LOG_DYN_LINK
 )
 
 target_compile_options(malbolge_test_coverage

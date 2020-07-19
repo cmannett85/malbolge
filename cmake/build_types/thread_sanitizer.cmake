@@ -22,12 +22,7 @@ target_include_directories(malbolge_thread_sanitizer
 
 target_link_libraries(malbolge_thread_sanitizer
     PUBLIC Boost::program_options
-    PUBLIC Boost::log
     PUBLIC Threads::Threads
-)
-
-target_compile_definitions(malbolge_thread_sanitizer
-    PUBLIC BOOST_LOG_DYN_LINK
 )
 
 target_compile_options(malbolge_thread_sanitizer

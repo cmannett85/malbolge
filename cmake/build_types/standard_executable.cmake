@@ -22,12 +22,7 @@ target_include_directories(malbolge
 
 target_link_libraries(malbolge
     PUBLIC Boost::program_options
-    PUBLIC Boost::log
     PUBLIC Threads::Threads
-)
-
-target_compile_definitions(malbolge
-    PUBLIC BOOST_LOG_DYN_LINK
 )
 
 install(TARGETS malbolge)
