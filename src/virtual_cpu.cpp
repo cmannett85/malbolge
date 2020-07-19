@@ -7,7 +7,7 @@
 #include "malbolge/cpu_instruction.hpp"
 #include "malbolge/utility/raii.hpp"
 #include "malbolge/exception.hpp"
-#include "malbolge/logging.hpp"
+#include "malbolge/log.hpp"
 
 using namespace malbolge;
 using namespace std::string_literals;
@@ -43,8 +43,7 @@ std::future<void> virtual_cpu::run(std::istream& istr, std::ostream& ostr)
     }
     *state_ = execution_state::RUNNING;
 
-    BOOST_LOG_SEV(logging::source::get(), logging::DEBUG)
-        << "Starting program";
+    log::print(log::DEBUG, "Starting program");
 
     auto promise = std::promise<void>{};
     auto fut = promise.get_future();
@@ -54,8 +53,7 @@ std::future<void> virtual_cpu::run(std::istream& istr, std::ostream& ostr)
                            p = std::move(promise),
                            &istr,
                            &ostr]() mutable {
-        BOOST_LOG_SEV(logging::source::get(), logging::VERBOSE_DEBUG)
-            << "Program thread started";
+        log::print(log::VERBOSE_DEBUG, "Program thread started");
 
         auto a = math::ternary{};   // Accumulator register
         auto c = vmem.begin();      // Code pointer
@@ -63,8 +61,7 @@ std::future<void> virtual_cpu::run(std::istream& istr, std::ostream& ostr)
 
         auto exception = false;
         auto stopped_setter = utility::raii{[&]() {
-            BOOST_LOG_SEV(logging::source::get(), logging::VERBOSE_DEBUG)
-                << "Program thread exiting";
+            log::print(log::VERBOSE_DEBUG, "Program thread exiting");
 
             *state = execution_state::STOPPED;
             if (!exception) {
@@ -90,9 +87,9 @@ std::future<void> virtual_cpu::run(std::istream& istr, std::ostream& ostr)
                     };
                 }
 
-                BOOST_LOG_SEV(logging::source::get(), logging::VERBOSE_DEBUG)
-                    << "Step: " << step << ", pre-cipher instr: "
-                    << static_cast<int>(*instr);
+                log::print(log::VERBOSE_DEBUG,
+                           "Step: ", step, ", pre-cipher instr: ",
+                           static_cast<int>(*instr));
 
                 switch (*instr) {
                 case cpu_instruction::set_data_ptr:
@@ -141,10 +138,10 @@ std::future<void> virtual_cpu::run(std::istream& istr, std::ostream& ostr)
                 }
                 *c = *pc;
 
-                BOOST_LOG_SEV(logging::source::get(), logging::VERBOSE_DEBUG)
-                    << "\tPost-op regs - a: " << a
-                    << ", c[" << std::distance(vmem.begin(), c) << "]: " << *c
-                    << ", d[" << std::distance(vmem.begin(), d) << "]: " << *d;
+                log::print(log::VERBOSE_DEBUG,
+                           "\tPost-op regs - a: ", a,
+                           ", c[", std::distance(vmem.begin(), c), "]: ", *c,
+                           ", d[", std::distance(vmem.begin(), d), "]: ", *d);
             } catch (std::exception& e) {
                 auto e_ptr = std::make_exception_ptr(std::move(e));
                 p.set_exception(std::move(e_ptr));
@@ -159,8 +156,7 @@ std::future<void> virtual_cpu::run(std::istream& istr, std::ostream& ostr)
 
 void virtual_cpu::stop()
 {
-    BOOST_LOG_SEV(logging::source::get(), logging::DEBUG)
-        << "Early exit requested";
+    log::print(log::DEBUG, "Early exit requested");
     *state_ = execution_state::STOPPED;
 }
 

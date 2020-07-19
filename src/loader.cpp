@@ -21,8 +21,7 @@ using stream_iterator = std::istreambuf_iterator<char>;
 
 virtual_memory malbolge::load(const std::filesystem::path& path)
 {
-    BOOST_LOG_SEV(logging::source::get(), logging::INFO)
-        << "Loading file: " << path;
+    log::print(log::INFO, "Loading file: ", path);
 
     try {
         // Unfortunately we cannot pass the istreambuf_iterators directly to
@@ -30,8 +29,7 @@ virtual_memory malbolge::load(const std::filesystem::path& path)
         // istreambuf_iterator is only an InputIterator.  So we have to load
         // into an intermediary buffer first
         const auto file_size = std::filesystem::file_size(path);
-        BOOST_LOG_SEV(logging::source::get(), logging::DEBUG)
-            << "File size: " << file_size;
+        log::print(log::DEBUG, "File size: ", file_size);
 
         auto data = std::vector<char>{};
         data.reserve(file_size);
@@ -46,8 +44,7 @@ virtual_memory malbolge::load(const std::filesystem::path& path)
                       std::back_inserter(data));
         }
 
-        BOOST_LOG_SEV(logging::source::get(), logging::INFO)
-            << "File loaded";
+        log::print(log::INFO, "File loaded");
 
         return detail::load_impl(data.begin(), data.end());
     } catch (std::exception& e) {
@@ -57,16 +54,14 @@ virtual_memory malbolge::load(const std::filesystem::path& path)
 
 virtual_memory malbolge::load_from_cin()
 {
-    BOOST_LOG_SEV(logging::source::get(), logging::INFO)
-        << "Loading file from stdin";
+    log::print(log::INFO, "Loading file from stdin");
 
     auto program_data = ""s;
     for (auto line = ""s; std::getline(std::cin, line); ) {
         program_data += line;
     }
 
-    BOOST_LOG_SEV(logging::source::get(), logging::INFO)
-        << "File loaded";
+    log::print(log::INFO, "File loaded");
 
     return load(program_data);
 }

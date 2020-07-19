@@ -10,7 +10,7 @@
 #include "malbolge/cpu_instruction.hpp"
 #include "malbolge/exception.hpp"
 #include "malbolge/algorithm/remove_from_range.hpp"
-#include "malbolge/logging.hpp"
+#include "malbolge/log.hpp"
 
 #include <filesystem>
 #include <ranges>
@@ -62,8 +62,7 @@ virtual_memory load_impl(InputIt first, InputIt last)
         ++i;
     }
 
-    BOOST_LOG_SEV(logging::source::get(), logging::DEBUG)
-        << "Loaded size: " << std::distance(first, last);
+    log::print(log::DEBUG, "Loaded size: ", std::distance(first, last));
 
     return virtual_memory(first, last);
 }

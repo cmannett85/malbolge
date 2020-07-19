@@ -5,16 +5,19 @@
 
 #pragma once
 
-#include <boost/log/sources/severity_logger.hpp>
-#include <boost/log/sources/global_logger_storage.hpp>
-#include <boost/log/sources/record_ostream.hpp>
+#include <iostream>
 
 namespace malbolge
 {
 /** Namespace for logging types and functions. 
  */
-namespace logging
+namespace log
 {
+namespace detail
+{
+std::ostream& log_prefix(std::ostream& stream);
+}
+
 /** Log level.
  */
 enum level {
@@ -43,22 +46,42 @@ inline std::ostream& operator<<(std::ostream& stream, level lvl)
     return stream << to_string(lvl);
 }
 
-/** Log source type.
- */
-using source_type = boost::log::sources::severity_logger_mt<level>;
-
-BOOST_LOG_GLOBAL_LOGGER(source, source_type)
-
-/** Initialise the logging system.
+/** Returns the current minimum logging level.
  *
- * Sets the minimum log level to ERROR.
+ * @return Minimum logging level
  */
-void init_logging();
+level log_level();
 
 /** Set the minimum logging level.
  *
  * @param lvl New minimum log level.
  */
 void set_log_level(level lvl);
+
+/** Prints the log message.
+ *
+ * Pass your message components as if there is streaming operator where each
+ * comma is e.g.:
+ * @code
+ * log::print(log::INFO, "Failed with number: ", 42, "!");
+ * // Prints "Failed with number: 42!"
+ * @endcode
+ *
+ * This is a no-op if @a lvl is less than log_level().
+ *
+ * @tparam Args Message argument types
+ * @param lvl Log level
+ * @param args Message arguments
+ */
+template <typename... Args>
+void print(level lvl, Args&&... args)
+{
+    static_assert(sizeof...(Args) > 0, "Must be at least one argument");
+
+    if (lvl >= log_level()) {
+        (std::clog << detail::log_prefix << ... << std::forward<Args>(args))
+                   << std::endl;
+    }
+}
 }
 }

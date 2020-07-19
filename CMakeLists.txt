@@ -18,13 +18,12 @@ set(BOOST_VERSION 1.73)
 set(Boost_USE_MULTITHREADED ON)
 find_package(Boost ${BOOST_VERSION} REQUIRED COMPONENTS
     program_options
-    log
 )
 find_package(Threads REQUIRED)
 
 set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/traits.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/logging.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/log.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/algorithm/remove_from_range.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/exception.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/math/ipow.hpp
@@ -38,7 +37,7 @@ set(HEADERS
 )
 
 set(SRCS
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/logging.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/log.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/exception.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/cpu_instruction.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/math/ternary.cpp

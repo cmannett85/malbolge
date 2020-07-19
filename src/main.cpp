@@ -53,10 +53,10 @@ void validate(boost::any& v,
         v = verbose_counter{1};
     } else {
         auto& count = boost::any_cast<verbose_counter&>(v).count;
-        if (count == logging::ERROR) {
+        if (count == log::ERROR) {
             throw system_exception{
-                "Maximum log level is "s + to_string(logging::VERBOSE_DEBUG) +
-                " (" + std::to_string(static_cast<int>(logging::ERROR)) + ")",
+                "Maximum log level is "s + to_string(log::VERBOSE_DEBUG) +
+                " (" + std::to_string(static_cast<int>(log::ERROR)) + ")",
                 EINVAL
             };
         }
@@ -68,7 +68,6 @@ void validate(boost::any& v,
 
 int main(int argc, char* argv[])
 {
-    logging::init_logging();
     auto vcounter = verbose_counter{};
 
     auto desc = po::options_description{
@@ -94,8 +93,8 @@ int main(int argc, char* argv[])
                   options(desc).positional(pos_arg).run(), vm);
         po::notify(vm);
 
-        const auto log_level = logging::ERROR - vcounter.count;
-        logging::set_log_level(static_cast<logging::level>(log_level));
+        const auto log_level = log::ERROR - vcounter.count;
+        log::set_log_level(static_cast<log::level>(log_level));
 
         if (vm.count("help")) {
             std::cout << desc << std::endl;
@@ -114,20 +113,16 @@ int main(int argc, char* argv[])
         fut.get();
     } catch (po::error& e) {
         auto new_e = system_exception{e.what(), EINVAL};
-        BOOST_LOG_SEV(logging::source::get(), logging::ERROR)
-            << new_e.what();
+        log::print(log::ERROR, new_e.what());
         return new_e.code().value();
     } catch (std::system_error& e) {
-        BOOST_LOG_SEV(logging::source::get(), logging::ERROR)
-            << e.what();
+        log::print(log::ERROR, e.what());
         return e.code().value();
     } catch (system_exception& e) {
-        BOOST_LOG_SEV(logging::source::get(), logging::ERROR)
-            << e.what();
+        log::print(log::ERROR, e.what());
         return e.code().value();
     } catch (std::exception& e) {
-        BOOST_LOG_SEV(logging::source::get(), logging::ERROR)
-            << e.what();
+        log::print(log::ERROR, e.what());
         return EXIT_FAILURE;
     }
 
