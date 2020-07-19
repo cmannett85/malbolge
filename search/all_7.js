@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['info',['INFO',['../namespacemalbolge_1_1logging.html#aa8bc38d7626ee44431c00fdbfe6b2968a91c030abba7574451b7e56bd5b46fe79',1,'malbolge::logging']]],
-  ['init_5flogging',['init_logging',['../namespacemalbolge_1_1logging.html#a292280c847b14f91ddb0a54f8838282b',1,'malbolge::logging']]],
+  ['info',['INFO',['../namespacemalbolge_1_1log.html#a237f237f9c3fda0478e4dba3aaffc3f0a6d99bbbc2ede1e9689151a79bfad1e57',1,'malbolge::log']]],
   ['ipow',['ipow',['../namespacemalbolge_1_1math.html#ab48d98e37a7a64ead0a280ab480006d5',1,'malbolge::math::ipow()'],['../namespacemalbolge_1_1math.html#aa346ee50bbb55f818000c45c59328f7e',1,'malbolge::math::ipow(B &amp;&amp;base, E &amp;&amp;expo)']]],
   ['is_5fcpu_5finstruction',['is_cpu_instruction',['../namespacemalbolge.html#a060ef80ddffa3b90eeb312383f8e25eb',1,'malbolge']]],
   ['is_5fgraphical_5fascii',['is_graphical_ascii',['../namespacemalbolge.html#a842edbfeba136252eb64b737306456e4',1,'malbolge']]],

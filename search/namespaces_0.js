@@ -3,7 +3,7 @@ var searchData=
   ['cipher',['cipher',['../namespacemalbolge_1_1cipher.html',1,'malbolge']]],
   ['cpu_5finstruction',['cpu_instruction',['../namespacemalbolge_1_1cpu__instruction.html',1,'malbolge']]],
   ['literals',['literals',['../namespacemalbolge_1_1literals.html',1,'malbolge']]],
-  ['logging',['logging',['../namespacemalbolge_1_1logging.html',1,'malbolge']]],
+  ['log',['log',['../namespacemalbolge_1_1log.html',1,'malbolge']]],
   ['malbolge',['malbolge',['../namespacemalbolge.html',1,'']]],
   ['math',['math',['../namespacemalbolge_1_1math.html',1,'malbolge']]],
   ['trit',['trit',['../namespacemalbolge_1_1math_1_1trit.html',1,'malbolge::math']]],

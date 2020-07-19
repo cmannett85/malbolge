@@ -1,7 +1,7 @@
 var searchData=
 [
   ['value_5ftype',['value_type',['../classmalbolge_1_1virtual__memory.html#a5e2a6d3b2249aa1e9f6e44a3c8b44983',1,'malbolge::virtual_memory::value_type()'],['../classmalbolge_1_1virtual__memory_1_1iterator__generic.html#ab8220340ac461d179ad85bef7e68e112',1,'malbolge::virtual_memory::iterator_generic::value_type()']]],
-  ['verbose_5fdebug',['VERBOSE_DEBUG',['../namespacemalbolge_1_1logging.html#aa8bc38d7626ee44431c00fdbfe6b2968a53c08af4d37d28f1382d10b29e092e93',1,'malbolge::logging']]],
+  ['verbose_5fdebug',['VERBOSE_DEBUG',['../namespacemalbolge_1_1log.html#a237f237f9c3fda0478e4dba3aaffc3f0a4765935ba5e9f4d000a54841cf69e914',1,'malbolge::log']]],
   ['version_2ehpp',['version.hpp',['../version_8hpp.html',1,'']]],
   ['version_5fstring',['version_string',['../namespacemalbolge.html#a11f5c3e986b80f64a8a4f93253d4bf60',1,'malbolge']]],
   ['virtual_5fcpu',['virtual_cpu',['../classmalbolge_1_1virtual__cpu.html',1,'malbolge::virtual_cpu'],['../classmalbolge_1_1virtual__cpu.html#ac9940dff2b5299f48e8c023dc4483ebe',1,'malbolge::virtual_cpu::virtual_cpu(virtual_memory vmem)'],['../classmalbolge_1_1virtual__cpu.html#af7074cc030e4d05e1c2b1ec6232cd63b',1,'malbolge::virtual_cpu::virtual_cpu(virtual_cpu &amp;&amp;other)=default']]],

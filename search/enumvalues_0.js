@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['debug',['DEBUG',['../namespacemalbolge_1_1logging.html#aa8bc38d7626ee44431c00fdbfe6b2968a45f47584adcea2d69e968c0f6b1f6c76',1,'malbolge::logging']]]
+  ['debug',['DEBUG',['../namespacemalbolge_1_1log.html#a237f237f9c3fda0478e4dba3aaffc3f0a023d1e65dc061ef480cfd994554a4d7c',1,'malbolge::log']]]
 ];

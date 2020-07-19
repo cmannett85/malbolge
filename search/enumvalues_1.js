@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['error',['ERROR',['../namespacemalbolge_1_1logging.html#aa8bc38d7626ee44431c00fdbfe6b2968a309367250c16f9d704825b261122613d',1,'malbolge::logging']]]
+  ['error',['ERROR',['../namespacemalbolge_1_1log.html#a237f237f9c3fda0478e4dba3aaffc3f0ae1695cb7ac43ab4e2afd4fe22378ef45',1,'malbolge::log']]]
 ];
