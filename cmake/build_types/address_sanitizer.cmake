@@ -21,7 +21,6 @@ target_include_directories(malbolge_address_sanitizer
 )
 
 target_link_libraries(malbolge_address_sanitizer
-    PUBLIC Boost::program_options
     PUBLIC Threads::Threads
 )
 

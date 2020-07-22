@@ -14,34 +14,35 @@ project(malbolge
         LANGUAGES CXX)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-set(BOOST_VERSION 1.73)
+set(BOOST_VERSION 1.67)
 set(Boost_USE_MULTITHREADED ON)
-find_package(Boost ${BOOST_VERSION} REQUIRED COMPONENTS
-    program_options
-)
+find_package(Boost ${BOOST_VERSION} REQUIRED)
 find_package(Threads REQUIRED)
 
 set(HEADERS
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/traits.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/log.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/algorithm/remove_from_range.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/algorithm/container_ops.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/cpu_instruction.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/exception.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/loader.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/log.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/math/ipow.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/math/tritset.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/math/ternary.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/virtual_memory.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/cpu_instruction.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/loader.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/traits.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/utility/raii.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/utility/argument_parser.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/virtual_cpu.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/virtual_memory.hpp
 )
 
 set(SRCS
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/log.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/exception.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/cpu_instruction.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/math/ternary.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/exception.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/loader.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/log.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/math/ternary.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/utility/argument_parser.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/virtual_cpu.cpp
 )
 
@@ -54,7 +55,11 @@ set(FOR_IDE
     ${CMAKE_CURRENT_SOURCE_DIR}/README.md
     ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE
     ${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/version.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/version.hpp.in
     ${CMAKE_CURRENT_SOURCE_DIR}/.github/workflows/pr_checker.yml
+    ${CMAKE_CURRENT_SOURCE_DIR}/.github/workflows/docs_pusher.yml
+    ${CMAKE_CURRENT_SOURCE_DIR}/.github/workflows/release_builder.yml
 )
 
 set(VERSION_FILE
