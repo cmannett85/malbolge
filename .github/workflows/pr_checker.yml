@@ -33,8 +33,10 @@ jobs:
         mkdir ${{ env.DOWNLOAD_DIR }}
         cd ${{ env.DOWNLOAD_DIR }}
         wget http://mirrors.kernel.org/ubuntu/pool/universe/l/lcov/lcov_1.14-2_all.deb
-        sudo add-apt-repository ppa:mhier/libboost-latest
-        sudo apt install g++-10 libboost1.73-dev ./lcov_1.14-2_all.deb
+        wget http://mirrors.kernel.org/ubuntu/pool/main/b/boost1.71/libboost1.71-dev_1.71.0-6ubuntu6_amd64.deb
+        wget http://mirrors.kernel.org/ubuntu/pool/universe/b/boost1.71/libboost-test1.71-dev_1.71.0-6ubuntu6_amd64.deb
+        wget http://mirrors.kernel.org/ubuntu/pool/universe/b/boost1.71/libboost-test1.71.0_1.71.0-6ubuntu6_amd64.deb
+        sudo apt install g++-10 ./libboost1.71-dev_1.71.0-6ubuntu6_amd64.deb ./libboost-test1.71.0_1.71.0-6ubuntu6_amd64.deb ./libboost-test1.71-dev_1.71.0-6ubuntu6_amd64.deb ./lcov_1.14-2_all.deb
 
     - name: Build
       run: |
@@ -76,8 +78,10 @@ jobs:
 
     - name: Update packages
       run: |
-        sudo add-apt-repository ppa:mhier/libboost-latest
-        sudo apt install g++-10 libboost1.73-dev llvm
+        wget http://mirrors.kernel.org/ubuntu/pool/main/b/boost1.71/libboost1.71-dev_1.71.0-6ubuntu6_amd64.deb
+        wget http://mirrors.kernel.org/ubuntu/pool/universe/b/boost1.71/libboost-test1.71-dev_1.71.0-6ubuntu6_amd64.deb
+        wget http://mirrors.kernel.org/ubuntu/pool/universe/b/boost1.71/libboost-test1.71.0_1.71.0-6ubuntu6_amd64.deb
+        sudo apt install g++-10 ./libboost1.71-dev_1.71.0-6ubuntu6_amd64.deb ./libboost-test1.71.0_1.71.0-6ubuntu6_amd64.deb ./libboost-test1.71-dev_1.71.0-6ubuntu6_amd64.deb llvm
 
     - name: Build
       run: |
@@ -102,8 +106,10 @@ jobs:
 
     - name: Update packages
       run: |
-        sudo add-apt-repository ppa:mhier/libboost-latest
-        sudo apt install g++-10 libboost1.73-dev llvm
+        wget http://mirrors.kernel.org/ubuntu/pool/main/b/boost1.71/libboost1.71-dev_1.71.0-6ubuntu6_amd64.deb
+        wget http://mirrors.kernel.org/ubuntu/pool/universe/b/boost1.71/libboost-test1.71-dev_1.71.0-6ubuntu6_amd64.deb
+        wget http://mirrors.kernel.org/ubuntu/pool/universe/b/boost1.71/libboost-test1.71.0_1.71.0-6ubuntu6_amd64.deb
+        sudo apt install g++-10 ./libboost1.71-dev_1.71.0-6ubuntu6_amd64.deb ./libboost-test1.71.0_1.71.0-6ubuntu6_amd64.deb ./libboost-test1.71-dev_1.71.0-6ubuntu6_amd64.deb llvm
 
     - name: Build
       run: |
@@ -128,8 +134,10 @@ jobs:
 
     - name: Update packages
       run: |
-        sudo add-apt-repository ppa:mhier/libboost-latest
-        sudo apt install doxygen graphviz g++-10 libboost1.73-dev
+        wget http://mirrors.kernel.org/ubuntu/pool/main/b/boost1.71/libboost1.71-dev_1.71.0-6ubuntu6_amd64.deb
+        wget http://mirrors.kernel.org/ubuntu/pool/universe/b/boost1.71/libboost-test1.71-dev_1.71.0-6ubuntu6_amd64.deb
+        wget http://mirrors.kernel.org/ubuntu/pool/universe/b/boost1.71/libboost-test1.71.0_1.71.0-6ubuntu6_amd64.deb
+        sudo apt install doxygen graphviz g++-10 ./libboost1.71-dev_1.71.0-6ubuntu6_amd64.deb ./libboost-test1.71.0_1.71.0-6ubuntu6_amd64.deb ./libboost-test1.71-dev_1.71.0-6ubuntu6_amd64.deb
 
     - name: Build
       run: |
@@ -154,8 +162,10 @@ jobs:
 
     - name: Update packages
       run: |
-        sudo add-apt-repository ppa:mhier/libboost-latest
-        sudo apt install g++-10 libboost1.73-dev
+        wget http://mirrors.kernel.org/ubuntu/pool/main/b/boost1.71/libboost1.71-dev_1.71.0-6ubuntu6_amd64.deb
+        wget http://mirrors.kernel.org/ubuntu/pool/universe/b/boost1.71/libboost-test1.71-dev_1.71.0-6ubuntu6_amd64.deb
+        wget http://mirrors.kernel.org/ubuntu/pool/universe/b/boost1.71/libboost-test1.71.0_1.71.0-6ubuntu6_amd64.deb
+        sudo apt install g++-10 ./libboost1.71-dev_1.71.0-6ubuntu6_amd64.deb ./libboost-test1.71.0_1.71.0-6ubuntu6_amd64.deb ./libboost-test1.71-dev_1.71.0-6ubuntu6_amd64.deb
 
     - name: Build
       run: |

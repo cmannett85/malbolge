@@ -4,13 +4,13 @@
 #
 
 add_executable(malbolge_test_coverage EXCLUDE_FROM_ALL ${HEADERS} ${SRCS} ${FOR_IDE})
+add_dependencies(malbolge_test_coverage gen_version)
 
 target_compile_features(malbolge_test_coverage PUBLIC cxx_std_20)
 set_target_properties(malbolge_test_coverage PROPERTIES CXX_EXTENSIONS OFF)
 
-target_compile_options(malbolge_test_coverage PRIVATE
-     $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:
-          -Werror -Wall -Wextra>
+target_compile_options(malbolge_test_coverage
+    PRIVATE -Werror -Wall -Wextra
 )
 
 target_include_directories(malbolge_test_coverage

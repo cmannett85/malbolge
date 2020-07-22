@@ -15,9 +15,9 @@ The file extension is ignored.  Or you pipe the output into it:
 cat my_prog.mal | malbolge
 ```
 Like any terminal application, you access help with `--help`.  You can also get
-log output (in stderr) via increasing the number of `-v` switches, e.g.:
+log output (in stderr) via increasing the number of `-l` switches, e.g.:
 ```
-$ malbolge -vv ./test/programs/hello_world.mal 
+$ malbolge -ll ./test/programs/hello_world.mal
 2020-07-05 11:53:31.095433[INFO]: Loading file: "./test/programs/hello_world.mal"
 2020-07-05 11:53:31.095504[DEBUG]: File size: 132
 2020-07-05 11:53:31.095588[INFO]: File loaded
@@ -27,7 +27,7 @@ Hello World!
 ```
 You can increase logging up to 3 levels.  As it is output into the error stream, you can split the logging output into a separate file to preserve the program output:
 ```
-$ malbolge -vvv ./test/programs/hello_world.mal  2> logging.txt
+$ malbolge -lll ./test/programs/hello_world.mal  2> logging.txt
 Hello World!
 ```
 

@@ -13,16 +13,18 @@ list(APPEND HEADERS
 )
 
 list(APPEND SRCS
+    ${CMAKE_CURRENT_SOURCE_DIR}/algorithm/container_ops_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/algorithm/remove_from_range_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/cpu_instruction_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/loader_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/main_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/math/ipow_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/math/tritset_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/math/ternary_test.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/virtual_memory_test.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/cpu_instruction_test.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/algorithm/remove_from_range_test.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/loader_test.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/virtual_cpu_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/utility/argument_parser_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/raii_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/virtual_memory_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/virtual_cpu_test.cpp
 )
 
 list(APPEND FOR_IDE
@@ -32,7 +34,8 @@ list(APPEND FOR_IDE
     ${CMAKE_CURRENT_SOURCE_DIR}/calculate_test_coverage.sh
 )
 
-add_executable(malbolge_test EXCLUDE_FROM_ALL ${HEADERS} ${SRCS} ${FOR_IDE})
+add_executable(malbolge_test ${HEADERS} ${SRCS} ${FOR_IDE})
+add_dependencies(malbolge_test gen_version)
 
 target_compile_features(malbolge_test PUBLIC cxx_std_20)
 set_target_properties(malbolge_test PROPERTIES CXX_EXTENSIONS OFF)
