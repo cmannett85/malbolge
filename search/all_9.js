@@ -1,15 +1,9 @@
 var searchData=
 [
-  ['cipher',['cipher',['../namespacemalbolge_1_1cipher.html',1,'malbolge']]],
-  ['cpu_5finstruction',['cpu_instruction',['../namespacemalbolge_1_1cpu__instruction.html',1,'malbolge']]],
-  ['literals',['literals',['../namespacemalbolge_1_1literals.html',1,'malbolge']]],
-  ['log',['log',['../namespacemalbolge_1_1log.html',1,'malbolge']]],
-  ['malbolge',['malbolge',['../namespacemalbolge.html',1,'']]],
-  ['math',['math',['../namespacemalbolge_1_1math.html',1,'malbolge']]],
-  ['max',['max',['../classmalbolge_1_1math_1_1ternary.html#a8ea492506b51484b9b8632c884a869f7',1,'malbolge::math::ternary::max()'],['../classmalbolge_1_1math_1_1tritset.html#add7881ea6587c13c49cfba794922a431',1,'malbolge::math::tritset::max()']]],
-  ['max_5fsize',['max_size',['../classmalbolge_1_1virtual__memory.html#a1c728114449a835d5e00cdb27f739c9a',1,'malbolge::virtual_memory']]],
-  ['min_5fwidth_5ftype',['min_width_type',['../structmalbolge_1_1math_1_1trit_1_1min__width__type.html',1,'malbolge::math::trit']]],
-  ['min_5fwidth_5ftype_5ft',['min_width_type_t',['../namespacemalbolge_1_1math_1_1trit.html#a33da4c7c79347f2d5a9c2788644d27b2',1,'malbolge::math::trit']]],
-  ['trit',['trit',['../namespacemalbolge_1_1math_1_1trit.html',1,'malbolge::math']]],
-  ['utility',['utility',['../namespacemalbolge_1_1utility.html',1,'malbolge']]]
+  ['level',['level',['../namespacemalbolge_1_1log.html#a237f237f9c3fda0478e4dba3aaffc3f0',1,'malbolge::log']]],
+  ['line',['line',['../structmalbolge_1_1source__location.html#a34a8739aa698e3e92eaca12468fcd311',1,'malbolge::source_location']]],
+  ['load',['load',['../namespacemalbolge.html#a8f9fb5c2fc0cbf62bae3cbdff08e67dd',1,'malbolge::load(InputIt first, InputIt last)'],['../namespacemalbolge.html#a03ae5f206a66b9cd1fcfba88c2cbceac',1,'malbolge::load(R &amp;&amp;range)'],['../namespacemalbolge.html#aed8afd9eada76a1d6830fa6038a1cc61',1,'malbolge::load(const std::filesystem::path &amp;path)']]],
+  ['load_5ffrom_5fcin',['load_from_cin',['../namespacemalbolge.html#a52697901d556d080cd37cd0d0f78f508',1,'malbolge']]],
+  ['location',['location',['../classmalbolge_1_1parse__exception.html#acbbe1e3764a789a71ef02baa50b892d3',1,'malbolge::parse_exception']]],
+  ['log_5flevel',['log_level',['../classmalbolge_1_1argument__parser.html#a53fce88cb6f04f25daef029aa80798a4',1,'malbolge::argument_parser::log_level()'],['../namespacemalbolge_1_1log.html#ae1ad89551a9b5f336fe824ba7ef7155e',1,'malbolge::log::log_level()']]]
 ];
