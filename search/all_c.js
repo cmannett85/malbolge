@@ -1,7 +1,7 @@
 var searchData=
 [
   ['op',['op',['../classmalbolge_1_1math_1_1ternary.html#a17f72d865389a193def12b2ffa7afea5',1,'malbolge::math::ternary::op()'],['../namespacemalbolge_1_1cpu__instruction.html#a0f9eeaa34725e4d574bfb4240a5322efa36b231f852a5086e195808b8576cc623',1,'malbolge::cpu_instruction::op()']]],
-  ['operator',['operator',['../classmalbolge_1_1math_1_1ternary.html#a18fbe507b0d273525422ca39b73ac420',1,'malbolge::math::ternary::operator()'],['../classmalbolge_1_1math_1_1tritset.html#a84d0dc5f27ea2f434b00187913741301',1,'malbolge::math::tritset::operator()'],['../classmalbolge_1_1virtual__memory_1_1iterator__generic.html#aaa781fa65cb097efccdde55763416b16',1,'malbolge::virtual_memory::iterator_generic::operator()'],['../classmalbolge_1_1virtual__memory.html#a325684a37928df85fdddacd9a1149b6b',1,'malbolge::virtual_memory::operator()']]],
+  ['operator',['operator',['../classmalbolge_1_1math_1_1ternary.html#a18fbe507b0d273525422ca39b73ac420',1,'malbolge::math::ternary::operator()'],['../classmalbolge_1_1math_1_1tritset.html#a84d0dc5f27ea2f434b00187913741301',1,'malbolge::math::tritset::operator()'],['../classmalbolge_1_1virtual__memory_1_1iterator__generic.html#aaa781fa65cb097efccdde55763416b16',1,'malbolge::virtual_memory::iterator_generic::operator()']]],
   ['operator_20t',['operator T',['../classmalbolge_1_1math_1_1ternary.html#a44e7d5503a3d1c8b17c9a0df28bfb794',1,'malbolge::math::ternary']]],
   ['operator_22_22_20_5ftrit',['operator&quot;&quot; _trit',['../namespacemalbolge_1_1literals.html#ac55916b331ae4a465bca27314135d150',1,'malbolge::literals']]],
   ['operator_25',['operator%',['../classmalbolge_1_1math_1_1ternary.html#ac681c623419bae8bf5d3be6db838fff6',1,'malbolge::math::ternary']]],
