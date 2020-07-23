@@ -13,7 +13,6 @@
 #include "malbolge/log.hpp"
 
 #include <filesystem>
-#include <ranges>
 #include <optional>
 #include <vector>
 
@@ -26,7 +25,12 @@ using namespace std::string_literals;
 template <typename InputIt>
 virtual_memory load_impl(InputIt first, InputIt last)
 {
+#ifdef EMSCRIPTEN
+    static_assert(!std::is_const_v<typename std::iterator_traits<InputIt>::value_type>,
+#else
     static_assert(!std::is_const_v<std::iter_value_t<InputIt>>,
+
+#endif
                   "InputIt must not be a const iterator");
 
     auto loc = source_location{};

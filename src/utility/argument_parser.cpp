@@ -54,7 +54,13 @@ argument_parser::argument_parser(int argc, char* argv[]) :
     // Log level must be next
     if (args.size() && args.front().starts_with(log_flag_prefix)) {
         // There must only be 'l's
+#ifdef EMSCRIPTEN
+        const auto level = static_cast<std::size_t>(std::count(args.front().begin(),
+                                                               args.front().end(),
+                                                               'l'));
+#else
         const auto level = static_cast<std::size_t>(std::ranges::count(args.front(), 'l'));
+#endif
         if (level == (args.front().size()-1)) {
             if (level > 3) {
                 throw system_exception{
@@ -71,7 +77,11 @@ argument_parser::argument_parser(int argc, char* argv[]) :
 
     // There should be no other flags here
     {
+#ifdef EMSCRIPTEN
+        auto it = std::find_if(args.begin(), args.end(), [](auto&& a) {
+#else
         auto it = std::ranges::find_if(args, [](auto&& a) {
+#endif
             return a.starts_with('-');
         });
         if (it != args.end()) {

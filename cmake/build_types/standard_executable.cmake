@@ -10,10 +10,10 @@ target_compile_features(malbolge PUBLIC cxx_std_20)
 set_target_properties(malbolge PROPERTIES CXX_EXTENSIONS OFF)
 
 target_compile_options(malbolge PRIVATE
-     $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:
-          -Werror -Wall -Wextra>
-     $<$<CXX_COMPILER_ID:MSVC>:
-          /W4>
+    $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:
+        -Werror -Wall -Wextra>
+    $<$<CXX_COMPILER_ID:MSVC>:
+        /W4>
 )
 
 target_include_directories(malbolge

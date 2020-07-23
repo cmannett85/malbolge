@@ -8,8 +8,11 @@
 #include "malbolge/math/ipow.hpp"
 #include "malbolge/traits.hpp"
 
+#ifndef EMSCRIPTEN
 #include <ranges>
+#endif
 #include <ostream>
+#include <compare>
 
 namespace malbolge
 {
@@ -132,7 +135,12 @@ public:
         }
 
         auto i = 0u;
-        for (auto c : str | std::views::reverse) {
+#ifdef EMSCRIPTEN
+        for (auto it = str.rbegin(); it != str.rend(); ++it) {
+            const auto c = *it;
+#else
+        for (const auto c : str | std::views::reverse) {
+#endif
             if (c != '0' && c != '1' && c != '2') {
                 throw std::invalid_argument{"Invalid character in string"};
             }
@@ -236,7 +244,11 @@ template <std::size_t N, typename T>
 inline std::ostream& operator<<(std::ostream& stream, const tritset<N, T>& t)
 {
     stream << "{d:" << std::dec << t.to_base10() << ", t:";
+#ifdef EMSCRIPTEN
+    for (auto i = static_cast<int>(N-1); i >= 0; --i) {
+#else
     for (auto i : std::views::iota(0u, N) | std::views::reverse) {
+#endif
         stream << std::dec << static_cast<int>(t[i]);
     }
 

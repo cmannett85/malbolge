@@ -19,6 +19,8 @@ set(Boost_USE_MULTITHREADED ON)
 find_package(Boost ${BOOST_VERSION} REQUIRED)
 find_package(Threads REQUIRED)
 
+option(WASM_BUILD "Enable WASM/Emscripten support")
+
 set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/algorithm/remove_from_range.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/algorithm/container_ops.hpp
@@ -73,9 +75,13 @@ add_custom_target(gen_version
     COMMAND ${CMAKE_COMMAND} -DORIG_BASE_PATH=${CMAKE_CURRENT_SOURCE_DIR} -DPROJECT_VERSION=${PROJECT_VERSION} -DVERSION_FILE=${VERSION_FILE} -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/version.cmake
 )
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/standard_executable.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/address_sanitizer.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/thread_sanitizer.cmake)
+if(WASM_BUILD)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/wasm.cmake)
+else()
+    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/standard_executable.cmake)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/address_sanitizer.cmake)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/thread_sanitizer.cmake)
 
-enable_testing()
-add_subdirectory(test)
+    enable_testing()
+    add_subdirectory(test)
+endif()
