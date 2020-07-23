@@ -10,7 +10,7 @@ You can load from a file like this:
 ```
 malbolge my_prog.mal
 ```
-The file extension is ignored.  Or you pipe the output into it:
+The file extension is ignored.  Or you can pipe output into it:
 ```
 cat my_prog.mal | malbolge
 ```
@@ -65,7 +65,7 @@ When a CPU cycle is begun, the value at the code pointer needs to undergo a simp
 ```
 i = (*c - 33 + c) % 94
 ```
-The subtraction of 33 is why `*c` must be checked to see if it lies in the graphcial ASCII range ([33, 126]) first, if it doesn't it is an error and the program must abort.  `i` is an index into the pre-cipher table:
+The subtraction of 33 is why `*c` must be checked to see if it lies in the graphical ASCII range ([33, 126]) first, if it doesn't it is an error and the program must abort.  `i` is an index into the pre-cipher table:
 ```
 +b(29e*j1VMEKLyC})8&m#~W>qxdRp0wkrUo[D7,XTcA"lI.v%{gJh4G\-=O@5`_3i<?Z';FNQuY]szf$!BS/|t:Pn6^Ha
 ```
@@ -76,7 +76,7 @@ Once processing on a CPU instruction has finished, it needs to be ciphered again
 ```
 i = *c - 33
 ```
-Much like the [pre-ciphering](#pre-ciphering), the subtraction of 33 is why `*c` must be checked to see if it lies in the graphcial ASCII range ([33, 126]) first, if it doesn't it is an error and the program must abort.  `i` is an index into the post-cipher table:
+Much like the [pre-ciphering](#pre-ciphering), the subtraction of 33 is why `*c` must be checked to see if it lies in the graphical ASCII range ([33, 126]) first, if it doesn't it is an error and the program must abort.  `i` is an index into the post-cipher table:
 ```
 5z]&gqtyfr$(we4{WP)H-Zn,[%\3dL+Q;>U!pJS72FhOA1CB6v^=I_0/8|jsb9m<.TVac`uY*MK'X~xDl}REokN:#?G"i@
 ```

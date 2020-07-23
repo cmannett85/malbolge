@@ -5,8 +5,12 @@
 
 #pragma once
 
+#ifndef EMSCRIPTEN
+#include <ranges>
+#endif
 #include <array>
 #include <algorithm>
+#include <optional>
 
 namespace malbolge
 {
@@ -84,7 +88,13 @@ constexpr auto all = std::array{
 template <typename T>
 inline constexpr bool is_cpu_instruction(T instruction)
 {
+#ifdef EMSCRIPTEN
+    return std::any_of(cpu_instruction::all.begin(),
+                       cpu_instruction::all.end(),
+                       [&](auto i) {
+#else
     return std::ranges::any_of(cpu_instruction::all, [&](auto i) {
+#endif
         return i == instruction;
     });
 }

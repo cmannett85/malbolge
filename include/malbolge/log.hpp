@@ -79,7 +79,7 @@ void print(level lvl, Args&&... args)
     static_assert(sizeof...(Args) > 0, "Must be at least one argument");
 
     if (lvl >= log_level()) {
-        (std::clog << detail::log_prefix << ... << std::forward<Args>(args))
+        ((std::clog << detail::log_prefix) << ... << std::forward<Args>(args))
                    << std::endl;
     }
 }

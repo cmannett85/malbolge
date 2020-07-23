@@ -252,7 +252,7 @@ public:
         {}
 
         span data_;
-        span::iterator current_;
+        typename span::iterator current_;
     };
 
     using size_type              = base::element_type::size_type;           ///< Size type
@@ -352,13 +352,6 @@ public:
 
     virtual_memory(const virtual_memory& other) = delete;
     virtual_memory& operator=(const virtual_memory& other) = delete;
-
-    /** Comparison operator.
-     *
-     * @param other Instance to compare against
-     * @return Ordering
-     */
-    auto operator<=>(const virtual_memory& other) const = default;
 
     /** Returns a reference to the element at @a pos.
      *
