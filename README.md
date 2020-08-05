@@ -1,9 +1,9 @@
 ![Documentation Generator](https://github.com/cmannett85/malbolge/workflows/Documentation%20Generator/badge.svg) ![Release Builder](https://github.com/cmannett85/malbolge/workflows/Release%20Builder/badge.svg) ![Unit test coverage](https://img.shields.io/badge/Unit_Test_Coverage-91.2%25-brightgreen)
 
 # malbolge
-A virtual machine to execute Malbolge programs, written in C++20 and dependent on Boost v1.73.
+A virtual machine to execute Malbolge programs, written in C++20 and dependent on Boost v1.67.
 
-Only tested using g++ v10.0.1 on Linux.
+Only tested using g++ v10.0.1 on Linux, and for the WASM build using Emscripten v1.39.19.
 
 ## Usage
 You can load from a file like this:
@@ -13,6 +13,11 @@ malbolge my_prog.mal
 The file extension is ignored.  Or you can pipe output into it:
 ```
 cat my_prog.mal | malbolge
+```
+As a final alternative that is useful for programmatic execution, you can use
+the `--string` flag:
+```
+malbolge --string 'This will not compile...'
 ```
 Like any terminal application, you access help with `--help`.  You can also get
 log output (in stderr) via increasing the number of `-l` switches, e.g.:

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Malbolge Playground</title>
+</head>
+<body>
+
+<p>Malbolge program:</p>
+<textarea id="program" rows="10" cols="80" required></textarea>
+<br><br>
+<button id="run_button" onclick="run_malbolge()" disabled>Run</button>
+<br><br>
+<p>Output:</p>
+<textarea id="output" rows="10" cols="80"></textarea>
+
+<script>
+    function run_malbolge() {
+        document.getElementById("output").value = "";
+        var program_text = document.getElementById("program").value;
+        callMain(["-ll", "--string", program_text]);
+    }
+
+    // Print the version once the WASM initialisation has finished
+    function finished_loading() {
+        callMain(["--version"]);
+        document.getElementById("run_button").disabled = false;
+    }
+
+    // In Malbolge logging is printed to std::clog and program output to
+    // std::cout
+    function std_out(msg) {
+        document.getElementById("output").value += msg + "\n";
+    }
+
+    function std_clog(msg) {
+        // Use regex to determine if this is Malbolge logging or Emscripten
+        var res = msg.match(/\.\d{9}\[[A-Z]+\]: /g);
+        if (res) {
+            // It is Malbolge logging, so check if it is an error
+            if (msg.includes("[ERROR]: ")) {
+                console.error(msg);
+                alert(msg);
+            } else {
+                console.log(msg);
+            }
+        } else {
+            console.warn(msg);
+        }
+    }
+
+    var Module = {
+        thisProgram: "malbolge_wasm.wasm",
+        onRuntimeInitialized: finished_loading,
+        print: std_out,
+        printErr: std_clog
+    };
+</script>
+<script src="malbolge_wasm.js"></script>
+
+</body>
+</html>

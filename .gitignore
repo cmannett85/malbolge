@@ -4,6 +4,9 @@ docs/doxygen/
 # Versioning file (generated on build)
 include/malbolge/version.hpp
 
+# Playground WASM application
+playground/malbolge_wasm*
+
 # IDE cruft
 build/
 *.creator.user

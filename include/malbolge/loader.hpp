@@ -110,6 +110,7 @@ template <typename R,
                            int> = 0>
 virtual_memory load(R&& range)
 {
+    log::print(log::INFO, "Loading file from string");
     return load(std::begin(range), std::end(range));
 }
 
