@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['git_5frevision',['git_revision',['../namespacemalbolge.html#ab5de4177306ae7e3c65301a3b810fd37',1,'malbolge']]],
-  ['graphical_5fascii_5frange',['graphical_ascii_range',['../namespacemalbolge.html#ae4d84f203ef3d78c728b68499080657c',1,'malbolge']]]
+  ['has_5flocation',['has_location',['../classmalbolge_1_1parse__exception.html#a63683ad3998ecd1d702fe0032742b4ad',1,'malbolge::parse_exception']]],
+  ['help',['help',['../classmalbolge_1_1argument__parser.html#abf9933a1f37270468808384d9350c44b',1,'malbolge::argument_parser']]]
 ];

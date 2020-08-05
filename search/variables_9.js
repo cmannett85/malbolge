@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['width',['width',['../classmalbolge_1_1math_1_1tritset.html#a3f0cfad680945504bbdafaa517f684f9',1,'malbolge::math::tritset']]]
+  ['version_5fstring',['version_string',['../namespacemalbolge.html#a11f5c3e986b80f64a8a4f93253d4bf60',1,'malbolge']]]
 ];

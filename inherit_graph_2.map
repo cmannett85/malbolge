@@ -1,3 +1,7 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classmalbolge_1_1math_1_1ternary.html" title="malbolge::math::ternary" alt="" coords="5,5,164,32"/>
+<area shape="rect" id="node1" title="STL class. " alt="" coords="5,71,109,98"/>
+<area shape="rect" id="node2" title="STL class. " alt="" coords="157,71,281,98"/>
+<area shape="rect" id="node3" href="$classmalbolge_1_1execution__exception.html" title="malbolge::execution\l_exception" alt="" coords="354,5,493,47"/>
+<area shape="rect" id="node4" href="$classmalbolge_1_1parse__exception.html" title="malbolge::parse_exception" alt="" coords="335,71,512,98"/>
+<area shape="rect" id="node5" href="$classmalbolge_1_1system__exception.html" title="malbolge::system_exception" alt="" coords="329,122,517,149"/>
 </map>

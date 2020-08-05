@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['project_5fversion',['project_version',['../namespacemalbolge.html#ada216ef0794366fc2289eec54311a8af',1,'malbolge']]]
+  ['max',['max',['../classmalbolge_1_1math_1_1ternary.html#a8ea492506b51484b9b8632c884a869f7',1,'malbolge::math::ternary::max()'],['../classmalbolge_1_1math_1_1tritset.html#add7881ea6587c13c49cfba794922a431',1,'malbolge::math::tritset::max()']]]
 ];

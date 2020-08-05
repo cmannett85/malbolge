@@ -1,11 +1,8 @@
 var searchData=
 [
-  ['set',['set',['../classmalbolge_1_1math_1_1tritset.html#af6a0e54c8c6c9ea0f6eeb0b62bfc2f9f',1,'malbolge::math::tritset']]],
-  ['set_5flog_5flevel',['set_log_level',['../namespacemalbolge_1_1log.html#a38978a4f3d47f085a2534a916079f652',1,'malbolge::log']]],
-  ['size',['size',['../classmalbolge_1_1virtual__memory.html#a7164e77309642350b05b09a0fd44d8b2',1,'malbolge::virtual_memory']]],
-  ['source_5flocation',['source_location',['../structmalbolge_1_1source__location.html#a3b01a344f32ec27697ad3611e4233068',1,'malbolge::source_location']]],
-  ['state',['state',['../classmalbolge_1_1virtual__cpu.html#a64bc3341ed665c611a9467491a520a3b',1,'malbolge::virtual_cpu']]],
-  ['step',['step',['../classmalbolge_1_1execution__exception.html#a98c3aff945848e343c883ffc43cc12e4',1,'malbolge::execution_exception']]],
-  ['stop',['stop',['../classmalbolge_1_1virtual__cpu.html#ae728d1a4d88a889dc2f71a09502a95b4',1,'malbolge::virtual_cpu']]],
-  ['system_5fexception',['system_exception',['../classmalbolge_1_1system__exception.html#acee340d85b937e905f194992895143be',1,'malbolge::system_exception']]]
+  ['ternary',['ternary',['../classmalbolge_1_1math_1_1ternary.html#afa0beb2dcede71613e3f099bc9e0ba26',1,'malbolge::math::ternary::ternary(underlying_type value=0)'],['../classmalbolge_1_1math_1_1ternary.html#ae830845663c015d0bf297691a4bfb93c',1,'malbolge::math::ternary::ternary(const tritset&lt; N, T &gt; &amp;value)'],['../classmalbolge_1_1math_1_1ternary.html#a422503f9350e3a37af01bce12dceb12e',1,'malbolge::math::ternary::ternary(const ternary &amp;other)=default']]],
+  ['to_5fbase10',['to_base10',['../classmalbolge_1_1math_1_1tritset.html#a1440f8d07a9b89c6558f59f8df181ede',1,'malbolge::math::tritset']]],
+  ['to_5fstring',['to_string',['../namespacemalbolge.html#a21d5a5333d45ebe1cd5b2488cb3e2128',1,'malbolge::to_string()'],['../namespacemalbolge_1_1log.html#a1cfcb579f2e0b74f6a054e493bf83a21',1,'malbolge::log::to_string()']]],
+  ['to_5ftritset',['to_tritset',['../classmalbolge_1_1math_1_1ternary.html#a6197117216a0cd91da19525d49354082',1,'malbolge::math::ternary']]],
+  ['tritset',['tritset',['../classmalbolge_1_1math_1_1tritset.html#a1abf92a1fc64bc72cea4513d86b7721f',1,'malbolge::math::tritset::tritset(T value=0)'],['../classmalbolge_1_1math_1_1tritset.html#a95f82870386b3cb0252edb2f7909966c',1,'malbolge::math::tritset::tritset(const std::string &amp;str)'],['../classmalbolge_1_1math_1_1tritset.html#a1d15e4e843f39c9ef30a9b9c70a1cbd6',1,'malbolge::math::tritset::tritset(const tritset &amp;other)=default']]]
 ];
