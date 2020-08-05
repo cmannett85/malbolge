@@ -30,7 +30,5 @@ if (( $(echo "${DIFF} < -1.0" | bc -l) )); then
     exit 1
 fi
 
-# If the coverage has improved, then write the new value back to the cache
-if (( $(echo "${DIFF} > 0.0" | bc -l) )); then
-    echo ${NEW_COVERAGE} > ${SRC_PATH}/old_coverage
-fi
+# Write the new value back to the cache
+echo ${NEW_COVERAGE} > ${SRC_PATH}/old_coverage

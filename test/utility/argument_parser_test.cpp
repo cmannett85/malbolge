@@ -9,6 +9,7 @@
 #include "test_helpers.hpp"
 
 using namespace malbolge;
+using namespace std::string_literals;
 
 namespace
 {
@@ -35,7 +36,8 @@ BOOST_AUTO_TEST_CASE(no_args)
 
     BOOST_CHECK_EQUAL(ap.help(), false);
     BOOST_CHECK_EQUAL(ap.version(), false);
-    BOOST_CHECK_EQUAL(ap.file().has_value(), false);
+    BOOST_CHECK_EQUAL(ap.program().source, argument_parser::program_source::STDIN);
+    BOOST_CHECK_EQUAL(ap.program().data, ""s);
     BOOST_CHECK_EQUAL(ap.log_level(), log::ERROR);
 }
 
@@ -54,7 +56,8 @@ BOOST_AUTO_TEST_CASE(help)
 
         BOOST_CHECK_EQUAL(ap.help(), true);
         BOOST_CHECK_EQUAL(ap.version(), false);
-        BOOST_CHECK_EQUAL(ap.file().has_value(), false);
+        BOOST_CHECK_EQUAL(ap.program().source, argument_parser::program_source::STDIN);
+        BOOST_CHECK_EQUAL(ap.program().data, ""s);
         BOOST_CHECK_EQUAL(ap.log_level(), log::ERROR);
     }
 }
@@ -66,7 +69,8 @@ BOOST_AUTO_TEST_CASE(version)
 
         BOOST_CHECK_EQUAL(ap.help(), false);
         BOOST_CHECK_EQUAL(ap.version(), true);
-        BOOST_CHECK_EQUAL(ap.file().has_value(), false);
+        BOOST_CHECK_EQUAL(ap.program().source, argument_parser::program_source::STDIN);
+        BOOST_CHECK_EQUAL(ap.program().data, ""s);
         BOOST_CHECK_EQUAL(ap.log_level(), log::ERROR);
     }
 
@@ -89,7 +93,8 @@ BOOST_AUTO_TEST_CASE(log_levels)
 
         BOOST_CHECK_EQUAL(ap.help(), false);
         BOOST_CHECK_EQUAL(ap.version(), false);
-        BOOST_CHECK_EQUAL(ap.file().has_value(), false);
+        BOOST_CHECK_EQUAL(ap.program().source, argument_parser::program_source::STDIN);
+        BOOST_CHECK_EQUAL(ap.program().data, ""s);
         BOOST_CHECK_EQUAL(ap.log_level(), static_cast<log::level>(log::ERROR-l));
 
         ++l;
@@ -113,17 +118,44 @@ BOOST_AUTO_TEST_CASE(log_levels)
 
 BOOST_AUTO_TEST_CASE(file)
 {
-    const auto path = "/home/user/anon/prog.mal";
+    const auto path = "/home/user/anon/prog.mal"s;
     auto ap = arg_dispatcher({path});
 
     BOOST_CHECK_EQUAL(ap.help(), false);
     BOOST_CHECK_EQUAL(ap.version(), false);
-    BOOST_REQUIRE(ap.file().has_value());
-    BOOST_CHECK_EQUAL(*ap.file(), std::filesystem::path{path});
+    BOOST_CHECK_EQUAL(ap.program().source, argument_parser::program_source::DISK);
+    BOOST_CHECK_EQUAL(ap.program().data, path);
     BOOST_CHECK_EQUAL(ap.log_level(), log::ERROR);
 
     try {
         auto ap = arg_dispatcher({path, "-l"});
+        BOOST_FAIL("Should have thrown");
+    } catch (system_exception&) {}
+
+    try {
+        auto ap = arg_dispatcher({"--string", "This will not compile", path});
+        BOOST_FAIL("Should have thrown");
+    } catch (system_exception&) {}
+
+    try {
+        auto ap = arg_dispatcher({path, "--string", "This will not compile", });
+        BOOST_FAIL("Should have thrown");
+    } catch (system_exception&) {}
+}
+
+BOOST_AUTO_TEST_CASE(string)
+{
+    const auto source = "This will not compile"s;
+    auto ap = arg_dispatcher({"--string", source});
+
+    BOOST_CHECK_EQUAL(ap.help(), false);
+    BOOST_CHECK_EQUAL(ap.version(), false);
+    BOOST_CHECK_EQUAL(ap.program().source, argument_parser::program_source::STRING);
+    BOOST_CHECK_EQUAL(ap.program().data, source);
+    BOOST_CHECK_EQUAL(ap.log_level(), log::ERROR);
+
+    try {
+        auto ap = arg_dispatcher({"--string"});
         BOOST_FAIL("Should have thrown");
     } catch (system_exception&) {}
 }
@@ -135,8 +167,20 @@ BOOST_AUTO_TEST_CASE(logging_and_file)
 
     BOOST_CHECK_EQUAL(ap.help(), false);
     BOOST_CHECK_EQUAL(ap.version(), false);
-    BOOST_REQUIRE(ap.file().has_value());
-    BOOST_CHECK_EQUAL(*ap.file(), std::filesystem::path{path});
+    BOOST_CHECK_EQUAL(ap.program().source, argument_parser::program_source::DISK);
+    BOOST_CHECK_EQUAL(ap.program().data, path);
+    BOOST_CHECK_EQUAL(ap.log_level(), log::DEBUG);
+}
+
+BOOST_AUTO_TEST_CASE(logging_and_string)
+{
+    const auto source = "This will not compile"s;
+    auto ap = arg_dispatcher({"-ll", "--string", source});
+
+    BOOST_CHECK_EQUAL(ap.help(), false);
+    BOOST_CHECK_EQUAL(ap.version(), false);
+    BOOST_CHECK_EQUAL(ap.program().source, argument_parser::program_source::STRING);
+    BOOST_CHECK_EQUAL(ap.program().data, source);
     BOOST_CHECK_EQUAL(ap.log_level(), log::DEBUG);
 }
 

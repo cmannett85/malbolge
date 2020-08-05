@@ -76,6 +76,7 @@ add_custom_target(gen_version
 )
 
 if(WASM_BUILD)
+    message(STATUS "WASM/Emscripten build")
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/wasm.cmake)
 else()
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/standard_executable.cmake)

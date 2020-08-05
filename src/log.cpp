@@ -24,7 +24,7 @@ std::ostream& log::detail::log_prefix(std::ostream& stream)
 
     return stream << std::put_time(std::localtime(&c_now), "%F %T")
                   << "." << std::setfill('0') << std::setw(9) << just_ns
-                  << "[" << filter_level << "]: ";
+                  << "[";
 }
 
 const char* log::to_string(level lvl)

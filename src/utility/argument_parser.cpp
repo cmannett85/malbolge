@@ -19,11 +19,13 @@ namespace
 constexpr auto help_flags = std::array{"--help", "-h"};
 constexpr auto version_flags = std::array{"--version", "-v"};
 constexpr auto log_flag_prefix = "-l";
+constexpr auto string_flag = "--string";
 }
 
 argument_parser::argument_parser(int argc, char* argv[]) :
     help_{false},
     version_{false},
+    p_{program_source::STDIN, ""},
     log_level_{log::ERROR}
 {
     // Convert to strings, they're easier to work with and we only do this
@@ -51,7 +53,28 @@ argument_parser::argument_parser(int argc, char* argv[]) :
         return;
     }
 
-    // Log level must be next
+#ifdef EMSCRIPTEN
+    auto string_it = std::find(args.begin(), args.end(), string_flag);
+#else
+    auto string_it = std::ranges::find(args, string_flag);
+#endif
+    if (string_it != args.end()) {
+        // Move the iterator forward one to extract the program data
+        if (++string_it == args.end()) {
+            throw system_exception{
+                "String flag set but no program source present",
+                EINVAL
+            };
+        }
+
+        p_.source = program_source::STRING;
+        p_.data = std::move(*string_it);
+
+        string_it = args.erase(--string_it);
+        args.erase(string_it);
+    }
+
+    // Log level
     if (args.size() && args.front().starts_with(log_flag_prefix)) {
         // There must only be 'l's
 #ifdef EMSCRIPTEN
@@ -91,13 +114,40 @@ argument_parser::argument_parser(int argc, char* argv[]) :
 
     // There should either be a path for a file to load, or nothing
     if (!args.empty()) {
-        file_ = args.front();
+        // Make sure the string flag hadn't already been set
+        if (p_.source == program_source::STRING) {
+            throw system_exception{
+                "String flag already set",
+                EINVAL
+            };
+        }
+
+        p_.source = program_source::DISK;
+        p_.data = std::move(args.front());
         args.pop_front();
 
         if (!args.empty()) {
             throw system_exception{"Unknown argument: " + args.front(),
                                    EINVAL};
         }
+    }
+}
+
+std::ostream& malbolge::operator<<(std::ostream& stream,
+                                   const argument_parser::program_source& source)
+{
+    static_assert(static_cast<std::size_t>(argument_parser::program_source::MAX) == 3,
+                  "program_source enum has changed size, update operator<<");
+
+    switch (source) {
+    case argument_parser::program_source::DISK:
+        return stream << "DISK";
+    case argument_parser::program_source::STDIN:
+        return stream << "STDIN";
+    case argument_parser::program_source::STRING:
+        return stream << "STRING";
+    default:
+        return stream << "Unknown";
     }
 }
 

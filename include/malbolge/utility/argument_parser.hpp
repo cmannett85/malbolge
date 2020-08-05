@@ -8,7 +8,6 @@
 #include "malbolge/log.hpp"
 
 #include <optional>
-#include <filesystem>
 
 namespace malbolge
 {
@@ -17,6 +16,27 @@ namespace malbolge
 class argument_parser
 {
 public:
+    /** The program source type enum.
+     */
+    enum class program_source {
+        DISK,   ///< From a file on disk
+        STDIN,  ///< From stdin
+        STRING, ///< From a string passed as a constructor argument
+        MAX     ///< Maximum number of sources
+    };
+
+    /** The program data.
+     *
+     * A pair containing the program source type, and:
+     * - If @a source is DISK, @a data is the path
+     * - If @a source is STDIN, @a data is empty
+     * - If @a source is STRING, @a data is the program source code
+     */
+    struct program_data {
+        program_source source;  ///< Program source
+        std::string data;       ///< Data associated with the source type
+    };
+
     /** Constructor.
      *
      * Parses the command line arguments.
@@ -44,13 +64,22 @@ public:
         return version_;
     }
 
-    /** Returns the input file path.
+    /** Program data information
      *
-     * @return Input file path, or an empty optional if not file was provided
+     * @return Program data information
      */
-    const std::optional<std::filesystem::path>& file() const
+    program_data& program()
     {
-        return file_;
+        return p_;
+    }
+
+    /** Const overload.
+     *
+     * @return Program data information
+     */
+    const program_data& program() const
+    {
+        return p_;
     }
 
     /** Returns the logging level.
@@ -65,9 +94,18 @@ public:
 private:
     bool help_;
     bool version_;
-    std::optional<std::filesystem::path> file_;
+    program_data p_;
     log::level log_level_;
 };
+
+/** Prints the program source into @a stream.
+ *
+ * @param stream Textual output stream
+ * @param source Instance to stream
+ * @return @a stream
+ */
+std::ostream& operator<<(std::ostream& stream,
+                         const argument_parser::program_source& source);
 
 /** Prints the help output into @a stream.
  *

@@ -63,5 +63,5 @@ virtual_memory malbolge::load_from_cin()
 
     log::print(log::INFO, "File loaded");
 
-    return load(program_data);
+    return load(std::begin(program_data), std::end(program_data));
 }
