@@ -5,6 +5,7 @@
 
 #include "malbolge/virtual_cpu.hpp"
 #include "malbolge/cpu_instruction.hpp"
+#include "malbolge/utility/get_char.hpp"
 #include "malbolge/utility/raii.hpp"
 #include "malbolge/exception.hpp"
 #include "malbolge/log.hpp"
@@ -61,12 +62,15 @@ std::future<void> virtual_cpu::run(std::istream& istr, std::ostream& ostr)
 
         auto exception = false;
         auto stopped_setter = utility::raii{[&]() {
-            log::print(log::VERBOSE_DEBUG, "Program thread exiting");
-
             *state = execution_state::STOPPED;
             if (!exception) {
                 p.set_value();
             }
+
+#ifdef EMSCRIPTEN
+            ostr << std::endl;
+#endif
+            log::print(log::DEBUG, "Program thread exiting");
         }};
 
         // Loop forever, but increment the pointers on each iteration
@@ -106,18 +110,28 @@ std::future<void> virtual_cpu::run(std::istream& istr, std::ostream& ostr)
                     break;
                 case cpu_instruction::read:
                 {
-                    auto input = char{};
-                    if (!istr.get(input)) {
-                        a = math::ternary::max;
+                    auto input = utility::get_char(istr);
+                    if (input) {
+                        a = *input;
                     } else {
-                        a = input;
+                        a = math::ternary::max;
                     }
 
                     break;
                 }
                 case cpu_instruction::write:
                     if (a != math::ternary::max) {
+#ifdef EMSCRIPTEN
+                        // Emscripten cannot flush output without a newline, so
+                        // we need to force with std::endl
+                        if (static_cast<char>(a) == '\n') {
+                            ostr << std::endl;
+                        } else {
+                            ostr << static_cast<char>(a);
+                        }
+#else
                         ostr << static_cast<char>(a);
+#endif
                     }
                     break;
                 case cpu_instruction::stop:

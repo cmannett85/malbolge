@@ -3,6 +3,10 @@
 # See LICENSE file
 #
 
+if(NOT DEFINED ENV{EMSDK})
+    message(FATAL_ERROR "EMSDK env var must be set")
+endif()
+
 add_executable(malbolge_wasm ${HEADERS} ${SRCS} ${MAIN_SRCS} ${FOR_IDE} ${VERSION_FILE})
 add_dependencies(malbolge_wasm gen_version)
 
@@ -15,10 +19,14 @@ target_compile_definitions(malbolge_wasm
 )
 
 set(WASM_BUILD_OPTIONS
+    "SHELL:-s ASYNCIFY"
+    "SHELL:-s ASYNCIFY_IMPORTS=[\"malbolge_input\"]"
+    "SHELL:-s ALLOW_MEMORY_GROWTH"
+    "SHELL:-s PROXY_TO_PTHREAD"
     "SHELL:-s DISABLE_EXCEPTION_CATCHING=0"
     "SHELL:-s USE_BOOST_HEADERS"
     "SHELL:-s USE_PTHREADS"
-    "SHELL:-s PTHREAD_POOL_SIZE=\"2\""
+    "SHELL:-s PTHREAD_POOL_SIZE=\"1\"" # One more is added due to PROXY_TO_PTHREAD
     "SHELL:-s NO_INVOKE_RUN"
     "SHELL:-s ENVIRONMENT=\"web,worker\""
     "SHELL:-s MINIMAL_RUNTIME_STREAMING_WASM_INSTANTIATION"
@@ -37,6 +45,7 @@ target_link_options(malbolge_wasm
 
 target_include_directories(malbolge_wasm
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
+    PUBLIC $ENV{EMSDK}/upstream/emscripten/system/include
 )
 
 target_link_libraries(malbolge_wasm
