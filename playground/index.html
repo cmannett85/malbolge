@@ -10,20 +10,40 @@
 <br><br>
 <button id="run_button" onclick="run_malbolge()" disabled>Run</button>
 <br><br>
+<p>Input</p>
+<input type="text" id="input">
+<button id="input_button" onclick="set_input_text()" disabled>Submit</button>
+<br><br>
 <p>Output:</p>
 <textarea id="output" rows="10" cols="80"></textarea>
 
 <script>
     function run_malbolge() {
+        document.getElementById("run_button").disabled = true;
         document.getElementById("output").value = "";
-        var program_text = document.getElementById("program").value;
+        const program_text = document.getElementById("program").value;
         callMain(["-ll", "--string", program_text]);
+    }
+
+    function set_input_text() {
+        const text = document.getElementById("input").value + "\n";
+        if (text.length) {
+            // Push text to worker
+            let worker = Module["PThread"].runningWorkers.slice(-1)[0];
+            worker.postMessage({
+                cmd: "input_text",
+                input_text: text
+            });
+        }
+
+        document.getElementById("input").value = "";
     }
 
     // Print the version once the WASM initialisation has finished
     function finished_loading() {
         callMain(["--version"]);
         document.getElementById("run_button").disabled = false;
+        document.getElementById("input_button").disabled = false;
     }
 
     // In Malbolge logging is printed to std::clog and program output to
@@ -34,7 +54,7 @@
 
     function std_clog(msg) {
         // Use regex to determine if this is Malbolge logging or Emscripten
-        var res = msg.match(/\.\d{9}\[[A-Z]+\]: /g);
+        const res = msg.match(/\.\d{9}\[[A-Z ]+\]: /g);
         if (res) {
             // It is Malbolge logging, so check if it is an error
             if (msg.includes("[ERROR]: ")) {
