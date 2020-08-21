@@ -5,7 +5,9 @@ docs/doxygen/
 include/malbolge/version.hpp
 
 # Playground WASM application
-playground/malbolge_wasm*
+playground/malbolge.wasm
+playground/malbolge.js
+playground/malbolge.worker.js
 
 # IDE cruft
 build/
