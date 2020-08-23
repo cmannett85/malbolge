@@ -1,4 +1,4 @@
-![Documentation Generator](https://github.com/cmannett85/malbolge/workflows/Documentation%20Generator/badge.svg) ![Release Builder](https://github.com/cmannett85/malbolge/workflows/Release%20Builder/badge.svg) ![Unit test coverage](https://img.shields.io/badge/Unit_Test_Coverage-90.6%25-brightgreen)
+![Documentation Generator](https://github.com/cmannett85/malbolge/workflows/Documentation%20Generator/badge.svg) ![Release Builder](https://github.com/cmannett85/malbolge/workflows/Release%20Builder/badge.svg) ![Unit test coverage](https://img.shields.io/badge/Unit_Test_Coverage-96.4%25-brightgreen)
 
 # malbolge
 A virtual machine to execute Malbolge programs, written in C++20 and dependent on Boost v1.67.
@@ -184,6 +184,7 @@ The Malbolge project uses Github Actions to enfore strict code quality checks du
   - ThreadSanitizer
 - Documentation generated, if it fails (because the API has changed and the documentation comments not updated to match), then the PR is rejected
 - Release debian package and archives generated.  The debian package is installed, malbolge ran, and then uninstalled - any failure in that process will cause the PR to be rejected
+- A WASM build is performed
 
 I dabbled in `clang-format`, but it only seemed to make the formatting worse, so that will have to be manually checked.  `clang-tidy` will be integrated once it supports C++20 ranges, currently v10 produces errors for them that cannot be suppressed.
 

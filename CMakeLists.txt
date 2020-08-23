@@ -77,6 +77,8 @@ add_custom_target(gen_version
     COMMAND ${CMAKE_COMMAND} -DORIG_BASE_PATH=${CMAKE_CURRENT_SOURCE_DIR} -DPROJECT_VERSION=${PROJECT_VERSION} -DVERSION_FILE=${VERSION_FILE} -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/version.cmake
 )
 
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/library.cmake)
+
 if(WASM_BUILD)
     message(STATUS "WASM/Emscripten build")
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/wasm.cmake)

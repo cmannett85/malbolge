@@ -3,8 +3,8 @@
 # See LICENSE file
 #
 
-add_executable(malbolge ${HEADERS} ${SRCS} ${MAIN_SRCS} ${FOR_IDE} ${VERSION_FILE})
-add_dependencies(malbolge gen_version)
+add_executable(malbolge ${MAIN_SRCS})
+add_dependencies(malbolge malbolge_lib)
 
 target_compile_features(malbolge PUBLIC cxx_std_20)
 set_target_properties(malbolge PROPERTIES CXX_EXTENSIONS OFF)
@@ -22,6 +22,7 @@ target_include_directories(malbolge
 
 target_link_libraries(malbolge
     PUBLIC Threads::Threads
+    PUBLIC malbolge_lib
 )
 
 install(TARGETS malbolge)
@@ -39,6 +40,6 @@ set(CPACK_GENERATOR
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER ${CPACK_PACKAGE_VENDOR})
 set(CPACK_DEBIAN_PACKAGE_SECTION "interpreters")
 # .rpm specific.  Don't build by default as we currently can't be bothered
-# tested it
+# to test it
 set(CPACK_RPM_PACKAGE_LICENSE "MIT")
 include(CPack)

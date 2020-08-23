@@ -3,8 +3,8 @@
 # See LICENSE file
 #
 
-add_executable(malbolge_thread_sanitizer EXCLUDE_FROM_ALL ${HEADERS} ${SRCS} ${MAIN_SRCS} ${FOR_IDE} ${VERSION_FILE})
-add_dependencies(malbolge_thread_sanitizer gen_version)
+add_executable(malbolge_thread_sanitizer EXCLUDE_FROM_ALL ${MAIN_SRCS})
+add_dependencies(malbolge_thread_sanitizer gen_version malbolge_lib)
 
 target_compile_features(malbolge_thread_sanitizer PUBLIC cxx_std_20)
 set_target_properties(malbolge_thread_sanitizer PROPERTIES CXX_EXTENSIONS OFF)
@@ -22,6 +22,7 @@ target_include_directories(malbolge_thread_sanitizer
 
 target_link_libraries(malbolge_thread_sanitizer
     PUBLIC Threads::Threads
+    PUBLIC malbolge_lib
 )
 
 target_compile_options(malbolge_thread_sanitizer
