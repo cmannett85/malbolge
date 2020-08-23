@@ -48,7 +48,7 @@ private:
         } else if constexpr ((sizeof(std::uint32_t)*8) >= (N*bits_per_trit)) {
             return std::uint32_t{};
         } else {
-            static_assert(traits::always_false_v<N>,
+            static_assert(traits::always_false_v<decltype(N)>,
                           "Number of trits required exceeds maximum");
         }
     }

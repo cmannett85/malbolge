@@ -40,7 +40,7 @@ set(WASM_BUILD_OPTIONS
 # C++ standard flag from appearing in the flags when set using
 # target_compile_features
 target_compile_options(malbolge_wasm
-    PRIVATE --std=c++20 -Werror -Wall -Wextra ${WASM_BUILD_OPTIONS}
+    PRIVATE -std=c++20 -Werror -Wall -Wextra ${WASM_BUILD_OPTIONS}
 )
 
 target_link_options(malbolge_wasm
