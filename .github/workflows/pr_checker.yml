@@ -185,3 +185,33 @@ jobs:
         sudo apt install ./malbolge-*.deb
         malbolge ./test/programs/hello_world.mal
         sudo apt --assume-yes remove malbolge
+
+  # Tests WASM build
+  wasm:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+
+    - name: Update packages
+      run: |
+        wget http://mirrors.kernel.org/ubuntu/pool/main/b/boost1.71/libboost1.71-dev_1.71.0-6ubuntu6_amd64.deb
+        sudo apt install ./libboost1.71-dev_1.71.0-6ubuntu6_amd64.deb
+
+    - name: Install Emscripten
+      run: |
+        cd ${GITHUB_WORKSPACE}/..
+        git clone https://github.com/emscripten-core/emsdk.git
+        cd ./emsdk/
+        ./emsdk install latest-upstream
+        ./emsdk activate latest-upstream
+
+    - name: Build
+      run: |
+        source ${GITHUB_WORKSPACE}/../emsdk/emsdk_env.sh
+        mkdir ${GITHUB_WORKSPACE}/../wasm
+        cd ${GITHUB_WORKSPACE}/../wasm
+        emcmake cmake -DWASM_BUILD=ON -DCMAKE_BUILD_TYPE=Release -DBoost_INCLUDE_DIR=/usr/include ${GITHUB_WORKSPACE}
+        emmake make -j4 malbolge_wasm
