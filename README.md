@@ -37,7 +37,10 @@ Hello World!
 ```
 
 ## API Documentation
-API documentation for Malbolge is available [here](https://cmannett85.github.io/malbolge/).
+API documentation for Malbolge is available [here](https://cmannett85.github.io/malbolge).
+
+## Playground
+You can try out Malbolge programs in your browser using the new (_extremely_ primitive!) [playground](https://cmannett85.github.io/malbolge/playground).  The focus of the next Malbolge release will be to dramatically improve the playground.
 
 ---
 
