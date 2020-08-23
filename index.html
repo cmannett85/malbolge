@@ -71,7 +71,7 @@ $(function() {
 <object type="image/svg+xml" data="https://github.com/cmannett85/malbolge/workflows/Release%20Builder/badge.svg" alt="Release Builder"></object>
 </div>
  <div class="image">
-<img src="https://img.shields.io/badge/Unit_Test_Coverage-90.6%25-brightgreen" alt="Unit test coverage"/>
+<img src="https://img.shields.io/badge/Unit_Test_Coverage-96.4%25-brightgreen" alt="Unit test coverage"/>
 </div>
 <h1>malbolge</h1>
 <p>A virtual machine to execute Malbolge programs, written in C++20 and dependent on Boost v1.67.</p>
@@ -169,6 +169,7 @@ $(function() {
 </li>
 <li>Documentation generated, if it fails (because the API has changed and the documentation comments not updated to match), then the PR is rejected</li>
 <li>Release debian package and archives generated. The debian package is installed, malbolge ran, and then uninstalled - any failure in that process will cause the PR to be rejected</li>
+<li>A WASM build is performed</li>
 </ul>
 <p>I dabbled in <code>clang-format</code>, but it only seemed to make the formatting worse, so that will have to be manually checked. <code>clang-tidy</code> will be integrated once it supports C++20 ranges, currently v10 produces errors for them that cannot be suppressed.</p>
 <p>Once the PR is merged, the API documentation is generated and pushed to the <a href="https://cmannett85.github.io/malbolge">public documentation</a> site.</p>
