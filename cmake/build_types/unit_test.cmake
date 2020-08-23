@@ -8,11 +8,11 @@ find_package(Boost ${BOOST_VERSION} REQUIRED COMPONENTS
     unit_test_framework
 )
 
-list(APPEND HEADERS
+set(TEST_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/test_helpers.hpp
 )
 
-list(APPEND SRCS
+set(TEST_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/algorithm/container_ops_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/algorithm/remove_from_range_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/cpu_instruction_test.cpp
@@ -27,15 +27,15 @@ list(APPEND SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/virtual_cpu_test.cpp
 )
 
-list(APPEND FOR_IDE
+set(TEST_FOR_IDE
     ${CMAKE_CURRENT_SOURCE_DIR}/programs/README.md
     ${CMAKE_CURRENT_SOURCE_DIR}/programs/hello_world.mal
     ${CMAKE_CURRENT_SOURCE_DIR}/programs/echo.mal
     ${CMAKE_CURRENT_SOURCE_DIR}/calculate_test_coverage.sh
 )
 
-add_executable(malbolge_test ${HEADERS} ${SRCS} ${FOR_IDE})
-add_dependencies(malbolge_test gen_version)
+add_executable(malbolge_test ${TEST_HEADERS} ${TEST_SRCS} ${TEST_FOR_IDE})
+add_dependencies(malbolge_test gen_version malbolge_lib)
 
 target_compile_features(malbolge_test PUBLIC cxx_std_20)
 set_target_properties(malbolge_test PROPERTIES CXX_EXTENSIONS OFF)
@@ -55,6 +55,7 @@ target_include_directories(malbolge_test
 target_link_libraries(malbolge_test
     PUBLIC Boost::unit_test_framework
     PUBLIC Threads::Threads
+    PUBLIC malbolge_lib
 )
 
 target_compile_definitions(malbolge_test

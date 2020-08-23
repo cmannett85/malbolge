@@ -7,8 +7,8 @@ if(NOT DEFINED ENV{EMSDK})
     message(FATAL_ERROR "EMSDK env var must be set")
 endif()
 
-add_executable(malbolge_wasm ${HEADERS} ${SRCS} ${MAIN_SRCS} ${FOR_IDE} ${VERSION_FILE})
-add_dependencies(malbolge_wasm gen_version)
+add_executable(malbolge_wasm ${MAIN_SRCS})
+add_dependencies(malbolge_wasm gen_version malbolge_lib)
 
 target_compile_features(malbolge_wasm PUBLIC cxx_std_20)
 set_target_properties(malbolge_wasm PROPERTIES CXX_EXTENSIONS OFF)
@@ -47,6 +47,15 @@ target_link_options(malbolge_wasm
     PRIVATE ${WASM_BUILD_OPTIONS}
 )
 
+# Append the WASM build options to the library
+target_compile_options(malbolge_lib
+    PRIVATE -std=c++20 ${WASM_BUILD_OPTIONS}
+)
+
+target_link_options(malbolge_lib
+    PRIVATE ${WASM_BUILD_OPTIONS}
+)
+
 target_include_directories(malbolge_wasm
     PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
     PUBLIC $ENV{EMSDK}/upstream/emscripten/system/include
@@ -54,4 +63,5 @@ target_include_directories(malbolge_wasm
 
 target_link_libraries(malbolge_wasm
     PUBLIC Threads::Threads
+    PUBLIC malbolge_lib
 )

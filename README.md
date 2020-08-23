@@ -184,6 +184,7 @@ The Malbolge project uses Github Actions to enfore strict code quality checks du
   - ThreadSanitizer
 - Documentation generated, if it fails (because the API has changed and the documentation comments not updated to match), then the PR is rejected
 - Release debian package and archives generated.  The debian package is installed, malbolge ran, and then uninstalled - any failure in that process will cause the PR to be rejected
+- A WASM build is performed
 
 I dabbled in `clang-format`, but it only seemed to make the formatting worse, so that will have to be manually checked.  `clang-tidy` will be integrated once it supports C++20 ranges, currently v10 produces errors for them that cannot be suppressed.
 
