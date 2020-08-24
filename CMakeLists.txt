@@ -24,6 +24,7 @@ option(WASM_BUILD "Enable WASM/Emscripten support")
 set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/algorithm/remove_from_range.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/algorithm/container_ops.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/c_interface.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/cpu_instruction.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/exception.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/loader.hpp
@@ -40,6 +41,7 @@ set(HEADERS
 )
 
 set(SRCS
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/c_interface.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/cpu_instruction.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/exception.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/loader.cpp
