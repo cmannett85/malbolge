@@ -54,7 +54,7 @@ level log_level();
 
 /** Set the minimum logging level.
  *
- * @param lvl New minimum log level.
+ * @param lvl New minimum log level
  */
 void set_log_level(level lvl);
 

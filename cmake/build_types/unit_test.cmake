@@ -15,6 +15,7 @@ set(TEST_HEADERS
 set(TEST_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/algorithm/container_ops_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/algorithm/remove_from_range_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/c_interface_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/cpu_instruction_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/loader_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/main_test.cpp

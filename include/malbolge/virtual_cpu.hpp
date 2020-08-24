@@ -73,15 +73,31 @@ public:
      *
      * @param istr Input stream
      * @param ostr Output stream
-     * @return Future holding the result of the program, or an exception from
-     * it
-     * @throw execution_exception Thrown if there is logic error within the
-     * program, or if the program has already ran
+     * @return Future holding nothing, or an exception
+     * @throw execution_exception Thrown if the program has already ran
      */
     std::future<void> run(std::istream& istr = std::cin,
                           std::ostream& ostr = std::cout);
 
-    /** Stops execution.
+    /** Overload.
+     *
+     * Execute the program asynchronously, but uses callbacks instead of a
+     * future.
+     * @note The callbacks are called from the execution thread
+     * @param stopped Callback called when execution has stopped.  Its
+     * argument will be nullptr if the program executed successfully
+     * @param waiting_for_input Callback called when execution is paused
+     * waiting for user input
+     * @param istr Input stream
+     * @param ostr Output stream
+     * @throw execution_exception Thrown if the program has already ran
+     */
+    void run(std::function<void (std::exception_ptr)> stopped,
+             std::function<void ()> waiting_for_input,
+             std::istream& istr = std::cin,
+             std::ostream& ostr = std::cout);
+
+    /** Asynchronously stops execution.
      */
     void stop();
 
