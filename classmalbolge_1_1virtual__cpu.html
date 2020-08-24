@@ -98,6 +98,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a64bc3341ed665c611a9467491a520a3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6e0b4adfdbc824a24031f2f683506169"><td class="memItemLeft" align="right" valign="top">std::future&lt; void &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1virtual__cpu.html#a6e0b4adfdbc824a24031f2f683506169">run</a> (std::istream &amp;istr=std::cin, std::ostream &amp;ostr=std::cout)</td></tr>
 <tr class="separator:a6e0b4adfdbc824a24031f2f683506169"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab0a75fd5d33d4911cfe9283a2e2a8fde"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1virtual__cpu.html#ab0a75fd5d33d4911cfe9283a2e2a8fde">run</a> (std::function&lt; void(std::exception_ptr)&gt; stopped, std::function&lt; void()&gt; waiting_for_input, std::istream &amp;istr=std::cin, std::ostream &amp;ostr=std::cout)</td></tr>
+<tr class="separator:ab0a75fd5d33d4911cfe9283a2e2a8fde"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae728d1a4d88a889dc2f71a09502a95b4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1virtual__cpu.html#ae728d1a4d88a889dc2f71a09502a95b4">stop</a> ()</td></tr>
 <tr class="separator:ae728d1a4d88a889dc2f71a09502a95b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -257,7 +259,7 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <a id="a6e0b4adfdbc824a24031f2f683506169"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6e0b4adfdbc824a24031f2f683506169">&#9670;&nbsp;</a></span>run()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a6e0b4adfdbc824a24031f2f683506169">&#9670;&nbsp;</a></span>run() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -289,10 +291,67 @@ Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Future holding the result of the program, or an exception from it </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Future holding nothing, or an exception </dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="classmalbolge_1_1execution__exception.html">execution_exception</a></td><td>Thrown if there is logic error within the program, or if the program has already ran </td></tr>
+    <tr><td class="paramname"><a class="el" href="classmalbolge_1_1execution__exception.html">execution_exception</a></td><td>Thrown if the program has already ran </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ab0a75fd5d33d4911cfe9283a2e2a8fde"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab0a75fd5d33d4911cfe9283a2e2a8fde">&#9670;&nbsp;</a></span>run() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void malbolge::virtual_cpu::run </td>
+          <td>(</td>
+          <td class="paramtype">std::function&lt; void(std::exception_ptr)&gt;&#160;</td>
+          <td class="paramname"><em>stopped</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::function&lt; void()&gt;&#160;</td>
+          <td class="paramname"><em>waiting_for_input</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::istream &amp;&#160;</td>
+          <td class="paramname"><em>istr</em> = <code>std::cin</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::ostream &amp;&#160;</td>
+          <td class="paramname"><em>ostr</em> = <code>std::cout</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Overload.</p>
+<p>Execute the program asynchronously, but uses callbacks instead of a future. </p><dl class="section note"><dt>Note</dt><dd>The callbacks are called from the execution thread </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">stopped</td><td>Callback called when execution has stopped. Its argument will be nullptr if the program executed successfully </td></tr>
+    <tr><td class="paramname">waiting_for_input</td><td>Callback called when execution is paused waiting for user input </td></tr>
+    <tr><td class="paramname">istr</td><td>Input stream </td></tr>
+    <tr><td class="paramname">ostr</td><td>Output stream </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="classmalbolge_1_1execution__exception.html">execution_exception</a></td><td>Thrown if the program has already ran </td></tr>
   </table>
   </dd>
 </dl>
@@ -342,7 +401,7 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Stops execution. </p>
+<p>Asynchronously stops execution. </p>
 
 </div>
 </div>
