@@ -8,6 +8,8 @@
 #ifdef EMSCRIPTEN
 #include <emscripten.h>
 
+#include <boost/core/ignore_unused.hpp>
+
 #include <map>
 #include <array>
 #endif
@@ -80,9 +82,13 @@ EM_JS(int, malbolge_input, (char* buffer, int maxlen), {
 });
 #endif
 
-std::optional<char> utility::get_char(std::istream& str)
+utility::get_char_result utility::get_char(std::istream& str,
+                                           char& c,
+                                           bool block)
 {
 #ifdef EMSCRIPTEN
+    boost::ignore_unused(block);
+
     auto& [pos, len, buffer] = streams[&str];
 
     if (pos == len) {
@@ -90,9 +96,14 @@ std::optional<char> utility::get_char(std::istream& str)
         pos = 0;
     }
 
-    return buffer[pos++];
+    c = buffer[pos++];
+    return utility::get_char_result::CHAR;
 #else
-    auto c = char{};
-    return str.get(c) ? std::optional<char>{c} : std::optional<char>{};
+    if (!block && !str.rdbuf()->in_avail()) {
+        return utility::get_char_result::NO_DATA;
+    }
+
+    return str.get(c) ? utility::get_char_result::CHAR :
+                        utility::get_char_result::ERROR;
 #endif
 }

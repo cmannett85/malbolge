@@ -216,6 +216,10 @@ BOOST_AUTO_TEST_CASE(run_echo)
     BOOST_CHECK(global_waiting);
     global_waiting = false;
     r = malbolge_vcpu_input(global_vcpu, "Goodbye!", 8);
+
+    // Wait a moment so we are back into waiting for input (to test stopping)
+    // Issue #97
+    std::this_thread::sleep_for(100ms);
     malbolge_vcpu_stop(global_vcpu);
     BOOST_CHECK_EQUAL(r, 0);
 
