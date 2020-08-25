@@ -81,6 +81,10 @@ BOOST_AUTO_TEST_CASE(echo)
         }
     );
 
+    // Wait a moment so we are back into waiting for input (to test stopping)
+    // Issue #97
+    std::this_thread::sleep_for(100ms);
+
     vcpu.stop();
     fut.get();
     BOOST_CHECK_EQUAL(vcpu.state(), virtual_cpu::execution_state::STOPPED);

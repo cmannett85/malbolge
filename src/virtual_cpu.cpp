@@ -12,6 +12,7 @@
 
 using namespace malbolge;
 using namespace std::string_literals;
+using namespace std::chrono_literals;
 
 namespace
 {
@@ -65,13 +66,27 @@ void vcpu_loop(virtual_memory& vmem,
                 waiting_for_input();
             }
 
-            auto input = utility::get_char(istr);
-            if (input) {
-                a = *input;
-            } else {
-                a = math::ternary::max;
-            }
+            // We can't block on waiting for input because it prevents the
+            // thread from exiting, so we poll the input stream, checking for
+            // a stop state in between each cycle
+            // Issue #97
+            while (true) {
+                if (state == virtual_cpu::execution_state::STOPPED) {
+                    return;
+                }
 
+                auto input = char{};
+                auto result = utility::get_char(istr, input, false);
+                if (result == utility::get_char_result::NO_DATA) {
+                    std::this_thread::sleep_for(25ms);
+                } else if (result == utility::get_char_result::CHAR) {
+                    a = input;
+                    break;
+                } else {
+                    a = math::ternary::max;
+                    break;
+                }
+            }
             break;
         }
         case cpu_instruction::write:
