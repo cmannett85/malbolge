@@ -4,6 +4,7 @@ var searchData=
   ['callable_5ftype',['callable_type',['../classmalbolge_1_1utility_1_1raii.html#a3d22a2e6c48bef952730707f83086744',1,'malbolge::utility::raii']]],
   ['cbegin',['cbegin',['../classmalbolge_1_1virtual__memory.html#ad5a8741dca459c7d6f0a3127562505de',1,'malbolge::virtual_memory']]],
   ['cend',['cend',['../classmalbolge_1_1virtual__memory.html#ad0c728a2119618fd05a56147392963c3',1,'malbolge::virtual_memory']]],
+  ['char',['CHAR',['../namespacemalbolge_1_1utility.html#aee692a4a3d0c2ab122543c4faa838259a027acd3aa6b1dd7f26119d3cf0f9a063',1,'malbolge::utility']]],
   ['code',['code',['../classmalbolge_1_1system__exception.html#a56bcdc6490ebaf46812156b9882d1134',1,'malbolge::system_exception']]],
   ['column',['column',['../structmalbolge_1_1source__location.html#afcfdc5a541a64aa83525228d627f421d',1,'malbolge::source_location']]],
   ['const_5fiterator',['const_iterator',['../classmalbolge_1_1virtual__memory.html#aba1bac345efd8122e70785fd0a3213db',1,'malbolge::virtual_memory']]],
