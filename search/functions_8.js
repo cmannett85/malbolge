@@ -8,5 +8,6 @@ var searchData=
   ['malbolge_5fvcpu_5frun',['malbolge_vcpu_run',['../c__interface_8hpp.html#aab3f5204473302c4c526ecf33acb3638',1,'c_interface.hpp']]],
   ['malbolge_5fvcpu_5fstop',['malbolge_vcpu_stop',['../c__interface_8hpp.html#ae314756573b71c9194e0eabeff221000',1,'c_interface.hpp']]],
   ['malbolge_5fversion',['malbolge_version',['../c__interface_8hpp.html#aae0eb68fd86649a134a1bbe2faaedae3',1,'c_interface.hpp']]],
-  ['max_5fsize',['max_size',['../classmalbolge_1_1virtual__memory.html#a1c728114449a835d5e00cdb27f739c9a',1,'malbolge::virtual_memory']]]
+  ['max_5fsize',['max_size',['../classmalbolge_1_1virtual__memory.html#a1c728114449a835d5e00cdb27f739c9a',1,'malbolge::virtual_memory']]],
+  ['mutex_5fwrapper',['mutex_wrapper',['../classmalbolge_1_1utility_1_1mutex__wrapper.html#a4b8b6a95bae4cb8dfb26073b3d3c0511',1,'malbolge::utility::mutex_wrapper::mutex_wrapper()=default'],['../classmalbolge_1_1utility_1_1mutex__wrapper.html#a045e7b26194bdeb003c0d0b193ffc03f',1,'malbolge::utility::mutex_wrapper::mutex_wrapper(Mutex &amp;mtx)']]]
 ];

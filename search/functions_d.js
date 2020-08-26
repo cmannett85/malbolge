@@ -4,5 +4,6 @@ var searchData=
   ['to_5fbase10',['to_base10',['../classmalbolge_1_1math_1_1tritset.html#a1440f8d07a9b89c6558f59f8df181ede',1,'malbolge::math::tritset']]],
   ['to_5fstring',['to_string',['../namespacemalbolge.html#a21d5a5333d45ebe1cd5b2488cb3e2128',1,'malbolge::to_string()'],['../namespacemalbolge_1_1log.html#a1cfcb579f2e0b74f6a054e493bf83a21',1,'malbolge::log::to_string()']]],
   ['to_5ftritset',['to_tritset',['../classmalbolge_1_1math_1_1ternary.html#a6197117216a0cd91da19525d49354082',1,'malbolge::math::ternary']]],
-  ['tritset',['tritset',['../classmalbolge_1_1math_1_1tritset.html#a1abf92a1fc64bc72cea4513d86b7721f',1,'malbolge::math::tritset::tritset(T value=0)'],['../classmalbolge_1_1math_1_1tritset.html#a95f82870386b3cb0252edb2f7909966c',1,'malbolge::math::tritset::tritset(const std::string &amp;str)'],['../classmalbolge_1_1math_1_1tritset.html#a1d15e4e843f39c9ef30a9b9c70a1cbd6',1,'malbolge::math::tritset::tritset(const tritset &amp;other)=default']]]
+  ['tritset',['tritset',['../classmalbolge_1_1math_1_1tritset.html#a1abf92a1fc64bc72cea4513d86b7721f',1,'malbolge::math::tritset::tritset(T value=0)'],['../classmalbolge_1_1math_1_1tritset.html#a95f82870386b3cb0252edb2f7909966c',1,'malbolge::math::tritset::tritset(const std::string &amp;str)'],['../classmalbolge_1_1math_1_1tritset.html#a1d15e4e843f39c9ef30a9b9c70a1cbd6',1,'malbolge::math::tritset::tritset(const tritset &amp;other)=default']]],
+  ['try_5flock',['try_lock',['../classmalbolge_1_1utility_1_1mutex__wrapper.html#a3bd32bcdc37a3b52a57fb424f46eeed5',1,'malbolge::utility::mutex_wrapper']]]
 ];
