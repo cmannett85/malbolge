@@ -6,6 +6,7 @@
 #pragma once
 
 #include "malbolge/virtual_memory.hpp"
+#include "malbolge/utility/mutex_wrapper.hpp"
 
 #include <iostream>
 #include <thread>
@@ -73,11 +74,15 @@ public:
      *
      * @param istr Input stream
      * @param ostr Output stream
+     * @param mtx Mutex for accessing the streams.  Only required if at least
+     * one stream is not cin/cout
      * @return Future holding nothing, or an exception
-     * @throw execution_exception Thrown if the program has already ran
+     * @throw execution_exception Thrown if the program has already ran, or
+     * cin/cout is used as a stream but mtx is not valid
      */
     std::future<void> run(std::istream& istr = std::cin,
-                          std::ostream& ostr = std::cout);
+                          std::ostream& ostr = std::cout,
+                          utility::mutex_wrapper mtx = {});
 
     /** Overload.
      *
@@ -90,18 +95,26 @@ public:
      * waiting for user input
      * @param istr Input stream
      * @param ostr Output stream
-     * @throw execution_exception Thrown if the program has already ran
+     * @param mtx Mutex for accessing the streams.  Only required if at least
+     * one stream is not cin/cout
+     * @throw execution_exception Thrown if the program has already ran, or
+     * cin/cout is used as a stream but mtx is not valid
      */
     void run(std::function<void (std::exception_ptr)> stopped,
              std::function<void ()> waiting_for_input,
              std::istream& istr = std::cin,
-             std::ostream& ostr = std::cout);
+             std::ostream& ostr = std::cout,
+             utility::mutex_wrapper mtx = {});
 
     /** Asynchronously stops execution.
      */
     void stop();
 
 private:
+    void basic_run_check(std::istream& istr,
+                         std::ostream& ostr,
+                         utility::mutex_wrapper mtx);
+
     std::thread thread_;
     std::shared_ptr<std::atomic<execution_state>> state_;
     virtual_memory vmem_;

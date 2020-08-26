@@ -23,7 +23,8 @@ BOOST_AUTO_TEST_CASE(hello_world)
     BOOST_CHECK_EQUAL(vcpu.state(), virtual_cpu::execution_state::READY);
 
     auto ostr = std::stringstream{};
-    auto fut = vcpu.run(std::cin, ostr);
+    auto mtx = std::mutex{};
+    auto fut = vcpu.run(std::cin, ostr, mtx);
     BOOST_CHECK_EQUAL(vcpu.state(), virtual_cpu::execution_state::RUNNING);
 
     fut.get();
@@ -38,7 +39,8 @@ BOOST_AUTO_TEST_CASE(hello_world_string)
     BOOST_CHECK_EQUAL(vcpu.state(), virtual_cpu::execution_state::READY);
 
     auto ostr = std::stringstream{};
-    auto fut = vcpu.run(std::cin, ostr);
+    auto mtx = std::mutex{};
+    auto fut = vcpu.run(std::cin, ostr, mtx);
     BOOST_CHECK_EQUAL(vcpu.state(), virtual_cpu::execution_state::RUNNING);
 
     fut.get();
@@ -54,7 +56,8 @@ BOOST_AUTO_TEST_CASE(echo)
 
     auto istr = std::stringstream{};
     auto ostr = std::stringstream{};
-    auto fut = vcpu.run(istr, ostr);
+    auto mtx = std::mutex{};
+    auto fut = vcpu.run(istr, ostr, mtx);
     BOOST_CHECK_EQUAL(vcpu.state(), virtual_cpu::execution_state::RUNNING);
 
     auto f = [&](auto input) {

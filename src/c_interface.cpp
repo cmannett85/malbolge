@@ -14,7 +14,16 @@ using namespace malbolge;
 
 namespace
 {
-std::unordered_map<void*, std::stringstream> input_streams;
+struct vcpu_custom_input_data {
+    vcpu_custom_input_data() :
+        mtx{std::make_unique<std::mutex>()}
+    {}
+
+    std::stringstream stream;
+    std::unique_ptr<std::mutex> mtx;
+};
+
+std::unordered_map<void*, vcpu_custom_input_data> input_data;
 }
 
 unsigned int malbolge_log_level()
@@ -86,11 +95,11 @@ malbolge_virtual_cpu malbolge_vcpu_run(malbolge_virtual_memory vmem,
         return nullptr;
     }
 
-    auto handle = new virtual_cpu{std::move(*static_cast<virtual_memory*>(vmem))};
+    auto vcpu = new virtual_cpu{std::move(*static_cast<virtual_memory*>(vmem))};
     malbolge_free_virtual_memory(vmem);
 
     auto wrapped_stopped_cb = [=](std::exception_ptr eptr) {
-        input_streams.erase(handle);
+        input_data.erase(vcpu);
 
         auto err = 0;
         try {
@@ -108,34 +117,36 @@ malbolge_virtual_cpu malbolge_vcpu_run(malbolge_virtual_memory vmem,
             err = -1;
         }
 
-        stopped_cb(err, handle);
+        stopped_cb(err, vcpu);
     };
 
     auto wrapped_waiting_cb = [=]() {
-        waiting_cb(handle);
+        waiting_cb(vcpu);
     };
 
     try {
         if (use_cin) {
-            handle->run(std::move(wrapped_stopped_cb),
-                        std::move(wrapped_waiting_cb),
-                        std::cin);
+            vcpu->run(std::move(wrapped_stopped_cb),
+                      std::move(wrapped_waiting_cb));
         } else {
-            auto it = input_streams.emplace(handle, std::stringstream{});
-            handle->run(std::move(wrapped_stopped_cb),
-                        std::move(wrapped_waiting_cb),
-                        it.first->second);
+            auto it = input_data.emplace(static_cast<void*>(vcpu),
+                                         vcpu_custom_input_data{});
+            vcpu->run(std::move(wrapped_stopped_cb),
+                      std::move(wrapped_waiting_cb),
+                      it.first->second.stream,
+                      std::cout,
+                      *(it.first->second.mtx));
         }
 
-        return handle;
+        return vcpu;
     } catch (std::exception& e) {
         log::print(log::level::ERROR, e.what());
     } catch (...) {
         log::print(log::ERROR, "Unknown exception");
     }
 
-    input_streams.erase(handle);
-    delete handle;
+    input_data.erase(vcpu);
+    delete vcpu;
     return nullptr;
 }
 
@@ -159,14 +170,17 @@ int malbolge_vcpu_input(malbolge_virtual_cpu vcpu,
         return -EINVAL;
     }
 
-    auto it = input_streams.find(vcpu);
-    if (it == input_streams.end()) {
+    auto it = input_data.find(vcpu);
+    if (it == input_data.end()) {
         log::print(log::level::ERROR, "vCPU set to use cin");
         return -EINVAL;
     }
 
-    auto& stream = it->second;
-    stream.write(buffer, size);
+    auto& data = it->second;
+    {
+        auto guard = std::lock_guard{*(data.mtx)};
+        data.stream.write(buffer, size);
+    }
 
     return 0;
 }
