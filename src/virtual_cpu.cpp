@@ -20,7 +20,8 @@ void vcpu_loop(virtual_memory& vmem,
                std::atomic<virtual_cpu::execution_state>& state,
                std::function<void ()> waiting_for_input,
                std::istream& istr,
-               std::ostream& ostr)
+               std::ostream& ostr,
+               utility::mutex_wrapper mtx)
 {
     auto a = math::ternary{};   // Accumulator register
     auto c = vmem.begin();      // Code pointer
@@ -76,7 +77,12 @@ void vcpu_loop(virtual_memory& vmem,
                 }
 
                 auto input = char{};
-                auto result = utility::get_char(istr, input, false);
+                auto result = utility::get_char_result::NO_DATA;
+                {
+                    auto guard = std::lock_guard{mtx};
+                    result = utility::get_char(istr, input, false);
+                }
+
                 if (result == utility::get_char_result::NO_DATA) {
                     std::this_thread::sleep_for(25ms);
                 } else if (result == utility::get_char_result::CHAR) {
@@ -94,10 +100,13 @@ void vcpu_loop(virtual_memory& vmem,
 #ifdef EMSCRIPTEN
                 // Emscripten cannot flush output without a newline, so
                 // we need to force with std::endl
-                if (static_cast<char>(a) == '\n') {
-                    ostr << std::endl;
-                } else {
-                    ostr << static_cast<char>(a);
+                {
+                    auto guard = std::lock_guard{mtx};
+                    if (static_cast<char>(a) == '\n') {
+                        ostr << std::endl;
+                    } else {
+                        ostr << static_cast<char>(a);
+                    }
                 }
 #else
                 ostr << static_cast<char>(a);
@@ -154,12 +163,11 @@ virtual_cpu& virtual_cpu::operator=(virtual_cpu&& other)
     return *this;
 }
 
-std::future<void> virtual_cpu::run(std::istream& istr, std::ostream& ostr)
+std::future<void> virtual_cpu::run(std::istream& istr,
+                                   std::ostream& ostr,
+                                   utility::mutex_wrapper mtx)
 {
-    if (*state_ != execution_state::READY) {
-        throw execution_exception{"vCPU is not in a ready state", 0};
-    }
-    *state_ = execution_state::RUNNING;
+    basic_run_check(istr, ostr, mtx);
 
     log::print(log::DEBUG, "Starting program (future-based)");
 
@@ -170,7 +178,8 @@ std::future<void> virtual_cpu::run(std::istream& istr, std::ostream& ostr)
                            state = state_,
                            p = std::move(promise),
                            &istr,
-                           &ostr]() mutable {
+                           &ostr,
+                           mtx = std::move(mtx)]() mutable {
         log::print(log::VERBOSE_DEBUG, "Program thread started");
 
         auto exception = false;
@@ -187,7 +196,7 @@ std::future<void> virtual_cpu::run(std::istream& istr, std::ostream& ostr)
         }};
 
         try {
-            vcpu_loop(vmem, *state, {}, istr, ostr);
+            vcpu_loop(vmem, *state, {}, istr, ostr, std::move(mtx));
         } catch (std::exception& e) {
             auto e_ptr = std::make_exception_ptr(std::move(e));
             p.set_exception(std::move(e_ptr));
@@ -202,12 +211,10 @@ std::future<void> virtual_cpu::run(std::istream& istr, std::ostream& ostr)
 void virtual_cpu::run(std::function<void (std::exception_ptr)> stopped,
                       std::function<void ()> waiting_for_input,
                       std::istream& istr,
-                      std::ostream& ostr)
+                      std::ostream& ostr,
+                      utility::mutex_wrapper mtx)
 {
-    if (*state_ != execution_state::READY) {
-        throw execution_exception{"vCPU is not in a ready state", 0};
-    }
-    *state_ = execution_state::RUNNING;
+    basic_run_check(istr, ostr, mtx);
 
     log::print(log::DEBUG, "Starting program (callback-based)");
 
@@ -216,7 +223,8 @@ void virtual_cpu::run(std::function<void (std::exception_ptr)> stopped,
                            stopped_cb = std::move(stopped),
                            waiting_cb = std::move(waiting_for_input),
                            &istr,
-                           &ostr]() mutable {
+                           &ostr,
+                           mtx = std::move(mtx)]() mutable {
         log::print(log::VERBOSE_DEBUG, "Program thread started");
 
         auto exception = std::exception_ptr{};
@@ -231,7 +239,7 @@ void virtual_cpu::run(std::function<void (std::exception_ptr)> stopped,
         }};
 
         try {
-            vcpu_loop(vmem, *state, waiting_cb, istr, ostr);
+            vcpu_loop(vmem, *state, waiting_cb, istr, ostr, std::move(mtx));
         } catch (std::exception& e) {
             exception = std::current_exception();
             return;
@@ -261,4 +269,21 @@ std::ostream& malbolge::operator<<(std::ostream& stream,
     default:
         return stream << "Unknown";
     }
+}
+
+void virtual_cpu::basic_run_check(std::istream& istr,
+                                  std::ostream& ostr,
+                                  utility::mutex_wrapper mtx)
+{
+    if (*state_ != execution_state::READY) {
+        throw execution_exception{"vCPU is not in a ready state", 0};
+    }
+    if (!mtx && (istr.rdbuf() != std::cin.rdbuf() ||
+                 ostr.rdbuf() != std::cout.rdbuf())){
+        throw execution_exception{
+            "Non-stdio I/O streams provided but no mutex",
+            0
+        };
+    }
+    *state_ = execution_state::RUNNING;
 }
