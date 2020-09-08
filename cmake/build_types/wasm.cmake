@@ -7,7 +7,38 @@ if(NOT DEFINED ENV{EMSDK})
     message(FATAL_ERROR "EMSDK env var must be set")
 endif()
 
-add_executable(malbolge_wasm ${MAIN_SRCS})
+set(WASM_BUILD_OPTIONS
+    "SHELL:-s EXPORTED_FUNCTIONS=[\"_malbolge_log_level\",\"_malbolge_set_log_level\",\"_malbolge_version\",\"_malbolge_load_program\",\"_malbolge_free_virtual_memory\",\"_malbolge_vcpu_run_wasm\",\"_malbolge_vcpu_stop\",\"_malbolge_vcpu_input\"]"
+    "SHELL:-s ALLOW_MEMORY_GROWTH"
+    "SHELL:-s ALLOW_TABLE_GROWTH"
+    "SHELL:-s DISABLE_EXCEPTION_CATCHING=0"
+    "SHELL:-s USE_BOOST_HEADERS"
+    "SHELL:-s USE_PTHREADS"
+    "SHELL:-s PTHREAD_POOL_SIZE=\"1\"" # One more is added due to PROXY_TO_PTHREAD
+    "SHELL:-s ENVIRONMENT=\"web,worker\""
+    "SHELL:-s MINIMAL_RUNTIME_STREAMING_WASM_INSTANTIATION"
+)
+
+# Append the WASM build options to the library
+target_compile_options(malbolge_lib
+    PRIVATE -std=c++20 ${WASM_BUILD_OPTIONS}
+)
+
+target_link_options(malbolge_lib
+    PRIVATE ${WASM_BUILD_OPTIONS}
+)
+
+set(WASM_HEADERS
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/c_interface_wasm.hpp
+)
+
+set(WASM_IDE
+    ${CMAKE_CURRENT_SOURCE_DIR}/playground/index.html
+)
+
+# Because Emscripten needs em++ to produce a WASM file, we have to 'wrap' the
+# library in an executable target
+add_executable(malbolge_wasm ${WASM_HEADERS} ${WASM_IDE})
 add_dependencies(malbolge_wasm gen_version malbolge_lib)
 
 target_compile_features(malbolge_wasm PUBLIC cxx_std_20)
@@ -22,20 +53,6 @@ target_compile_definitions(malbolge_wasm
     PUBLIC EMSCRIPTEN
 )
 
-set(WASM_BUILD_OPTIONS
-    "SHELL:-s ASYNCIFY"
-    "SHELL:-s ASYNCIFY_IMPORTS=[\"malbolge_input\"]"
-    "SHELL:-s ALLOW_MEMORY_GROWTH"
-    "SHELL:-s PROXY_TO_PTHREAD"
-    "SHELL:-s DISABLE_EXCEPTION_CATCHING=0"
-    "SHELL:-s USE_BOOST_HEADERS"
-    "SHELL:-s USE_PTHREADS"
-    "SHELL:-s PTHREAD_POOL_SIZE=\"1\"" # One more is added due to PROXY_TO_PTHREAD
-    "SHELL:-s NO_INVOKE_RUN"
-    "SHELL:-s ENVIRONMENT=\"web,worker\""
-    "SHELL:-s MINIMAL_RUNTIME_STREAMING_WASM_INSTANTIATION"
-)
-
 # There seems to be a bug in either CMake or Emscripten that prevents the
 # C++ standard flag from appearing in the flags when set using
 # target_compile_features
@@ -44,15 +61,6 @@ target_compile_options(malbolge_wasm
 )
 
 target_link_options(malbolge_wasm
-    PRIVATE ${WASM_BUILD_OPTIONS}
-)
-
-# Append the WASM build options to the library
-target_compile_options(malbolge_lib
-    PRIVATE -std=c++20 ${WASM_BUILD_OPTIONS}
-)
-
-target_link_options(malbolge_lib
     PRIVATE ${WASM_BUILD_OPTIONS}
 )
 

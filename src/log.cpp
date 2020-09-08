@@ -19,11 +19,20 @@ std::ostream& log::detail::log_prefix(std::ostream& stream)
 {
     const auto now = std::chrono::system_clock::now();
     const auto c_now = std::chrono::system_clock::to_time_t(now);
-    const auto just_ns = std::chrono::duration_cast<std::chrono::nanoseconds>(
+
+#ifdef EMSCRIPTEN
+    // Browsers barely have millisecond accurate timers, so reduce from ns to ms
+    const auto fractional = std::chrono::duration_cast<std::chrono::milliseconds>(
+        now.time_since_epoch()).count() % std::milli::den;
+    constexpr auto width = 3;
+#else
+    const auto fractional = std::chrono::duration_cast<std::chrono::nanoseconds>(
         now.time_since_epoch()).count() % std::nano::den;
+    constexpr auto width = 9;
+#endif
 
     return stream << std::put_time(std::localtime(&c_now), "%F %T")
-                  << "." << std::setfill('0') << std::setw(9) << just_ns
+                  << "." << std::setfill('0') << std::setw(width) << fractional
                   << "[";
 }
 

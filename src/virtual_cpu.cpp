@@ -5,7 +5,6 @@
 
 #include "malbolge/virtual_cpu.hpp"
 #include "malbolge/cpu_instruction.hpp"
-#include "malbolge/utility/get_char.hpp"
 #include "malbolge/utility/raii.hpp"
 #include "malbolge/exception.hpp"
 #include "malbolge/log.hpp"
@@ -26,6 +25,8 @@ void vcpu_loop(virtual_memory& vmem,
     auto a = math::ternary{};   // Accumulator register
     auto c = vmem.begin();      // Code pointer
     auto d = vmem.begin();      // Data pointer
+
+    auto reading_stream = false;
 
     // Loop forever, but increment the pointers on each iteration
     auto step = std::size_t{0};
@@ -63,35 +64,46 @@ void vcpu_loop(virtual_memory& vmem,
             break;
         case cpu_instruction::read:
         {
-            if (waiting_for_input) {
-                waiting_for_input();
-            }
-
             // We can't block on waiting for input because it prevents the
             // thread from exiting, so we poll the input stream, checking for
             // a stop state in between each cycle
             // Issue #97
+            auto waiting_called = false;
             while (true) {
                 if (state == virtual_cpu::execution_state::STOPPED) {
                     return;
                 }
 
-                auto input = char{};
-                auto result = utility::get_char_result::NO_DATA;
                 {
                     auto guard = std::lock_guard{mtx};
-                    result = utility::get_char(istr, input, false);
+                    if (istr.peek() < 0) {
+                        // No data
+                        if (!reading_stream) {
+                            // Only call the waiting callback once per read
+                            // operation
+                            if (!waiting_called && waiting_for_input) {
+                                waiting_for_input();
+                                waiting_called = true;
+                            }
+
+                            // Clear the fail bits
+                            istr.clear();
+                        } else {
+                            // We have finished reading the data
+                            reading_stream = false;
+                            a = math::ternary::max;
+                            istr.clear();
+                            break;
+                        }
+                    } else {
+                        // We have found data to read
+                        reading_stream = true;
+                        a = istr.get();
+                        break;
+                    }
                 }
 
-                if (result == utility::get_char_result::NO_DATA) {
-                    std::this_thread::sleep_for(25ms);
-                } else if (result == utility::get_char_result::CHAR) {
-                    a = input;
-                    break;
-                } else {
-                    a = math::ternary::max;
-                    break;
-                }
+                std::this_thread::sleep_for(25ms);
             }
             break;
         }

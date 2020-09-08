@@ -90,14 +90,16 @@ malbolge_virtual_memory malbolge_load_program(char *buffer,
  */
 void malbolge_free_virtual_memory(malbolge_virtual_memory vmem);
 
-/** Creates a virtual CPU and begins executing the code in @a vmem.
+/** Creates a virtual CPU and begins asynchronously executing the code in
+ * @a vmem.
  *
  * @param vmem Virtual memory handle returned from malbolge_load_program,
  * @a vmem is freed by this function.
  * @param stopped_cb Callback called when the execution stops
  * @param waiting_cb Callback called when the program is expecting user input
  * @param use_cin If true, user input is extracted from cin
- * @return Malbolge virtual CPU handle.  This is freed when execution stops.
+ * @return Malbolge virtual CPU handle, or NULL if early checks failed.  This is
+ * freed when execution stops.
  */
 malbolge_virtual_cpu malbolge_vcpu_run(malbolge_virtual_memory vmem,
                                        malbolge_program_stopped stopped_cb,
