@@ -17,6 +17,7 @@
 #include <thread>
 
 using namespace malbolge;
+using namespace std::string_literals;
 using namespace std::chrono_literals;
 
 namespace
@@ -156,13 +157,13 @@ BOOST_AUTO_TEST_CASE(load)
     );
 }
 
-// These next two tests kinda stink because I can't test the cout output
-// without somewhat ruining the simplicity of the C interface (i.e. I can't
-// redirect cout because there are no iostreams in C).  Thankfully the
-// underlying C++ code is fully tested, so it's not too bad
+// These next tests kinda stink because I can't test the cout output without
+// somewhat ruining the simplicity of the C interface (i.e. I can't redirect
+// cout because there are no iostreams in C).  Thankfully the underlying C++
+// code is fully tested, so it's not as bad as it looks
 BOOST_AUTO_TEST_CASE(run_hello_world)
 {
-    malbolge_set_log_level(1);
+    malbolge_set_log_level(2);
 
     auto buffer = load_program_from_disk(std::filesystem::path{"programs/hello_world.mal"});
     auto fail_line = 0u;
@@ -183,12 +184,39 @@ BOOST_AUTO_TEST_CASE(run_hello_world)
     BOOST_CHECK(global_stopped);
 
     const auto r = malbolge_vcpu_input(global_vcpu, "Goodbye!", 8);
-    BOOST_CHECK_NE(r, 0);
+    BOOST_CHECK_EQUAL(r, -EINVAL);
+}
+
+BOOST_AUTO_TEST_CASE(run_hello_world_string)
+{
+    malbolge_set_log_level(2);
+
+    auto buffer = R"(('&%:9]!~}|z2Vxwv-,POqponl$Hjig%eB@@>}=<M:9wv6WsU2T|nm-,jcL(I&%$#"`CB]V?Tx<uVtT`Rpo3NlF.Jh++FdbCBA@?]!~|4XzyTT43Qsqq(Lnmkj"Fhg${z@>
+)"s;
+    auto fail_line = 0u;
+    auto fail_column = 0u;
+    auto vmem = malbolge_load_program(buffer.data(),
+                                      buffer.size(),
+                                      &fail_line,
+                                      &fail_column);
+    BOOST_REQUIRE(vmem);
+    BOOST_CHECK_EQUAL(fail_line, 0);
+    BOOST_CHECK_EQUAL(fail_column, 0);
+
+    global_stopped = false;
+    global_vcpu = malbolge_vcpu_run(vmem, stopped_cb, waiting_cb, 1);
+    BOOST_REQUIRE(global_vcpu);
+
+    std::this_thread::sleep_for(100ms);
+    BOOST_CHECK(global_stopped);
+
+    const auto r = malbolge_vcpu_input(global_vcpu, "Goodbye!", 8);
+    BOOST_CHECK_EQUAL(r, -EINVAL);
 }
 
 BOOST_AUTO_TEST_CASE(run_echo)
 {
-    malbolge_set_log_level(1);
+    malbolge_set_log_level(2);
 
     auto buffer = load_program_from_disk(std::filesystem::path{"programs/echo.mal"});
     auto fail_line = 0u;

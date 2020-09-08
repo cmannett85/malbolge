@@ -9,8 +9,7 @@
 
 namespace malbolge
 {
-/** Removes an element from a range by moving the all the higher elements down
- * one.
+/** Removes an element from a range by moving all the higher elements down one.
  *
  * This will leave the last element in an undefined state.
  *

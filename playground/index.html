@@ -1,60 +1,166 @@
 <!DOCTYPE html>
 <html>
 <head>
+<style>
+body {
+    color: #f2f2f2;
+    background-color: #666666;
+}
+
+.monospace {
+  font-family: "Lucida Console", Courier, monospace;
+}
+</style>
+
 <title>Malbolge Playground</title>
 </head>
 <body>
 
-<p>Malbolge program:</p>
+<p class="monospace">Malbolge program</p>
 <textarea id="program" rows="10" cols="80" required></textarea>
 <br><br>
-<button id="run_button" onclick="run_malbolge()" disabled>Run</button>
+<button id="run_button" onclick="runMalbolge()" disabled>Run</button>  
+<button id="stop_button" onclick="stopMalbolge()" disabled>Stop</button>
 <br><br>
-<p>Input</p>
+<p class="monospace">Input</p>
 <input type="text" id="input">
-<button id="input_button" onclick="set_input_text()" disabled>Submit</button>
+<button id="input_button" onclick="setInputText()" disabled>Submit</button>
 <br><br>
-<p>Output:</p>
+<p class="monospace">Output</p>
 <textarea id="output" rows="10" cols="80"></textarea>
 
 <script>
-    function run_malbolge() {
-        document.getElementById("run_button").disabled = true;
-        document.getElementById("output").value = "";
-        const program_text = document.getElementById("program").value;
-        callMain(["-ll", "--string", program_text]);
-    }
+    class CString {
+        constructor(s) {
+            this._size = 0;
+            this._ptr = null;
 
-    function set_input_text() {
-        const text = document.getElementById("input").value + "\n";
-        if (text.length) {
-            // Push text to worker
-            let worker = Module["PThread"].runningWorkers.slice(-1)[0];
-            worker.postMessage({
-                cmd: "input_text",
-                input_text: text
-            });
+            let size = lengthBytesUTF8(s) + 1;
+            let ret = _malloc(size);
+            if (ret) {
+                stringToUTF8(s, ret, size);
+            }
+
+            this._size = size - 1;
+            this._ptr = ret;
         }
 
-        document.getElementById("input").value = "";
+        get pointer() {
+            return this._ptr;
+        }
+
+        get size() {
+            return this._size;
+        }
+
+        toString() {
+            return UTF8ToString(this._ptr, this._size);
+        }
+
+        // If only there were destructors in JS...
+        destroy() {
+            _free(this._ptr);
+        }
     }
 
-    // Print the version once the WASM initialisation has finished
-    function finished_loading() {
-        callMain(["--version"]);
+    function running(is_running) {
+        document.getElementById("run_button").disabled = is_running;
+        document.getElementById("stop_button").disabled = !is_running;
+    }
+
+    function runMalbolge() {
+        running(true);
+        document.getElementById("output").value = "";
+        const programText = new CString(document.getElementById("program").value);
+        if (programText.pointer == null) {
+            console.alert("Failed to allocate program source heap");
+            return;
+        }
+
+        // Load and validate the program
+        let vmem = _malbolge_load_program(programText.pointer,
+                                          programText.size,
+                                          0,
+                                          0);
+        programText.destroy();
+
+        if (!vmem) {
+            running(false);
+            return;
+        }
+
+        // Now execute it
+        let vcpu = _malbolge_vcpu_run_wasm(vmem);
+        if (!vcpu) {
+            running(false);
+            return;
+        }
+
+        Module.malbolgeVmem = vmem;
+        Module.malbolgeVcpu = vcpu;
+    }
+
+    function stopMalbolge() {
+        running(false);
+        _malbolge_vcpu_stop(Module.malbolgeVcpu);
+    }
+
+    function setInputText() {
+        const text = document.getElementById("input").value + "\n";
+        if (text.length) {
+            const ctext = new CString(text);
+            if (ctext.pointer == null) {
+                console.alert("Failed to allocate input text heap");
+                return;
+            }
+
+            _malbolge_vcpu_input(Module.malbolgeVcpu, ctext.pointer, ctext.size);
+            ctext.destroy();
+
+            document.getElementById("input").value = "";
+            document.getElementById("input_button").disabled = true;
+        }
+    }
+
+    function finishedLoading() {
+        // Print the version once the WASM initialisation has finished
+        stdOut("Malbolge Virtual Machine v" +
+               UTF8ToString(_malbolge_version()) +
+               "\nCopyright Cam Mannett 2020");
+
+        // Increase the log level
+        _malbolge_set_log_level(2);
+
+        // Wrap the original message handling with support for our own messages.
+        // There's no native support (yet) in Emscripten for doing this, hence
+        // the hackery below
+        {
+            let worker = Module["PThread"].unusedWorkers[0];
+            let standardHandlers = worker.onmessage;
+            worker.onmessage = function (e) {
+                if (e.data.cmd === "malbolgeStopped") {
+                    running(false);
+                } else if (e.data.cmd === "malbolgeWaitingForInput") {
+                    document.getElementById("input_button").disabled = false;
+                    console.log("Waiting for input");
+                } else {
+                    standardHandlers(e);
+                }
+            };
+        }
+
         document.getElementById("run_button").disabled = false;
-        document.getElementById("input_button").disabled = false;
     }
 
     // In Malbolge logging is printed to std::clog and program output to
     // std::cout
-    function std_out(msg) {
+    function stdOut(msg) {
         document.getElementById("output").value += msg + "\n";
     }
 
-    function std_clog(msg) {
+    function stdClog(msg) {
         // Use regex to determine if this is Malbolge logging or Emscripten
-        const res = msg.match(/\.\d{9}\[[A-Z ]+\]: /g);
+        const res = msg.match(/\.\d{3}\[[A-Z ]+\]: /g);
         if (res) {
             // It is Malbolge logging, so check if it is an error
             if (msg.includes("[ERROR]: ")) {
@@ -70,9 +176,13 @@
 
     var Module = {
         thisProgram: "malbolge.wasm",
-        onRuntimeInitialized: finished_loading,
-        print: std_out,
-        printErr: std_clog
+        onRuntimeInitialized: finishedLoading,
+        print: stdOut,
+        printErr: stdClog,
+        malbolgeVmem: undefined,
+        malbolgeVcpu: undefined,
+        malbolgeStoppedCb: undefined,
+        malbolgeWaitingCb: undefined,
     };
 </script>
 <script src="malbolge.js"></script>

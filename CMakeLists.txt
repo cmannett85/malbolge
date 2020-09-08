@@ -43,7 +43,6 @@ set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/math/ternary.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/traits.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/utility/argument_parser.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/utility/get_char.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/utility/mutex_wrapper.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/utility/raii.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/virtual_cpu.hpp
@@ -58,7 +57,6 @@ set(SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/src/log.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/math/ternary.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/utility/argument_parser.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/utility/get_char.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/virtual_cpu.cpp
 )
 
