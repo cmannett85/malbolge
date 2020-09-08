@@ -71,7 +71,13 @@ $(function() {
 <div class="title">c_interface.hpp File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-
+<div class="textblock"><div class="dynheader">
+This graph shows which files directly or indirectly include this file:</div>
+<div class="dyncontent">
+<div class="center"><iframe scrolling="no" frameborder="0" src="c__interface_8hpp__dep__incl.svg" width="164" height="112"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe>
+</div>
+</div>
+</div>
 <p><a href="c__interface_8hpp_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
@@ -390,7 +396,7 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Creates a virtual CPU and begins executing the code in <em>vmem</em>.</p>
+<p>Creates a virtual CPU and begins asynchronously executing the code in <em>vmem</em>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">vmem</td><td>Virtual memory handle returned from malbolge_load_program, <em>vmem</em> is freed by this function. </td></tr>
@@ -400,7 +406,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Malbolge virtual CPU handle. This is freed when execution stops. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Malbolge virtual CPU handle, or NULL if early checks failed. This is freed when execution stops. </dd></dl>
 
 </div>
 </div>

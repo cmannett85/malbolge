@@ -13,6 +13,7 @@ var searchData=
   ['malbolge_5fset_5flog_5flevel',['malbolge_set_log_level',['../c__interface_8hpp.html#ab59f51f6a9e9c8909c1b9e8f98ac1de2',1,'c_interface.hpp']]],
   ['malbolge_5fvcpu_5finput',['malbolge_vcpu_input',['../c__interface_8hpp.html#ae3f2f8b25fd50c34d8bbb1c81070ddd7',1,'c_interface.hpp']]],
   ['malbolge_5fvcpu_5frun',['malbolge_vcpu_run',['../c__interface_8hpp.html#aab3f5204473302c4c526ecf33acb3638',1,'c_interface.hpp']]],
+  ['malbolge_5fvcpu_5frun_5fwasm',['malbolge_vcpu_run_wasm',['../c__interface__wasm_8hpp.html#a703482d003bf7eaa6d003fd0044ba99a',1,'c_interface_wasm.hpp']]],
   ['malbolge_5fvcpu_5fstop',['malbolge_vcpu_stop',['../c__interface_8hpp.html#ae314756573b71c9194e0eabeff221000',1,'c_interface.hpp']]],
   ['malbolge_5fversion',['malbolge_version',['../c__interface_8hpp.html#aae0eb68fd86649a134a1bbe2faaedae3',1,'c_interface.hpp']]],
   ['malbolge_5fvirtual_5fcpu',['malbolge_virtual_cpu',['../c__interface_8hpp.html#a2c550a1e787f94deef1515d637ad8d97',1,'c_interface.hpp']]],

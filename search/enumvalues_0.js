@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['char',['CHAR',['../namespacemalbolge_1_1utility.html#aee692a4a3d0c2ab122543c4faa838259a027acd3aa6b1dd7f26119d3cf0f9a063',1,'malbolge::utility']]]
+  ['debug',['DEBUG',['../namespacemalbolge_1_1log.html#a237f237f9c3fda0478e4dba3aaffc3f0a023d1e65dc061ef480cfd994554a4d7c',1,'malbolge::log']]],
+  ['disk',['DISK',['../classmalbolge_1_1argument__parser.html#adc00569a834a50a1ed64470e150e0a9ea290d4b81f4e2b47d86fd1b0170e9aab7',1,'malbolge::argument_parser']]]
 ];
