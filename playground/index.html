@@ -68,12 +68,32 @@ body {
         document.getElementById("stop_button").disabled = !is_running;
     }
 
+    function wrapWorkerHandler() {
+        // Wrap the original message handling with support for our own messages.
+        // There's no native support (yet) in Emscripten for doing this, hence
+        // the hackery below
+        let worker = Module["PThread"].runningWorkers.slice(-1)[0];
+
+        let standardHandlers = worker.onmessage;
+        worker.onmessage = function (e) {
+            if (e.data.cmd === "malbolgeStopped") {
+                running(false);
+            } else if (e.data.cmd === "malbolgeWaitingForInput") {
+                document.getElementById("input_button").disabled = false;
+                console.log("Waiting for input");
+            } else {
+                standardHandlers(e);
+            }
+        };
+    }
+
     function runMalbolge() {
         running(true);
         document.getElementById("output").value = "";
         const programText = new CString(document.getElementById("program").value);
         if (programText.pointer == null) {
             console.alert("Failed to allocate program source heap");
+            running(false);
             return;
         }
 
@@ -96,6 +116,8 @@ body {
             return;
         }
 
+        wrapWorkerHandler();
+
         Module.malbolgeVmem = vmem;
         Module.malbolgeVcpu = vcpu;
     }
@@ -106,9 +128,9 @@ body {
     }
 
     function setInputText() {
-        const text = document.getElementById("input").value + "\n";
+        let text = document.getElementById("input").value;
         if (text.length) {
-            const ctext = new CString(text);
+            const ctext = new CString(text + "\n");
             if (ctext.pointer == null) {
                 console.alert("Failed to allocate input text heap");
                 return;
@@ -130,24 +152,6 @@ body {
 
         // Increase the log level
         _malbolge_set_log_level(2);
-
-        // Wrap the original message handling with support for our own messages.
-        // There's no native support (yet) in Emscripten for doing this, hence
-        // the hackery below
-        {
-            let worker = Module["PThread"].unusedWorkers[0];
-            let standardHandlers = worker.onmessage;
-            worker.onmessage = function (e) {
-                if (e.data.cmd === "malbolgeStopped") {
-                    running(false);
-                } else if (e.data.cmd === "malbolgeWaitingForInput") {
-                    document.getElementById("input_button").disabled = false;
-                    console.log("Waiting for input");
-                } else {
-                    standardHandlers(e);
-                }
-            };
-        }
 
         document.getElementById("run_button").disabled = false;
     }
