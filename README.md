@@ -1,5 +1,7 @@
 ![Documentation Generator](https://github.com/cmannett85/malbolge/workflows/Documentation%20Generator/badge.svg) ![Release Builder](https://github.com/cmannett85/malbolge/workflows/Release%20Builder/badge.svg) ![Unit test coverage](https://img.shields.io/badge/Unit_Test_Coverage-97%25-brightgreen)
 
+<img src="./playground/logo.svg" alt="Malbolge Logo" width="250"/>
+
 # malbolge
 A virtual machine to execute Malbolge programs, written in C++20 and dependent on Boost v1.67.
 
