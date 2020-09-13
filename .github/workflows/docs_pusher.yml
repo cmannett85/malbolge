@@ -20,8 +20,6 @@ jobs:
       with:
         fetch-depth: 1
 
-    # We need to build the generated files can be documented.  We will do a
-    # WASM build here to generate the playground data too
     - name: Update packages
       run: |
         wget http://mirrors.kernel.org/ubuntu/pool/main/b/boost1.71/libboost1.71-dev_1.71.0-6ubuntu6_amd64.deb
@@ -35,6 +33,14 @@ jobs:
         cd ${GITHUB_WORKSPACE}/../docs
         cmake -DCMAKE_CXX_COMPILER=g++-10 ${GITHUB_WORKSPACE}
         make -j4 documentation
+
+    - name: Install Emscripten
+      run: |
+        cd ${GITHUB_WORKSPACE}/..
+        git clone https://github.com/emscripten-core/emsdk.git
+        cd ./emsdk/
+        ./emsdk install latest-upstream
+        ./emsdk activate latest-upstream
 
     - name: WASM Build
       run: |
