@@ -65,16 +65,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><div class="image">
-<object type="image/svg+xml" data="https://github.com/cmannett85/malbolge/workflows/Documentation%20Generator/badge.svg" alt="Documentation Generator"></object>
-</div>
- <div class="image">
-<object type="image/svg+xml" data="https://github.com/cmannett85/malbolge/workflows/Release%20Builder/badge.svg" alt="Release Builder"></object>
-</div>
- <div class="image">
-<img src="https://img.shields.io/badge/Unit_Test_Coverage-97%25-brightgreen" alt="Unit test coverage"/>
-</div>
-<div class="image">
-<object type="image/svg+xml" data="./playground/logo.svg" alt="Malbolge Logo" width="250"></object>
+<object type="image/svg+xml" data="../../../playground/logo.svg" alt="Malbolge Logo" width="250"></object>
 </div>
 <h1>malbolge</h1>
 <p>A virtual machine to execute Malbolge programs, written in C++20 and dependent on Boost v1.67.</p>
@@ -101,7 +92,7 @@ $(function() {
 </ul>
 <p><a class="anchor" id="pre-ciphering"></a> </p><h4>Pre-ciphering</h4>
 <p>When a CPU cycle is begun, the value at the code pointer needs to undergo a simple ciphering in order to extract the actual value: </p><div class="fragment"><div class="line">i = (*c - 33 + c) % 94</div></div><!-- fragment --><p> The subtraction of 33 is why <code>*c</code> must be checked to see if it lies in the graphical ASCII range ([33, 126]) first, if it doesn't it is an error and the program must abort. <code>i</code> is an index into the pre-cipher table: </p><div class="fragment"><div class="line">+b(29e*j1VMEKLyC})8&amp;m#~W&gt;qxdRp0wkrUo[D7,XTcA&quot;lI.v%{gJh4G\-=O@5`_3i&lt;?Z&#39;;FNQuY]szf$!BS/|t:Pn6^Ha</div></div><!-- fragment --><p><a class="anchor" id="post-ciphering"></a> </p><h4>Post-ciphering</h4>
-<p>Once processing on a CPU instruction has finished, it needs to be ciphered again before being written back into <code>*c</code> - that's right, Malbolbge modifies its code as it executes. What fun. </p><div class="fragment"><div class="line">i = *c - 33</div></div><!-- fragment --><p> Much like the <a href="#pre-ciphering">pre-ciphering</a>, the subtraction of 33 is why <code>*c</code> must be checked to see if it lies in the graphical ASCII range ([33, 126]) first, if it doesn't it is an error and the program must abort. <code>i</code> is an index into the post-cipher table: </p><div class="fragment"><div class="line">5z]&amp;gqtyfr$(we4{WP)H-Zn,[%\3dL+Q;&gt;U!pJS72FhOA1CB6v^=I_0/8|jsb9m&lt;.TVac`uY*MK&#39;X~xDl}REokN:#?G&quot;i@</div></div><!-- fragment --><h4>Ternary Op</h4>
+<p>Once processing on a CPU instruction has finished, it needs to be ciphered again before being written back into <code>*c</code> - that's right, Malbolbge modifies its code as it executes. What fun. </p><div class="fragment"><div class="line">i = *c - 33</div></div><!-- fragment --><p> Much like the <a href="#pre-ciphering">pre-ciphering</a>, the subtraction of 33 is why <code>*c</code> must be checked to see if it lies in the graphical ASCII range ([33, 126]) first, if it doesn't it is an error and the program must abort. <code>i</code> is an index into the post-cipher table: </p><div class="fragment"><div class="line">5z]&amp;gqtyfr$(we4{WP)H-Zn,[%\3dL+Q&gt;U!pJS72FhOA1CB6v^=I_0/8|jsb9m&lt;.TVac`uY*MK&#39;X~xDl}REokN:#?G&quot;i@</div></div><!-- fragment --><h4>Ternary Op</h4>
 <p>Another unique 'feature' of Malbolge is the operation performed on two ternary values to produce another. It is used for obfuscating the initial program data size in a memory block and can be triggered by a particular CPU instruction.</p>
 <p>Each trit in the two input ternarys is used as an index into a table to produce a new trit value:</p>
 <table class="doxtable">
@@ -120,7 +111,7 @@ $(function() {
 <h4>vCPU Instructions</h4>
 <table class="doxtable">
 <tr>
-<th align="center">Instruction </th><th align="center">(as decimal </th><th align="left">Execution  </th></tr>
+<th align="center">Instruction </th><th align="center">(as decimal) </th><th align="left">Execution  </th></tr>
 <tr>
 <td align="center">j </td><td align="center">106 </td><td align="left">Sets <code>d</code> to <code>*d</code> </td></tr>
 <tr>
