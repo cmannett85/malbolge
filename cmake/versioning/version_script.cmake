@@ -8,7 +8,7 @@
 
 find_package(Git REQUIRED)
 
-set(VERSION_FILE_TMP ${CMAKE_CURRENT_SOURCE_DIR}/cmake/version.hpp.tmp)
+set(VERSION_FILE_TMP ${CMAKE_CURRENT_SOURCE_DIR}/cmake/versioning/version.hpp.tmp)
 
 execute_process(
     OUTPUT_VARIABLE   GIT_REV
@@ -20,7 +20,7 @@ string(STRIP ${GIT_REV} GIT_REV)
 message(STATUS "Project revision: ${PROJECT_VERSION}.${GIT_REV}")
 
 configure_file(
-    ${ORIG_BASE_PATH}/cmake/version.hpp.in
+    ${ORIG_BASE_PATH}/cmake/versioning/version.hpp.in
     ${VERSION_FILE_TMP}
 )
 

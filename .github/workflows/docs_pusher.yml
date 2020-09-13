@@ -25,29 +25,24 @@ jobs:
     - name: Update packages
       run: |
         wget http://mirrors.kernel.org/ubuntu/pool/main/b/boost1.71/libboost1.71-dev_1.71.0-6ubuntu6_amd64.deb
-        sudo apt install doxygen graphviz ./libboost1.71-dev_1.71.0-6ubuntu6_amd64.deb
+        wget http://mirrors.kernel.org/ubuntu/pool/universe/b/boost1.71/libboost-test1.71-dev_1.71.0-6ubuntu6_amd64.deb
+        wget http://mirrors.kernel.org/ubuntu/pool/universe/b/boost1.71/libboost-test1.71.0_1.71.0-6ubuntu6_amd64.deb
+        sudo apt install doxygen graphviz g++-10 ./libboost1.71-dev_1.71.0-6ubuntu6_amd64.deb ./libboost-test1.71.0_1.71.0-6ubuntu6_amd64.deb ./libboost-test1.71-dev_1.71.0-6ubuntu6_amd64.deb
 
-    - name: Install Emscripten
+    - name: Generate API documentation
       run: |
-        cd ${GITHUB_WORKSPACE}/..
-        git clone https://github.com/emscripten-core/emsdk.git
-        cd ./emsdk/
-        ./emsdk install latest-upstream
-        ./emsdk activate latest-upstream
+        mkdir ${GITHUB_WORKSPACE}/../docs
+        cd ${GITHUB_WORKSPACE}/../docs
+        cmake -DCMAKE_CXX_COMPILER=g++-10 ${GITHUB_WORKSPACE}
+        make -j4 documentation
 
-    - name: Build
+    - name: WASM Build
       run: |
         source ${GITHUB_WORKSPACE}/../emsdk/emsdk_env.sh
         mkdir ${GITHUB_WORKSPACE}/../wasm
         cd ${GITHUB_WORKSPACE}/../wasm
         emcmake cmake -DWASM_BUILD=ON -DCMAKE_BUILD_TYPE=Release -DBoost_INCLUDE_DIR=/usr/include ${GITHUB_WORKSPACE}
         emmake make -j4 malbolge_wasm
-      
-    - name: Generate API documentation
-      run: |
-        cd ${GITHUB_WORKSPACE}/../wasm
-        cmake ${GITHUB_WORKSPACE}
-        make -j4 documentation
 
     - name: Copy over WASM playground
       run: |

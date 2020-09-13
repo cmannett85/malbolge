@@ -69,28 +69,13 @@ set(FOR_IDE
     ${CMAKE_CURRENT_SOURCE_DIR}/README.md
     ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE
     ${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile
-    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/version.cmake
-    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/version.hpp.in
     ${CMAKE_CURRENT_SOURCE_DIR}/.github/workflows/pr_checker.yml
     ${CMAKE_CURRENT_SOURCE_DIR}/.github/workflows/docs_pusher.yml
     ${CMAKE_CURRENT_SOURCE_DIR}/.github/workflows/release_builder.yml
 )
 
-set(VERSION_FILE
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/version.hpp
-)
-
-set_source_files_properties(${VERSION_FILE} PROPERTIES GENERATED TRUE)
-
-add_custom_target(gen_version
-    ALL
-    COMMAND ${CMAKE_COMMAND} -DORIG_BASE_PATH=${CMAKE_CURRENT_SOURCE_DIR} -DPROJECT_VERSION=${PROJECT_VERSION} -DVERSION_FILE=${VERSION_FILE} -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/version.cmake
-)
-
-add_custom_target(documentation
-    COMMAND ${CMAKE_COMMAND} -DROOT=${CMAKE_CURRENT_SOURCE_DIR} -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/documentation.cmake
-)
-
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/versioning/version.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/documentation.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/library.cmake)
 
 if(WASM_BUILD)
