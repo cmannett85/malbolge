@@ -138,7 +138,7 @@ b = 0120120120
  it's not crazy, it's ridiculous.
 
 #### vCPU Instructions
-| Instruction | (as decimal |                                                            Execution                                                            |
+| Instruction | (as decimal) |                                                            Execution                                                            |
 |:-----------:|:-----------:|:--------------------------------------------------------------------------------------------------------------------------------|
 |      j      |     106     | Sets `d` to `*d`                                                                                                                |
 |      i      |     105     | Sets `c` to `*d`                                                                                                                |

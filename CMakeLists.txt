@@ -87,6 +87,10 @@ add_custom_target(gen_version
     COMMAND ${CMAKE_COMMAND} -DORIG_BASE_PATH=${CMAKE_CURRENT_SOURCE_DIR} -DPROJECT_VERSION=${PROJECT_VERSION} -DVERSION_FILE=${VERSION_FILE} -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/version.cmake
 )
 
+add_custom_target(documentation
+    COMMAND ${CMAKE_COMMAND} -DROOT=${CMAKE_CURRENT_SOURCE_DIR} -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/documentation.cmake
+)
+
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/library.cmake)
 
 if(WASM_BUILD)

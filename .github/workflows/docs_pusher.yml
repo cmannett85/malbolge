@@ -45,8 +45,9 @@ jobs:
       
     - name: Generate API documentation
       run: |
-        cd ${GITHUB_WORKSPACE}/docs
-        doxygen
+        cd ${GITHUB_WORKSPACE}/../wasm
+        cmake ${GITHUB_WORKSPACE}
+        make -j4 documentation
 
     - name: Copy over WASM playground
       run: |
