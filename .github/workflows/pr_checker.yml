@@ -137,18 +137,13 @@ jobs:
         wget http://mirrors.kernel.org/ubuntu/pool/main/b/boost1.71/libboost1.71-dev_1.71.0-6ubuntu6_amd64.deb
         wget http://mirrors.kernel.org/ubuntu/pool/universe/b/boost1.71/libboost-test1.71-dev_1.71.0-6ubuntu6_amd64.deb
         wget http://mirrors.kernel.org/ubuntu/pool/universe/b/boost1.71/libboost-test1.71.0_1.71.0-6ubuntu6_amd64.deb
-        sudo apt install doxygen graphviz g++-10 ./libboost1.71-dev_1.71.0-6ubuntu6_amd64.deb ./libboost-test1.71.0_1.71.0-6ubuntu6_amd64.deb ./libboost-test1.71-dev_1.71.0-6ubuntu6_amd64.deb
+        sudo apt install doxygen graphviz g++-10  ./libboost1.71-dev_1.71.0-6ubuntu6_amd64.deb ./libboost-test1.71.0_1.71.0-6ubuntu6_amd64.deb ./libboost-test1.71-dev_1.71.0-6ubuntu6_amd64.deb
 
-    - name: Build
+    - name: Generate API documentation
       run: |
-        mkdir ${GITHUB_WORKSPACE}/../release
-        cd ${GITHUB_WORKSPACE}/../release
-        cmake -DCMAKE_CXX_COMPILER=g++-10 -DCMAKE_BUILD_TYPE=Release ${GITHUB_WORKSPACE}
-        make -j4 malbolge
-      
-    - name: Generate
-      run: |
-        cd ${GITHUB_WORKSPACE}/../release
+        mkdir ${GITHUB_WORKSPACE}/../docs
+        cd ${GITHUB_WORKSPACE}/../docs
+        cmake -DCMAKE_CXX_COMPILER=g++-10 ${GITHUB_WORKSPACE}
         make -j4 documentation
 
   # Tests archive and Debian package creation and un/installation
