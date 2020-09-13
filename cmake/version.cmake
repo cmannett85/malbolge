@@ -1,3 +1,8 @@
+# Copyright Cam Mannett 2020
+#
+# See LICENSE file
+#
+
 # Taken from https://stackoverflow.com/a/50104093/498437
 #
 
@@ -33,9 +38,8 @@ string(
     UPDATED_DOXYFILE_DATA
     "${DOXYFILE_DATA}"
 )
-string(COMPARE NOTEQUAL ${DOXYFILE_DATA} ${UPDATED_DOXYFILE_DATA} SAVE)
 
 if(NOT "${DOXYFILE_DATA}" STREQUAL "${UPDATED_DOXYFILE_DATA}")
-message(STATUS "Updating Doxyfile project version")
-file(WRITE ${ORIG_BASE_PATH}/docs/Doxyfile ${UPDATED_DOXYFILE_DATA})
+    message(STATUS "Updating Doxyfile project version")
+    file(WRITE ${ORIG_BASE_PATH}/docs/Doxyfile ${UPDATED_DOXYFILE_DATA})
 endif()   

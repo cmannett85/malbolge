@@ -148,8 +148,8 @@ jobs:
       
     - name: Generate
       run: |
-        cd ${GITHUB_WORKSPACE}/docs
-        doxygen
+        cd ${GITHUB_WORKSPACE}/../release
+        make -j4 documentation
 
   # Tests archive and Debian package creation and un/installation
   release:
