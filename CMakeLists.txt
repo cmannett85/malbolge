@@ -8,7 +8,7 @@ cmake_minimum_required(VERSION 3.12)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/ccache.cmake)
 
 project(malbolge
-        VERSION 0.0.2
+        VERSION 0.0.3
         DESCRIPTION "Malbolge virtual machine"
         HOMEPAGE_URL "https://github.com/cmannett85/malbolge"
         LANGUAGES CXX)
