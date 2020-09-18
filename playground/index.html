@@ -2,195 +2,53 @@
 <html>
 <head>
 <link rel="icon" type="image/svg+xml" href="logo.svg">
-
-<style>
-body {
-    color: #f2f2f2;
-    background-color: #666666;
-}
-
-.monospace {
-  font-family: "Lucida Console", Courier, monospace;
-}
-</style>
-
+<link href="style.css" rel="stylesheet" type="text/css" />
 <title>Malbolge Playground</title>
 </head>
 <body>
 
-<p class="monospace">Malbolge program</p>
-<textarea id="program" rows="10" cols="80" required></textarea>
-<br><br>
-<button id="run_button" onclick="runMalbolge()" disabled>Run</button>  
-<button id="stop_button" onclick="stopMalbolge()" disabled>Stop</button>
-<br><br>
-<p class="monospace">Input</p>
-<input type="text" id="input">
-<button id="input_button" onclick="setInputText()" disabled>Submit</button>
-<br><br>
-<p class="monospace">Output</p>
-<textarea id="output" rows="10" cols="80"></textarea>
+<img src="logo.svg" alt="Malbolge Logo" width="125"/>
 
-<script>
-    class CString {
-        constructor(s) {
-            this._size = 0;
-            this._ptr = null;
+<div class="grid-container">
+    <div class="program_div">
+        <p>Malbolge Program</p>
+        <textarea id="program" placeholder="Paste your code here"></textarea>
+        <br>
 
-            let size = lengthBytesUTF8(s) + 1;
-            let ret = _malloc(size);
-            if (ret) {
-                stringToUTF8(s, ret, size);
-            }
+        <button id="run_button" onclick="runMalbolge()" disabled>Run</button>  
+        <button id="stop_button" onclick="stopMalbolge()" disabled>Stop</button>
 
-            this._size = size - 1;
-            this._ptr = ret;
-        }
+        <select class="dropdown" id="preset" onchange="loadPreset()">
+            <option value="0" selected>No Preset</option>
+            <option value="1">Hello World</option>
+            <option value="2">Echo</option>
+        </select>
+    </div>
+    <div class="input_div">
+        <p>Input</p>
+        <textarea id="input"></textarea>
+        <br>
+        <button id="input_button" onclick="setInputText()" disabled>Submit</button>
+    </div>
+    <div class="output_div">
+        <p>Output</p>
+        <textarea id="output" readonly></textarea>
+    </div>
+    <div class="console_div">
+        <p>Console</p>
+        <div id="console"></div>
+        <select class="dropdown" id="debug_level" onchange="setDebugLevel()">
+            <option value="0">Error</option>
+            <option value="1">Info</option>
+            <option value="2" selected>Debug</option>
+            <option value="3">Verbose Debug</option>
+        </select>
 
-        get pointer() {
-            return this._ptr;
-        }
+        <button id="clear_button" onclick="clearConsole()">Clear</button>
+    </div>
+</div>
 
-        get size() {
-            return this._size;
-        }
-
-        toString() {
-            return UTF8ToString(this._ptr, this._size);
-        }
-
-        // If only there were destructors in JS...
-        destroy() {
-            _free(this._ptr);
-        }
-    }
-
-    function running(is_running) {
-        document.getElementById("run_button").disabled = is_running;
-        document.getElementById("stop_button").disabled = !is_running;
-    }
-
-    function wrapWorkerHandler() {
-        // Wrap the original message handling with support for our own messages.
-        // There's no native support (yet) in Emscripten for doing this, hence
-        // the hackery below
-        let worker = Module["PThread"].runningWorkers.slice(-1)[0];
-
-        let standardHandlers = worker.onmessage;
-        worker.onmessage = function (e) {
-            if (e.data.cmd === "malbolgeStopped") {
-                running(false);
-            } else if (e.data.cmd === "malbolgeWaitingForInput") {
-                document.getElementById("input_button").disabled = false;
-                console.log("Waiting for input");
-            } else {
-                standardHandlers(e);
-            }
-        };
-    }
-
-    function runMalbolge() {
-        running(true);
-        document.getElementById("output").value = "";
-        const programText = new CString(document.getElementById("program").value);
-        if (programText.pointer == null) {
-            console.alert("Failed to allocate program source heap");
-            running(false);
-            return;
-        }
-
-        // Load and validate the program
-        let vmem = _malbolge_load_program(programText.pointer,
-                                          programText.size,
-                                          0,
-                                          0);
-        programText.destroy();
-
-        if (!vmem) {
-            running(false);
-            return;
-        }
-
-        // Now execute it
-        let vcpu = _malbolge_vcpu_run_wasm(vmem);
-        if (!vcpu) {
-            running(false);
-            return;
-        }
-
-        wrapWorkerHandler();
-
-        Module.malbolgeVmem = vmem;
-        Module.malbolgeVcpu = vcpu;
-    }
-
-    function stopMalbolge() {
-        running(false);
-        _malbolge_vcpu_stop(Module.malbolgeVcpu);
-    }
-
-    function setInputText() {
-        let text = document.getElementById("input").value;
-        if (text.length) {
-            const ctext = new CString(text + "\n");
-            if (ctext.pointer == null) {
-                console.alert("Failed to allocate input text heap");
-                return;
-            }
-
-            _malbolge_vcpu_input(Module.malbolgeVcpu, ctext.pointer, ctext.size);
-            ctext.destroy();
-
-            document.getElementById("input").value = "";
-            document.getElementById("input_button").disabled = true;
-        }
-    }
-
-    function finishedLoading() {
-        // Print the version once the WASM initialisation has finished
-        stdOut("Malbolge Virtual Machine v" +
-               UTF8ToString(_malbolge_version()) +
-               "\nCopyright Cam Mannett 2020");
-
-        // Increase the log level
-        _malbolge_set_log_level(2);
-
-        document.getElementById("run_button").disabled = false;
-    }
-
-    // In Malbolge logging is printed to std::clog and program output to
-    // std::cout
-    function stdOut(msg) {
-        document.getElementById("output").value += msg + "\n";
-    }
-
-    function stdClog(msg) {
-        // Use regex to determine if this is Malbolge logging or Emscripten
-        const res = msg.match(/\.\d{3}\[[A-Z ]+\]: /g);
-        if (res) {
-            // It is Malbolge logging, so check if it is an error
-            if (msg.includes("[ERROR]: ")) {
-                console.error(msg);
-                alert(msg);
-            } else {
-                console.log(msg);
-            }
-        } else {
-            console.warn(msg);
-        }
-    }
-
-    var Module = {
-        thisProgram: "malbolge.wasm",
-        onRuntimeInitialized: finishedLoading,
-        print: stdOut,
-        printErr: stdClog,
-        malbolgeVmem: undefined,
-        malbolgeVcpu: undefined,
-        malbolgeStoppedCb: undefined,
-        malbolgeWaitingCb: undefined,
-    };
-</script>
+<script src="index.js"></script>
 <script src="malbolge.js"></script>
 
 </body>
