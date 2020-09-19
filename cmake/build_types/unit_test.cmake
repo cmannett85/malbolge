@@ -35,7 +35,7 @@ set(TEST_FOR_IDE
     ${CMAKE_CURRENT_SOURCE_DIR}/calculate_test_coverage.sh
 )
 
-add_executable(malbolge_test ${TEST_HEADERS} ${TEST_SRCS} ${TEST_FOR_IDE})
+add_executable(malbolge_test EXCLUDE_FROM_ALL ${TEST_HEADERS} ${TEST_SRCS} ${TEST_FOR_IDE})
 add_dependencies(malbolge_test gen_version malbolge_lib)
 
 target_compile_features(malbolge_test PUBLIC cxx_std_20)

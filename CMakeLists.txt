@@ -4,30 +4,37 @@
 #
 
 cmake_minimum_required(VERSION 3.12)
-
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/ccache.cmake)
+include(CMakeDependentOption)
 
 project(malbolge
         VERSION 0.0.3
         DESCRIPTION "Malbolge virtual machine"
         HOMEPAGE_URL "https://github.com/cmannett85/malbolge"
         LANGUAGES CXX)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-set(BOOST_VERSION 1.67)
-set(Boost_USE_MULTITHREADED ON)
-find_package(Boost ${BOOST_VERSION} REQUIRED)
-find_package(Threads REQUIRED)
-
+# Options
 option(WASM_BUILD "Enable WASM/Emscripten support")
+cmake_dependent_option(DOCS_ONLY "Only build the documentation" OFF
+                       "NOT WASM_BUILD" OFF)
 
-include(CheckIPOSupported)
-check_ipo_supported(RESULT lto_supported OUTPUT error)
-if(lto_supported)
-    message(STATUS "LTO enabled")
-    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
-else()
-    message(STATUS "LTO not supported")
+# Only enable LTO and find packages if we're not doing a Docs-only build
+if(NOT DOCS_ONLY)
+    set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/ccache.cmake)
+
+    set(BOOST_VERSION 1.67)
+    set(Boost_USE_MULTITHREADED ON)
+    find_package(Boost ${BOOST_VERSION} REQUIRED)
+    find_package(Threads REQUIRED)
+
+    include(CheckIPOSupported)
+    check_ipo_supported(RESULT lto_supported OUTPUT error)
+    if(lto_supported)
+        message(STATUS "LTO enabled")
+        set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+    else()
+        message(STATUS "LTO not supported")
+    endif()
 endif()
 
 set(HEADERS
@@ -76,12 +83,13 @@ set(FOR_IDE
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/versioning/version.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/documentation.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/library.cmake)
 
 if(WASM_BUILD)
     message(STATUS "WASM/Emscripten build")
+    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/library.cmake)
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/wasm.cmake)
-else()
+elseif(NOT DOCS_ONLY)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/library.cmake)
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/standard_executable.cmake)
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/address_sanitizer.cmake)
     include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_types/thread_sanitizer.cmake)
