@@ -25,13 +25,13 @@ jobs:
         wget http://mirrors.kernel.org/ubuntu/pool/main/b/boost1.71/libboost1.71-dev_1.71.0-6ubuntu6_amd64.deb
         wget http://mirrors.kernel.org/ubuntu/pool/universe/b/boost1.71/libboost-test1.71-dev_1.71.0-6ubuntu6_amd64.deb
         wget http://mirrors.kernel.org/ubuntu/pool/universe/b/boost1.71/libboost-test1.71.0_1.71.0-6ubuntu6_amd64.deb
-        sudo apt install doxygen graphviz g++-10 ./libboost1.71-dev_1.71.0-6ubuntu6_amd64.deb ./libboost-test1.71.0_1.71.0-6ubuntu6_amd64.deb ./libboost-test1.71-dev_1.71.0-6ubuntu6_amd64.deb
+        sudo apt install doxygen graphviz ./libboost1.71-dev_1.71.0-6ubuntu6_amd64.deb ./libboost-test1.71.0_1.71.0-6ubuntu6_amd64.deb ./libboost-test1.71-dev_1.71.0-6ubuntu6_amd64.deb
 
     - name: Generate API documentation
       run: |
         mkdir ${GITHUB_WORKSPACE}/../docs
         cd ${GITHUB_WORKSPACE}/../docs
-        cmake -DCMAKE_CXX_COMPILER=g++-10 ${GITHUB_WORKSPACE}
+        cmake -DDOCS_ONLY=ON ${GITHUB_WORKSPACE}
         make -j4 documentation
 
     - name: Install Emscripten
