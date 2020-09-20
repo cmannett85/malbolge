@@ -6,6 +6,7 @@
 #include "malbolge/virtual_cpu.hpp"
 #include "malbolge/cpu_instruction.hpp"
 #include "malbolge/utility/raii.hpp"
+#include "malbolge/utility/stream_lock_guard.hpp"
 #include "malbolge/exception.hpp"
 #include "malbolge/log.hpp"
 
@@ -75,7 +76,7 @@ void vcpu_loop(virtual_memory& vmem,
                 }
 
                 {
-                    auto guard = std::lock_guard{mtx};
+                    auto guard = stream_lock_guard{mtx, istr};
                     if (istr.peek() < 0) {
                         // No data
                         if (!reading_stream) {
@@ -109,16 +110,14 @@ void vcpu_loop(virtual_memory& vmem,
         }
         case cpu_instruction::write:
             if (a != math::ternary::max) {
+                auto guard = stream_lock_guard{mtx, ostr};
 #ifdef EMSCRIPTEN
                 // Emscripten cannot flush output without a newline, so
                 // we need to force with std::endl
-                {
-                    auto guard = std::lock_guard{mtx};
-                    if (static_cast<char>(a) == '\n') {
-                        ostr << std::endl;
-                    } else {
-                        ostr << static_cast<char>(a);
-                    }
+                if (static_cast<char>(a) == '\n') {
+                    ostr << std::endl;
+                } else {
+                    ostr << static_cast<char>(a);
                 }
 #else
                 ostr << static_cast<char>(a);
@@ -290,6 +289,7 @@ void virtual_cpu::basic_run_check(std::istream& istr,
     if (*state_ != execution_state::READY) {
         throw execution_exception{"vCPU is not in a ready state", 0};
     }
+
     if (!mtx && (istr.rdbuf() != std::cin.rdbuf() ||
                  ostr.rdbuf() != std::cout.rdbuf())){
         throw execution_exception{
@@ -297,5 +297,6 @@ void virtual_cpu::basic_run_check(std::istream& istr,
             0
         };
     }
+
     *state_ = execution_state::RUNNING;
 }
