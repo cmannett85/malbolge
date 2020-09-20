@@ -9,27 +9,27 @@
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 111.5)">
 <title>Graphical Class Hierarchy</title>
 <polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-111.5 388,-111.5 388,4 -4,4"/>
-<!-- Node10 -->
+<!-- Node11 -->
 <g id="node1" class="node">
-<title>Node10</title>
+<title>Node11</title>
 <g id="a_node1"><a xlink:title="STL class. ">
 <polygon fill="#ffffff" stroke="#bfbfbf" points="0,-38.5 0,-57.5 78,-57.5 78,-38.5 0,-38.5"/>
 <text text-anchor="middle" x="39" y="-45.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">std::exception</text>
 </a>
 </g>
 </g>
-<!-- Node11 -->
+<!-- Node12 -->
 <g id="node2" class="node">
-<title>Node11</title>
+<title>Node12</title>
 <g id="a_node2"><a xlink:title="STL class. ">
 <polygon fill="#ffffff" stroke="#bfbfbf" points="114,-38.5 114,-57.5 207,-57.5 207,-38.5 114,-38.5"/>
 <text text-anchor="middle" x="160.5" y="-45.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">std::runtime_error</text>
 </a>
 </g>
 </g>
-<!-- Node10&#45;&gt;Node11 -->
+<!-- Node11&#45;&gt;Node12 -->
 <g id="edge1" class="edge">
-<title>Node10&#45;&gt;Node11</title>
+<title>Node11&#45;&gt;Node12</title>
 <path fill="none" stroke="#191970" d="M88.2238,-48C96.6772,-48 105.4396,-48 113.8236,-48"/>
 <polygon fill="#191970" stroke="#191970" points="88.1122,-44.5001 78.1122,-48 88.1121,-51.5001 88.1122,-44.5001"/>
 </g>
@@ -43,39 +43,39 @@
 </a>
 </g>
 </g>
-<!-- Node11&#45;&gt;Node0 -->
+<!-- Node12&#45;&gt;Node0 -->
 <g id="edge2" class="edge">
-<title>Node11&#45;&gt;Node0</title>
+<title>Node12&#45;&gt;Node0</title>
 <path fill="none" stroke="#191970" d="M203.3558,-60.3246C221.3755,-65.5067 242.5053,-71.5832 261.4126,-77.0206"/>
 <polygon fill="#191970" stroke="#191970" points="204.2766,-56.9475 193.6987,-57.5473 202.3419,-63.6749 204.2766,-56.9475"/>
 </g>
-<!-- Node13 -->
+<!-- Node14 -->
 <g id="node4" class="node">
-<title>Node13</title>
+<title>Node14</title>
 <g id="a_node4"><a xlink:href="classmalbolge_1_1parse__exception.html" target="_top" xlink:title="malbolge::parse_exception">
 <polygon fill="#ffffff" stroke="#000000" points="247,-38.5 247,-57.5 380,-57.5 380,-38.5 247,-38.5"/>
 <text text-anchor="middle" x="313.5" y="-45.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">malbolge::parse_exception</text>
 </a>
 </g>
 </g>
-<!-- Node11&#45;&gt;Node13 -->
+<!-- Node12&#45;&gt;Node14 -->
 <g id="edge3" class="edge">
-<title>Node11&#45;&gt;Node13</title>
+<title>Node12&#45;&gt;Node14</title>
 <path fill="none" stroke="#191970" d="M217.4145,-48C226.9814,-48 236.9865,-48 246.7745,-48"/>
 <polygon fill="#191970" stroke="#191970" points="217.2364,-44.5001 207.2364,-48 217.2364,-51.5001 217.2364,-44.5001"/>
 </g>
-<!-- Node14 -->
+<!-- Node15 -->
 <g id="node5" class="node">
-<title>Node14</title>
+<title>Node15</title>
 <g id="a_node5"><a xlink:href="classmalbolge_1_1system__exception.html" target="_top" xlink:title="malbolge::system_exception">
 <polygon fill="#ffffff" stroke="#000000" points="243,-.5 243,-19.5 384,-19.5 384,-.5 243,-.5"/>
 <text text-anchor="middle" x="313.5" y="-7.5" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#000000">malbolge::system_exception</text>
 </a>
 </g>
 </g>
-<!-- Node11&#45;&gt;Node14 -->
+<!-- Node12&#45;&gt;Node15 -->
 <g id="edge4" class="edge">
-<title>Node11&#45;&gt;Node14</title>
+<title>Node12&#45;&gt;Node15</title>
 <path fill="none" stroke="#191970" d="M208.9768,-35.96C230.3517,-30.6512 255.1134,-24.5012 275.1693,-19.5201"/>
 <polygon fill="#191970" stroke="#191970" points="207.9698,-32.6037 199.1084,-38.411 209.6572,-39.3973 207.9698,-32.6037"/>
 </g>

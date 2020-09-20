@@ -7,5 +7,6 @@ var searchData=
   ['state',['state',['../classmalbolge_1_1virtual__cpu.html#a64bc3341ed665c611a9467491a520a3b',1,'malbolge::virtual_cpu']]],
   ['step',['step',['../classmalbolge_1_1execution__exception.html#a98c3aff945848e343c883ffc43cc12e4',1,'malbolge::execution_exception']]],
   ['stop',['stop',['../classmalbolge_1_1virtual__cpu.html#ae728d1a4d88a889dc2f71a09502a95b4',1,'malbolge::virtual_cpu']]],
+  ['stream_5flock_5fguard',['stream_lock_guard',['../classstream__lock__guard.html#a3652bc373d8fd22be314c2147b516b70',1,'stream_lock_guard']]],
   ['system_5fexception',['system_exception',['../classmalbolge_1_1system__exception.html#acee340d85b937e905f194992895143be',1,'malbolge::system_exception']]]
 ];

@@ -13,6 +13,7 @@ var searchData=
   ['step',['step',['../classmalbolge_1_1execution__exception.html#a98c3aff945848e343c883ffc43cc12e4',1,'malbolge::execution_exception']]],
   ['stop',['stop',['../classmalbolge_1_1virtual__cpu.html#ae728d1a4d88a889dc2f71a09502a95b4',1,'malbolge::virtual_cpu::stop()'],['../namespacemalbolge_1_1cpu__instruction.html#a0f9eeaa34725e4d574bfb4240a5322efa537ab8955a0070191585b8ddf231e105',1,'malbolge::cpu_instruction::stop()']]],
   ['stopped',['STOPPED',['../classmalbolge_1_1virtual__cpu.html#a6e6d243fefb70b081550b4ed4a4b9088a09d4d696b4e935115b9313e3c412509a',1,'malbolge::virtual_cpu']]],
+  ['stream_5flock_5fguard',['stream_lock_guard',['../classstream__lock__guard.html',1,'stream_lock_guard&lt; Mutex &gt;'],['../classstream__lock__guard.html#a3652bc373d8fd22be314c2147b516b70',1,'stream_lock_guard::stream_lock_guard()']]],
   ['string',['STRING',['../classmalbolge_1_1argument__parser.html#adc00569a834a50a1ed64470e150e0a9ea63b588d5559f64f89a416e656880b949',1,'malbolge::argument_parser']]],
   ['system_5fexception',['system_exception',['../classmalbolge_1_1system__exception.html',1,'malbolge::system_exception'],['../classmalbolge_1_1system__exception.html#acee340d85b937e905f194992895143be',1,'malbolge::system_exception::system_exception()']]]
 ];
