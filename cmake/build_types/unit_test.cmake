@@ -24,6 +24,7 @@ set(TEST_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/math/ternary_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/argument_parser_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/raii_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/utility/stream_lock_guard_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/virtual_memory_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/virtual_cpu_test.cpp
 )

@@ -97,7 +97,8 @@ void malbolge_free_virtual_memory(malbolge_virtual_memory vmem);
  * @a vmem is freed by this function.
  * @param stopped_cb Callback called when the execution stops
  * @param waiting_cb Callback called when the program is expecting user input
- * @param use_cin If true, user input is extracted from cin
+ * @param use_cin If true, user input is extracted from cin.  Otherwise input
+ * is passed in using malbolge_vcpu_input.
  * @return Malbolge virtual CPU handle, or NULL if early checks failed.  This is
  * freed when execution stops.
  */
