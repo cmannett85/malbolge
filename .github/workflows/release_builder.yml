@@ -35,7 +35,7 @@ jobs:
         wget http://mirrors.kernel.org/ubuntu/pool/main/b/boost1.71/libboost1.71-dev_1.71.0-6ubuntu6_amd64.deb
         wget http://mirrors.kernel.org/ubuntu/pool/universe/b/boost1.71/libboost-test1.71-dev_1.71.0-6ubuntu6_amd64.deb
         wget http://mirrors.kernel.org/ubuntu/pool/universe/b/boost1.71/libboost-test1.71.0_1.71.0-6ubuntu6_amd64.deb
-        sudo apt install g++-10 ./libboost1.71-dev_1.71.0-6ubuntu6_amd64.deb ./libboost-test1.71.0_1.71.0-6ubuntu6_amd64.deb ./libboost-test1.71-dev_1.71.0-6ubuntu6_amd64.deb
+        sudo apt install doxygen graphviz g++-10 ./libboost1.71-dev_1.71.0-6ubuntu6_amd64.deb ./libboost-test1.71.0_1.71.0-6ubuntu6_amd64.deb ./libboost-test1.71-dev_1.71.0-6ubuntu6_amd64.deb
 
     - name: Build
       id: build
@@ -52,7 +52,8 @@ jobs:
       run: |
         cd ${{steps.build.outputs.build_path}}
         cpack
-        echo "::set-output name=deb_file::$(ls | grep .deb)"
+        echo "::set-output name=exe_deb_file::$(ls | grep -exe.deb)"
+        echo "::set-output name=dev_deb_file::$(ls | grep -dev.deb)"
         echo "::set-output name=targz_file::$(ls | grep .tar.gz)"
         echo "::set-output name=sh_file::$(ls | grep .sh)"
 
@@ -68,14 +69,24 @@ jobs:
         prerelease: false
         body: ${{steps.commit_msg.outputs.commit_msg}}
 
-    - name: Upload deb
+    - name: Upload executable deb
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
       with:
         upload_url: ${{steps.create_release.outputs.upload_url}}
-        asset_path: ${{steps.build.outputs.build_path}}/${{steps.gen_release.outputs.deb_file}}
-        asset_name: ${{steps.gen_release.outputs.deb_file}}
+        asset_path: ${{steps.build.outputs.build_path}}/${{steps.gen_release.outputs.exe_deb_file}}
+        asset_name: ${{steps.gen_release.outputs.exe_deb_file}}
+        asset_content_type: application/x-debian-package
+
+    - name: Upload dev deb
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      with:
+        upload_url: ${{steps.create_release.outputs.upload_url}}
+        asset_path: ${{steps.build.outputs.build_path}}/${{steps.gen_release.outputs.dev_deb_file}}
+        asset_name: ${{steps.gen_release.outputs.dev_deb_file}}
         asset_content_type: application/x-debian-package
 
     - name: Upload tar.gz

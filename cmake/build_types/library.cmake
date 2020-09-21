@@ -26,6 +26,13 @@ target_link_libraries(malbolge_lib
     PUBLIC Threads::Threads
 )
 
+set(LIB_COMP dev)
 if(BUILD_SHARED_LIBS)
-    install(TARGETS malbolge_lib)
+    set(LIB_COMP exe)
 endif()
+
+install(TARGETS malbolge_lib
+        COMPONENT ${LIB_COMP})
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge
+        DESTINATION include
+        COMPONENT dev)
