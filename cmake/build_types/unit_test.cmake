@@ -22,6 +22,7 @@ set(TEST_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/math/ipow_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/math/tritset_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/math/ternary_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/normalise_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/argument_parser_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/raii_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/stream_lock_guard_test.cpp

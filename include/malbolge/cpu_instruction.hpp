@@ -122,22 +122,24 @@ namespace cipher
 {
 /** Cipher size.
  */
-constexpr auto size = graphical_ascii_range.second -
-                      graphical_ascii_range.first;
+constexpr auto size = (graphical_ascii_range.second -
+                       graphical_ascii_range.first) + 1;
 
 /** Returns the pre-ciphered character at @a index.
  *
  * @param index Index into pre-cipher array
- * @return Character in the pre-cipher at @a index
+ * @return Character in the pre-cipher at @a index, or an empty optional if
+ * @a index is out of range
  */
-char pre(std::size_t index);
+std::optional<char> pre(std::size_t index);
 
 /** Returns the post-ciphered character at @a index.
  *
  * @param index Index into post-cipher array
- * @return Character in the post-cipher at @a index
+ * @return Character in the post-cipher at @a index, or an empty optional if
+ * @a index is out of range
  */
-char post(std::size_t index);
+std::optional<char> post(std::size_t index);
 }
 
 /** Performs a pre-instruction cipher on @a input.
@@ -155,8 +157,7 @@ std::optional<char> pre_cipher_instruction(T input, std::size_t index)
         return {};
     }
 
-    const auto i = (input - graphical_ascii_range.first + index) %
-                   (cipher::size+1);
+    const auto i = (input - graphical_ascii_range.first + index) % cipher::size;
     return cipher::pre(static_cast<std::size_t>(i));
 }
 

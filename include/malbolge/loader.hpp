@@ -81,7 +81,7 @@ virtual_memory load_impl(InputIt first, InputIt last)
  * @param first Iterator to the first element
  * @param last Iterator to the one-past-the-end element
  * @return Virtual memory image with the program at the start
- * @throw parse_exception Thrown if the program contains errors
+ * @exception parse_exception Thrown if the program contains errors
  */
 template <typename InputIt>
 virtual_memory load(InputIt first, InputIt last)
@@ -102,7 +102,7 @@ virtual_memory load(InputIt first, InputIt last)
  * @tparam Range Range type
  * @param range Range instance
  * @return Virtual memory image with the program at the start
- * @throw parse_exception Thrown if the program contains errors
+ * @exception parse_exception Thrown if the program contains errors
  */
 template <typename R,
           std::enable_if_t<!std::is_same_v<std::decay_t<R>,
@@ -110,15 +110,18 @@ template <typename R,
                            int> = 0>
 virtual_memory load(R&& range)
 {
+    using std::begin;
+    using std::end;
+
     log::print(log::INFO, "Loading file from string");
-    return load(std::begin(range), std::end(range));
+    return load(begin(range), end(range));
 }
 
 /** Loads the program data read from @a path.
  *
  * @param path Path to text file containing the program
  * @return Virtual memory image with the program at the start
- * @throw parse_exception Thrown if the program cannot be read or contains
+ * @exception parse_exception Thrown if the program cannot be read or contains
  * errors
  */
 virtual_memory load(const std::filesystem::path& path);
@@ -127,7 +130,7 @@ virtual_memory load(const std::filesystem::path& path);
  *
  * This is used for 'piping' data in from a terminal.
  * @return Virtual memory image with the program at the start
- * @throw parse_exception Thrown if the program contains errors
+ * @exception parse_exception Thrown if the program contains errors
  */
 virtual_memory load_from_cin();
 }
