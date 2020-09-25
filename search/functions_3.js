@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['empty',['empty',['../classmalbolge_1_1virtual__memory.html#a65a73be18cc465a5e676084a36155eed',1,'malbolge::virtual_memory']]],
-  ['end',['end',['../classmalbolge_1_1virtual__memory.html#a7848fe5ba49f4142c399b21cf5d9a1ab',1,'malbolge::virtual_memory::end() noexcept'],['../classmalbolge_1_1virtual__memory.html#aa9e972e7b6c22da7e58adeebddfe9373',1,'malbolge::virtual_memory::end() const noexcept']]],
-  ['execution_5fexception',['execution_exception',['../classmalbolge_1_1execution__exception.html#aa8b54d04705f08cfe5108c9f55f6bff9',1,'malbolge::execution_exception']]]
+  ['denormalise_5fsource',['denormalise_source',['../namespacemalbolge.html#a0ed2700db7a1046cab16f4ac7f474bcf',1,'malbolge::denormalise_source(InputIt s_begin, InputIt s_end, OutputIt d_begin)'],['../namespacemalbolge.html#a53dcb8c16a4ce4154cec68d0c47a1e5c',1,'malbolge::denormalise_source(InputRange &amp;&amp;source, OutputIt d_begin)'],['../namespacemalbolge.html#a889ef9f654484bba1a560f75301c8016',1,'malbolge::denormalise_source(const std::string &amp;source)']]]
 ];
