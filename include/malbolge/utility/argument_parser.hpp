@@ -42,7 +42,7 @@ public:
      * Parses the command line arguments.
      * @param argc Argument count
      * @param argv Arguments
-     * @throw system_exception Thrown if invalid arguments were provided
+     * @exception system_exception Thrown if invalid arguments were provided
      */
     explicit argument_parser(int argc, char* argv[]);
 

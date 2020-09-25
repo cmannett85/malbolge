@@ -275,8 +275,8 @@ public:
      * @tparam InputIt Program data iterator type
      * @param first Iterator to first element in program data
      * @param last Iterator to one-past-the-end element in program data
-     * @throw parse_exception Thrown if program length is less than 2 characters
-     * @throw parse_exception Thrown if program length is greater than
+     * @exception parse_exception Thrown if program length is less than 2 characters
+     * @exception parse_exception Thrown if program length is greater than
      * math::ternary::max
      */
     template <typename InputIt>
@@ -311,8 +311,8 @@ public:
      * @endcode
      * @tparam R Range type
      * @param program_data Program data
-     * @throw parse_exception Thrown if program length is less than 2 characters
-     * @throw parse_exception Thrown if program length is greater than
+     * @exception parse_exception Thrown if program length is less than 2 characters
+     * @exception parse_exception Thrown if program length is greater than
      * math::ternary::max
      */
     template <typename R>
@@ -328,8 +328,8 @@ public:
      * @endcode
      * @tparam T List value type
      * @param program_data Program data
-     * @throw parse_exception Thrown if program length is less than 2 characters
-     * @throw parse_exception Thrown if program length is greater than
+     * @exception parse_exception Thrown if program length is less than 2 characters
+     * @exception parse_exception Thrown if program length is greater than
      * math::ternary::max
      */
     template <typename T>

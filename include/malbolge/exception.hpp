@@ -36,6 +36,13 @@ struct source_location
         column{c}
     {}
 
+    /** Comparison operator.
+     *
+     * @param other Instance to compare against
+     * @return Ordering
+     */
+    auto operator<=>(const source_location& other) const = default;
+
     math::ternary::underlying_type line;    ///< Line number
     math::ternary::underlying_type column;  ///< Column number
 };

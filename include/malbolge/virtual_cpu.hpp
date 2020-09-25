@@ -77,7 +77,7 @@ public:
      * @param mtx Mutex for accessing the streams.  Only required if at least
      * one stream is not cin/cout
      * @return Future holding nothing, or an exception
-     * @throw execution_exception Thrown if the program has already ran, or
+     * @exception execution_exception Thrown if the program has already ran, or
      * cin/cout is used as a stream but mtx is not valid
      */
     std::future<void> run(std::istream& istr = std::cin,
@@ -97,7 +97,7 @@ public:
      * @param ostr Output stream
      * @param mtx Mutex for accessing the streams.  Only required if at least
      * one stream is not cin/cout
-     * @throw execution_exception Thrown if the program has already ran, or
+     * @exception execution_exception Thrown if the program has already ran, or
      * cin/cout is used as a stream but mtx is not valid
      */
     void run(std::function<void (std::exception_ptr)> stopped,
