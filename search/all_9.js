@@ -6,6 +6,7 @@ var searchData=
   ['log',['log',['../namespacemalbolge_1_1log.html',1,'malbolge']]],
   ['malbolge',['malbolge',['../namespacemalbolge.html',1,'']]],
   ['malbolge_5ffree_5fvirtual_5fmemory',['malbolge_free_virtual_memory',['../c__interface_8hpp.html#acf8682000db7d6d6cb19abeb55ba84ec',1,'c_interface.hpp']]],
+  ['malbolge_5fload_5fnormalised_5fprogram',['malbolge_load_normalised_program',['../c__interface_8hpp.html#a99624edc0501c26f691297ba26f7c27b',1,'c_interface.hpp']]],
   ['malbolge_5fload_5fprogram',['malbolge_load_program',['../c__interface_8hpp.html#aca9085ca174f4798d2b454426ff8960e',1,'c_interface.hpp']]],
   ['malbolge_5flog_5flevel',['malbolge_log_level',['../c__interface_8hpp.html#a4833873d446d1831912a2720169a971a',1,'c_interface.hpp']]],
   ['malbolge_5fprogram_5fstopped',['malbolge_program_stopped',['../c__interface_8hpp.html#af0cd7a2539d49a39011213b0b85cff88',1,'c_interface.hpp']]],

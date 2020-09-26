@@ -101,6 +101,8 @@ Functions</h2></td></tr>
 <tr class="separator:aae0eb68fd86649a134a1bbe2faaedae3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aca9085ca174f4798d2b454426ff8960e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="c__interface_8hpp.html#a84b1e464beba3bd6868aae44b57eaef4">malbolge_virtual_memory</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#aca9085ca174f4798d2b454426ff8960e">malbolge_load_program</a> (char *buffer, unsigned long size, unsigned int *fail_line, unsigned int *fail_column)</td></tr>
 <tr class="separator:aca9085ca174f4798d2b454426ff8960e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a99624edc0501c26f691297ba26f7c27b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="c__interface_8hpp.html#a84b1e464beba3bd6868aae44b57eaef4">malbolge_virtual_memory</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#a99624edc0501c26f691297ba26f7c27b">malbolge_load_normalised_program</a> (char *buffer, unsigned long size, unsigned int *fail_line, unsigned int *fail_column)</td></tr>
+<tr class="separator:a99624edc0501c26f691297ba26f7c27b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acf8682000db7d6d6cb19abeb55ba84ec"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#acf8682000db7d6d6cb19abeb55ba84ec">malbolge_free_virtual_memory</a> (<a class="el" href="c__interface_8hpp.html#a84b1e464beba3bd6868aae44b57eaef4">malbolge_virtual_memory</a> vmem)</td></tr>
 <tr class="separator:acf8682000db7d6d6cb19abeb55ba84ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aab3f5204473302c4c526ecf33acb3638"><td class="memItemLeft" align="right" valign="top"><a class="el" href="c__interface_8hpp.html#a2c550a1e787f94deef1515d637ad8d97">malbolge_virtual_cpu</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#aab3f5204473302c4c526ecf33acb3638">malbolge_vcpu_run</a> (<a class="el" href="c__interface_8hpp.html#a84b1e464beba3bd6868aae44b57eaef4">malbolge_virtual_memory</a> vmem, <a class="el" href="c__interface_8hpp.html#af0cd7a2539d49a39011213b0b85cff88">malbolge_program_stopped</a> stopped_cb, <a class="el" href="c__interface_8hpp.html#a7496ad5d2af5f9a376df00fdcf589ccf">malbolge_program_waiting_for_input</a> waiting_cb, int use_cin)</td></tr>
@@ -214,6 +216,58 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="a99624edc0501c26f691297ba26f7c27b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a99624edc0501c26f691297ba26f7c27b">&#9670;&nbsp;</a></span>malbolge_load_normalised_program()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="c__interface_8hpp.html#a84b1e464beba3bd6868aae44b57eaef4">malbolge_virtual_memory</a> malbolge_load_normalised_program </td>
+          <td>(</td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>buffer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned long&#160;</td>
+          <td class="paramname"><em>size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int *&#160;</td>
+          <td class="paramname"><em>fail_line</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int *&#160;</td>
+          <td class="paramname"><em>fail_column</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Same as <a class="el" href="c__interface_8hpp.html#aca9085ca174f4798d2b454426ff8960e">malbolge_load_program(char*, unsigned long, unsigned int*, unsigned int*)</a> but denormalises the input before execution.</p>
+<p>If you do not pass the return pointer to malbolge_vcpu_run, it will need manually freeing.</p>
+<p><em>buffer</em> is not freed by this function. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">buffer</td><td>Program source </td></tr>
+    <tr><td class="paramname">size</td><td>Size in bytes of <em>data</em> </td></tr>
+    <tr><td class="paramname">fail_line</td><td>If parsing fails, this is set to the line in the source where the failure occurred. Ignored if NULL </td></tr>
+    <tr><td class="paramname">fail_column</td><td>If the parsing fails, this is set to the column in the source where the failure occurred. Ignored if NULL </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Malbolge virtual memory handle, or NULL if loading failed </dd></dl>
 
 </div>
 </div>

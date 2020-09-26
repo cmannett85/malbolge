@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['normalise_5fsource',['normalise_source',['../namespacemalbolge.html#a24f849e5b0e48cf41d2dff3910dd27d0',1,'malbolge::normalise_source(InputIt s_begin, InputIt s_end, OutputIt d_begin)'],['../namespacemalbolge.html#ac06f905f25fad50102c77f92126b60cb',1,'malbolge::normalise_source(InputRange &amp;&amp;source, OutputIt d_begin)'],['../namespacemalbolge.html#af8b6e981c5fff711128396e5321d0d77',1,'malbolge::normalise_source(const std::string &amp;source)']]]
+  ['normalise_5fsource',['normalise_source',['../namespacemalbolge.html#aaec90cf2e9a1bf42bf8ea2cb5605d574',1,'malbolge::normalise_source(InputIt first, InputIt last)'],['../namespacemalbolge.html#a17979e3579934b346102efe053d01935',1,'malbolge::normalise_source(InputRange &amp;source)']]],
+  ['normalise_5fsource_5fresize',['normalise_source_resize',['../namespacemalbolge.html#af4a41c9c7353cb469af711ab41d5b2c7',1,'malbolge']]]
 ];
