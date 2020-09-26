@@ -65,7 +65,6 @@ set(SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/src/loader.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/log.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/math/ternary.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/normalise.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/utility/argument_parser.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/virtual_cpu.cpp
 )

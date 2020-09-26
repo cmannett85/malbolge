@@ -19,28 +19,27 @@ BOOST_AUTO_TEST_CASE(normalise_valid_test)
 
         // Iterator version
         {
-            auto output = std::string(source.size() * 2, '\n');
-            auto d_it = normalise_source(source.begin(),
-                                         source.end(),
-                                         output.begin());
+            auto input = source;
+            auto it = normalise_source(input.begin(), input.end());
 
-            output = std::string(output.begin(), d_it);
-            BOOST_CHECK_EQUAL(output, expected);
+            input.erase(it, input.end());
+            BOOST_CHECK_EQUAL(input, expected);
         }
 
         // Range version
         {
-            auto output = std::string(source.size() * 2, '\n');
-            auto d_it = normalise_source(source, output.begin());
+            auto input = source;
+            auto it = normalise_source(input);
 
-            output = std::string(output.begin(), d_it);
-            BOOST_CHECK_EQUAL(output, expected);
+            input.erase(it, input.end());
+            BOOST_CHECK_EQUAL(input, expected);
         }
 
-        // std::string version
+        // Resize version
         {
-            auto output = normalise_source(source);
-            BOOST_CHECK_EQUAL(output, expected);
+            auto input = source;
+            normalise_source_resize(input);
+            BOOST_CHECK_EQUAL(input, expected);
         }
     };
 
@@ -64,10 +63,8 @@ BOOST_AUTO_TEST_CASE(normalise_invalid_test)
     auto f = [](auto&& source, auto&& source_loc) {
         // Iterator version
         try {
-            auto output = std::string(source.size() * 2, '\n');
-            normalise_source(source.begin(),
-                             source.end(),
-                             output.begin());
+            auto input = source;
+            normalise_source(input.begin(), input.end());
             BOOST_FAIL("Should have thrown");
         } catch (parse_exception& e) {
             BOOST_REQUIRE(e.location());
@@ -76,17 +73,18 @@ BOOST_AUTO_TEST_CASE(normalise_invalid_test)
 
         // Range version
         try {
-            auto output = std::string(source.size() * 2, '\n');
-            normalise_source(source, output.begin());
+            auto input = source;
+            normalise_source(input);
             BOOST_FAIL("Should have thrown");
         } catch (parse_exception& e) {
             BOOST_REQUIRE(e.location());
             BOOST_CHECK_EQUAL(*(e.location()), source_loc);
         }
 
-        // std::string version
+        // Resize version
         try {
-            normalise_source(source);
+            auto input = source;
+            normalise_source_resize(input);
             BOOST_FAIL("Should have thrown");
         } catch (parse_exception& e) {
             BOOST_REQUIRE(e.location());
@@ -117,28 +115,16 @@ BOOST_AUTO_TEST_CASE(denormalise_valid_test)
 
         // Iterator version
         {
-            auto output = std::string(source.size() * 2, '\n');
-            auto d_it = denormalise_source(source.begin(),
-                                           source.end(),
-                                           output.begin());
-
-            output = std::string(output.begin(), d_it);
-            BOOST_CHECK_EQUAL(output, expected);
+            auto input = source;
+            denormalise_source(input.begin(), input.end());
+            BOOST_CHECK_EQUAL(input, expected);
         }
 
         // Range version
         {
-            auto output = std::string(source.size() * 2, '\n');
-            auto d_it = denormalise_source(source, output.begin());
-
-            output = std::string(output.begin(), d_it);
-            BOOST_CHECK_EQUAL(output, expected);
-        }
-
-        // std::string version
-        {
-            auto output = denormalise_source(source);
-            BOOST_CHECK_EQUAL(output, expected);
+            auto input = source;
+            denormalise_source(input);
+            BOOST_CHECK_EQUAL(input, expected);
         }
     };
 
@@ -162,10 +148,8 @@ BOOST_AUTO_TEST_CASE(denormalise_invalid_test)
     auto f = [](auto&& source, auto&& source_loc) {
         // Iterator version
         try {
-            auto output = std::string(source.size() * 2, '\n');
-            denormalise_source(source.begin(),
-                               source.end(),
-                               output.begin());
+            auto input = source;
+            denormalise_source(input.begin(), input.end());
             BOOST_FAIL("Should have thrown");
         } catch (parse_exception& e) {
             BOOST_REQUIRE(e.location());
@@ -174,17 +158,8 @@ BOOST_AUTO_TEST_CASE(denormalise_invalid_test)
 
         // Range version
         try {
-            auto output = std::string(source.size() * 2, '\n');
-            denormalise_source(source, output.begin());
-            BOOST_FAIL("Should have thrown");
-        } catch (parse_exception& e) {
-            BOOST_REQUIRE(e.location());
-            BOOST_CHECK_EQUAL(*(e.location()), source_loc);
-        }
-
-        // std::string version
-        try {
-            denormalise_source(source);
+            auto input = source;
+            denormalise_source(input);
             BOOST_FAIL("Should have thrown");
         } catch (parse_exception& e) {
             BOOST_REQUIRE(e.location());
@@ -210,9 +185,11 @@ BOOST_AUTO_TEST_CASE(denormalise_invalid_test)
 BOOST_AUTO_TEST_CASE(end_to_end)
 {
     const auto hello_world = R"(('&%:9]!~}|z2Vxwv-,POqponl$Hjig%eB@@>}=<M:9wv6WsU2T|nm-,jcL(I&%$#"`CB]V?Tx<uVtT`Rpo3NlF.Jh++FdbCBA@?]!~|4XzyTT43Qsqq(Lnmkj"Fhg${z@>)"s;
+    auto result = hello_world;
 
-    auto result = normalise_source(hello_world);
-    result = denormalise_source(result);
+    normalise_source(result);
+    BOOST_TEST_MESSAGE("Normalised: " << result);
+    denormalise_source(result);
 
     BOOST_CHECK_EQUAL(hello_world, result);
 }

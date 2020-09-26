@@ -77,6 +77,41 @@ private:
 };
 
 custom_input input_data;
+
+malbolge_virtual_memory
+malbolge_load_program_impl(char *buffer,
+                           unsigned long size,
+                           unsigned int *fail_line,
+                           unsigned int *fail_column,
+                           bool normalised)
+{
+    if (!buffer) {
+        log::print(log::ERROR, "NULL program source pointer");
+        return nullptr;
+    }
+
+    try {
+        auto vmem = load(buffer, buffer + size, normalised);
+        return new virtual_memory(std::move(vmem));
+    } catch (parse_exception& e) {
+        log::print(log::ERROR, e.what());
+
+        if (e.has_location()) {
+            if (fail_line) {
+                *fail_line = e.location()->line;
+            }
+            if (fail_column) {
+                *fail_column = e.location()->column;
+            }
+        }
+    } catch (std::exception& e) {
+        log::print(log::ERROR, e.what());
+    } catch (...) {
+        log::print(log::ERROR, "Unknown exception");
+    }
+
+    return nullptr;
+}
 }
 
 unsigned int malbolge_log_level()
@@ -105,32 +140,24 @@ malbolge_virtual_memory malbolge_load_program(char *buffer,
                                               unsigned int *fail_line,
                                               unsigned int *fail_column)
 {
-    if (!buffer) {
-        log::print(log::ERROR, "NULL program source pointer");
-        return nullptr;
-    }
+    return malbolge_load_program_impl(buffer,
+                                      size,
+                                      fail_line,
+                                      fail_column,
+                                      false);
+}
 
-    try {
-        auto vmem = load(buffer, buffer + size);
-        return new virtual_memory(std::move(vmem));
-    } catch (parse_exception& e) {
-        log::print(log::ERROR, e.what());
-
-        if (e.has_location()) {
-            if (fail_line) {
-                *fail_line = e.location()->line;
-            }
-            if (fail_column) {
-                *fail_column = e.location()->column;
-            }
-        }
-    } catch (std::exception& e) {
-        log::print(log::ERROR, e.what());
-    } catch (...) {
-        log::print(log::ERROR, "Unknown exception");
-    }
-
-    return nullptr;
+malbolge_virtual_memory
+malbolge_load_normalised_program(char *buffer,
+                                 unsigned long size,
+                                 unsigned int *fail_line,
+                                 unsigned int *fail_column)
+{
+    return malbolge_load_program_impl(buffer,
+                                      size,
+                                      fail_line,
+                                      fail_column,
+                                      true);
 }
 
 void malbolge_free_virtual_memory(malbolge_virtual_memory vmem)
