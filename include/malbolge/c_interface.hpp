@@ -83,6 +83,27 @@ malbolge_virtual_memory malbolge_load_program(char *buffer,
                                               unsigned int *fail_line,
                                               unsigned int *fail_column);
 
+/** Same as malbolge_load_program(char*, unsigned long, unsigned int*, unsigned int*)
+ * but denormalises the input before execution.
+ *
+ * If you do not pass the return pointer to malbolge_vcpu_run, it will need
+ * manually freeing.
+ *
+ * @a buffer is not freed by this function.
+ * @param buffer Program source
+ * @param size Size in bytes of @a data
+ * @param fail_line If parsing fails, this is set to the line in the source
+ * where the failure occurred.  Ignored if NULL
+ * @param fail_column If the parsing fails, this is set to the column in the
+ * source where the failure occurred.  Ignored if NULL
+ * @return Malbolge virtual memory handle, or NULL if loading failed
+ */
+malbolge_virtual_memory
+malbolge_load_normalised_program(char *buffer,
+                                 unsigned long size,
+                                 unsigned int *fail_line,
+                                 unsigned int *fail_column);
+
 /** Frees the virtual memory returned from malbolge_load_program.
  *
  * This is only required if @a vmem is not going to be ran.

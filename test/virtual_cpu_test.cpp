@@ -48,6 +48,22 @@ BOOST_AUTO_TEST_CASE(hello_world_string)
     BOOST_CHECK_EQUAL(vcpu.state(), virtual_cpu::execution_state::STOPPED);
 }
 
+BOOST_AUTO_TEST_CASE(hello_world_string_normalised)
+{
+    auto vmem = load("jjjjpp<jjjj*p<jjjpp<<jjjj*p<jj*o*<i<io<</<<oo<*o*<jvoo<<opj<*<<<<<ojjopjp<jio<ovo<<jo<p*o<*jo<iooooo<jj*p<jji<oo<j*jp<jj**p<jjopp<i"s, true);
+    auto vcpu = virtual_cpu{std::move(vmem)};
+    BOOST_CHECK_EQUAL(vcpu.state(), virtual_cpu::execution_state::READY);
+
+    auto ostr = std::stringstream{};
+    auto mtx = std::mutex{};
+    auto fut = vcpu.run(std::cin, ostr, mtx);
+    BOOST_CHECK_EQUAL(vcpu.state(), virtual_cpu::execution_state::RUNNING);
+
+    fut.get();
+    BOOST_CHECK_EQUAL(ostr.str(), "Hello World!");
+    BOOST_CHECK_EQUAL(vcpu.state(), virtual_cpu::execution_state::STOPPED);
+}
+
 BOOST_AUTO_TEST_CASE(echo)
 {
     auto vmem = load(std::filesystem::path{"programs/echo.mal"});

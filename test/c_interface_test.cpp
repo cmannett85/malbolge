@@ -214,6 +214,32 @@ BOOST_AUTO_TEST_CASE(run_hello_world_string)
     BOOST_CHECK_EQUAL(r, -EINVAL);
 }
 
+BOOST_AUTO_TEST_CASE(run_hello_world_string_normalised)
+{
+    malbolge_set_log_level(2);
+
+    auto buffer = "jjjjpp<jjjj*p<jjjpp<<jjjj*p<jj*o*<i<io<</<<oo<*o*<jvoo<<opj<*<<<<<ojjopjp<jio<ovo<<jo<p*o<*jo<iooooo<jj*p<jji<oo<j*jp<jj**p<jjopp<i"s;
+    auto fail_line = 0u;
+    auto fail_column = 0u;
+    auto vmem = malbolge_load_normalised_program(buffer.data(),
+                                                 buffer.size(),
+                                                 &fail_line,
+                                                 &fail_column);
+    BOOST_REQUIRE(vmem);
+    BOOST_CHECK_EQUAL(fail_line, 0);
+    BOOST_CHECK_EQUAL(fail_column, 0);
+
+    global_stopped = false;
+    global_vcpu = malbolge_vcpu_run(vmem, stopped_cb, waiting_cb, 1);
+    BOOST_REQUIRE(global_vcpu);
+
+    std::this_thread::sleep_for(100ms);
+    BOOST_CHECK(global_stopped);
+
+    const auto r = malbolge_vcpu_input(global_vcpu, "Goodbye!", 8);
+    BOOST_CHECK_EQUAL(r, -EINVAL);
+}
+
 BOOST_AUTO_TEST_CASE(run_echo)
 {
     malbolge_set_log_level(2);

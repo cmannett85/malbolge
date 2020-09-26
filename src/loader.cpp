@@ -19,7 +19,8 @@ namespace
 using stream_iterator = std::istreambuf_iterator<char>;
 }
 
-virtual_memory malbolge::load(const std::filesystem::path& path)
+virtual_memory malbolge::load(const std::filesystem::path& path,
+                              bool normalised)
 {
     log::print(log::INFO, "Loading file: ", path);
 
@@ -46,13 +47,13 @@ virtual_memory malbolge::load(const std::filesystem::path& path)
 
         log::print(log::INFO, "File loaded");
 
-        return detail::load_impl(data.begin(), data.end());
+        return detail::load_impl(data.begin(), data.end(), normalised);
     } catch (std::exception& e) {
         throw parse_exception{"Failed to load program: "s + e.what()};
     }
 }
 
-virtual_memory malbolge::load_from_cin()
+virtual_memory malbolge::load_from_cin(bool normalised)
 {
     log::print(log::INFO, "Loading file from stdin");
 
@@ -63,5 +64,5 @@ virtual_memory malbolge::load_from_cin()
 
     log::print(log::INFO, "File loaded");
 
-    return load(std::begin(program_data), std::end(program_data));
+    return load(std::begin(program_data), std::end(program_data), normalised);
 }
