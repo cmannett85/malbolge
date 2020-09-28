@@ -99,6 +99,12 @@ Functions</h2></td></tr>
 <tr class="separator:ab59f51f6a9e9c8909c1b9e8f98ac1de2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aae0eb68fd86649a134a1bbe2faaedae3"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#aae0eb68fd86649a134a1bbe2faaedae3">malbolge_version</a> ()</td></tr>
 <tr class="separator:aae0eb68fd86649a134a1bbe2faaedae3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae5037409d2537edfd62e04feae6997ef"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#ae5037409d2537edfd62e04feae6997ef">malbolge_is_likely_normalised_source</a> (char *buffer, unsigned long size)</td></tr>
+<tr class="separator:ae5037409d2537edfd62e04feae6997ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b8e977feaee90e3adde7742e4fb1952"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#a6b8e977feaee90e3adde7742e4fb1952">malbolge_normalise_source</a> (char *buffer, unsigned long size, unsigned long *new_size, unsigned int *fail_line, unsigned int *fail_column)</td></tr>
+<tr class="separator:a6b8e977feaee90e3adde7742e4fb1952"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab3fe3de193106890b826ff36536a6c01"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#ab3fe3de193106890b826ff36536a6c01">malbolge_denormalise_source</a> (char *buffer, unsigned long size, unsigned int *fail_column)</td></tr>
+<tr class="separator:ab3fe3de193106890b826ff36536a6c01"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aca9085ca174f4798d2b454426ff8960e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="c__interface_8hpp.html#a84b1e464beba3bd6868aae44b57eaef4">malbolge_virtual_memory</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#aca9085ca174f4798d2b454426ff8960e">malbolge_load_program</a> (char *buffer, unsigned long size, unsigned int *fail_line, unsigned int *fail_column)</td></tr>
 <tr class="separator:aca9085ca174f4798d2b454426ff8960e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a99624edc0501c26f691297ba26f7c27b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="c__interface_8hpp.html#a84b1e464beba3bd6868aae44b57eaef4">malbolge_virtual_memory</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#a99624edc0501c26f691297ba26f7c27b">malbolge_load_normalised_program</a> (char *buffer, unsigned long size, unsigned int *fail_line, unsigned int *fail_column)</td></tr>
@@ -194,6 +200,50 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="ab3fe3de193106890b826ff36536a6c01"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab3fe3de193106890b826ff36536a6c01">&#9670;&nbsp;</a></span>malbolge_denormalise_source()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int malbolge_denormalise_source </td>
+          <td>(</td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>buffer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned long&#160;</td>
+          <td class="paramname"><em>size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int *&#160;</td>
+          <td class="paramname"><em>fail_column</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Denormalises the program source in <em>buffer</em>.</p>
+<p>For an explanation on normalistion, refer to <a class="el" href="namespacemalbolge.html#a6d51c3cd5ba2e04e7936cea7e578af85">malbolge::denormalise_source(InputIt first, InputIt last)</a>. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">buffer</td><td>Program source </td></tr>
+    <tr><td class="paramname">size</td><td>Size in bytes of <em>buffer</em> </td></tr>
+    <tr><td class="paramname">fail_column</td><td>If the parsing fails, this is set to the column in the source where the failure occurred. Ignored if NULL </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>0 for success, a negative error code in case of failure </dd></dl>
+
+</div>
+</div>
 <a id="acf8682000db7d6d6cb19abeb55ba84ec"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#acf8682000db7d6d6cb19abeb55ba84ec">&#9670;&nbsp;</a></span>malbolge_free_virtual_memory()</h2>
 
@@ -216,6 +266,43 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="ae5037409d2537edfd62e04feae6997ef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae5037409d2537edfd62e04feae6997ef">&#9670;&nbsp;</a></span>malbolge_is_likely_normalised_source()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int malbolge_is_likely_normalised_source </td>
+          <td>(</td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>buffer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned long&#160;</td>
+          <td class="paramname"><em>size</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns true if the input source is likely to be normalised.</p>
+<p>See <a class="el" href="namespacemalbolge.html#a03e3a97cf70022393465f73d9060d46f">malbolge::is_likely_normalised_source(InputIt, InputIt)</a> for further explanation on this function. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">buffer</td><td>Program source </td></tr>
+    <tr><td class="paramname">size</td><td>Size in bytes of <em>buffer</em> </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>1 if true, 0 otherwise </dd></dl>
 
 </div>
 </div>
@@ -261,7 +348,7 @@ Functions</h2></td></tr>
 <p><em>buffer</em> is not freed by this function. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">buffer</td><td>Program source </td></tr>
-    <tr><td class="paramname">size</td><td>Size in bytes of <em>data</em> </td></tr>
+    <tr><td class="paramname">size</td><td>Size in bytes of <em>buffer</em> </td></tr>
     <tr><td class="paramname">fail_line</td><td>If parsing fails, this is set to the line in the source where the failure occurred. Ignored if NULL </td></tr>
     <tr><td class="paramname">fail_column</td><td>If the parsing fails, this is set to the column in the source where the failure occurred. Ignored if NULL </td></tr>
   </table>
@@ -313,7 +400,7 @@ Functions</h2></td></tr>
 <p><em>buffer</em> is not freed by this function. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">buffer</td><td>Program source </td></tr>
-    <tr><td class="paramname">size</td><td>Size in bytes of <em>data</em> </td></tr>
+    <tr><td class="paramname">size</td><td>Size in bytes of <em>buffer</em> </td></tr>
     <tr><td class="paramname">fail_line</td><td>If parsing fails, this is set to the line in the source where the failure occurred. Ignored if NULL </td></tr>
     <tr><td class="paramname">fail_column</td><td>If the parsing fails, this is set to the column in the source where the failure occurred. Ignored if NULL </td></tr>
   </table>
@@ -339,6 +426,64 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns the current minimum logging level.</p>
 <p>The value from <a class="el" href="namespacemalbolge_1_1log.html#ae1ad89551a9b5f336fe824ba7ef7155e">malbolge::log::log_level()</a> is subtracted from <a class="el" href="namespacemalbolge_1_1log.html#a237f237f9c3fda0478e4dba3aaffc3f0ae1695cb7ac43ab4e2afd4fe22378ef45" title="Error logging level. ">malbolge::log::ERROR</a> and then returned. </p><dl class="section return"><dt>Returns</dt><dd>Minimum logging level </dd></dl>
+
+</div>
+</div>
+<a id="a6b8e977feaee90e3adde7742e4fb1952"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6b8e977feaee90e3adde7742e4fb1952">&#9670;&nbsp;</a></span>malbolge_normalise_source()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int malbolge_normalise_source </td>
+          <td>(</td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>buffer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned long&#160;</td>
+          <td class="paramname"><em>size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned long *&#160;</td>
+          <td class="paramname"><em>new_size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int *&#160;</td>
+          <td class="paramname"><em>fail_line</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int *&#160;</td>
+          <td class="paramname"><em>fail_column</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Normalises the program source in <em>buffer</em>.</p>
+<p>For an explanation on normalistion, refer to <a class="el" href="namespacemalbolge.html#aaec90cf2e9a1bf42bf8ea2cb5605d574">malbolge::normalise_source(InputIt first, InputIt last)</a>. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">buffer</td><td>Program source </td></tr>
+    <tr><td class="paramname">size</td><td>Size in bytes of <em>buffer</em> </td></tr>
+    <tr><td class="paramname">new_size</td><td>Normalised program size - always less than <em>size</em>, no data is freed, but the one-past-the-end buffer element is set to null </td></tr>
+    <tr><td class="paramname">fail_line</td><td>If parsing fails, this is set to the line in the source where the failure occurred. Ignored if NULL </td></tr>
+    <tr><td class="paramname">fail_column</td><td>If the parsing fails, this is set to the column in the source where the failure occurred. Ignored if NULL </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>0 for success, a negative error code in case of failure </dd></dl>
 
 </div>
 </div>
