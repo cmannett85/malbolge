@@ -58,21 +58,39 @@ class CString {
 /** Log levels.
  */
 const LogLevel = {
-    "info":1,       ///< Informational messages
-    "emscripten":2, ///< Messages from the Emscripten runtime
-    "error":3       ///< Error messages
+    "info": 1,       ///< Informational messages
+    "emscripten": 2, ///< Messages from the Emscripten runtime
+    "error": 3       ///< Error messages
 };
 
 /** Sets a running state.
  * 
- * This enables/disables components depending on @a is_running.
- * @param {boolean} is_running True to represent a state where the Malbolge
+ * This enables/disables components depending on @a isRunning.
+ * @param {boolean} isRunning True to represent a state where the Malbolge
  * program is running
  */
-function running(is_running) {
-    document.getElementById("run_button").disabled = is_running;
-    document.getElementById("preset").disabled = is_running;
-    document.getElementById("stop_button").disabled = !is_running;
+function programRunning(isRunning) {
+    if (isRunning) {
+        document.getElementById("program_button").innerText = "Stop";
+    } else {
+        if (Module.malbolgeProgramNormalised) {
+            document.getElementById("program_button").innerText = "Run Normalised";
+        } else {
+            document.getElementById("program_button").innerText = "Run";
+        }
+    }
+
+    document.getElementById("program_button").value = isRunning ? "stop" : "run";
+    document.getElementById("preset").disabled = isRunning;
+    document.getElementById("program").disabled = isRunning;
+}
+
+/** Returns true if the program is running.
+ * 
+ * @return True if running
+ */
+function isProgramRunning() {
+    return document.getElementById("program_button").innerText == "Stop";
 }
 
 /** Wrap the original message handling with support for our own messages
@@ -86,7 +104,7 @@ function wrapWorkerHandler() {
     let standardHandlers = worker.onmessage;
     worker.onmessage = function (e) {
         if (e.data.cmd === "malbolgeStopped") {
-            running(false);
+            programRunning(false);
         } else if (e.data.cmd === "malbolgeWaitingForInput") {
             document.getElementById("input_button").disabled = false;
             console.log("Waiting for input");
@@ -96,35 +114,120 @@ function wrapWorkerHandler() {
     };
 }
 
-/** Execute the program as provided by the "output" element
+/** If there is program text present enables certain controls.
+ * 
+ * It also scans the input to determine if it is normalised, and configures the
+ * normalisation dropdown appropriately.
  */
-function runMalbolge() {
-    running(true);
+function programTextInput() {
+    const programText = document.getElementById("program").value;
+    const isEmpty = programText.length == 0;
+
+    document.getElementById("normalise").disabled = isEmpty;
+    document.getElementById("program_button").disabled = isEmpty;
+
+    if (isEmpty) {
+        return;
+    }
+
+    const programCText = new CString(programText);
+
+    // First discover if the program is normalised or not
+    const normalised = _malbolge_is_likely_normalised_source(programCText.pointer,
+        programCText.size);
+    programCText.destroy();
+
+    // Select the appropriate normalise dropdown
+    Module.malbolgeProgramNormalised = normalised;
+    document.getElementById("program_button").innerText = normalised ? "Run Normalised" : "Run";
+}
+
+/** Normalies or denormalises the program source depending on the corresponding
+ * dropdown box selection.
+ */
+function normaliseProgram() {
+    const selectedIndex = document.getElementById("normalise").selectedIndex;
+    if (selectedIndex == 0) {
+        return;
+    }
+
+    const programText = new CString(document.getElementById("program").value);
+    const normalise = selectedIndex == 1;
+
+    if (normalise) {
+        let newSizePtr = _malloc(8); // Size is 64bit
+        setValue(newSizePtr, 0, "i64");
+
+        const ret = _malbolge_normalise_source(programText.pointer,
+            programText.size,
+            newSizePtr,
+            0,
+            0);
+        if (ret == 0) {
+            let newSize = GROWABLE_HEAP_I32()[newSizePtr >> 2] << 32;
+            newSize += GROWABLE_HEAP_I32()[(newSizePtr + 4) >> 2];
+
+            const normalisedProgram = UTF8ToString(programText.pointer, newSize);
+            document.getElementById("program").value = normalisedProgram;
+            programTextInput();
+        }
+        _free(newSizePtr);
+    } else {
+        const ret = _malbolge_denormalise_source(programText.pointer,
+            programText.size,
+            0);
+        if (ret == 0) {
+            const denormalisedProgram = programText.toString();
+            document.getElementById("program").value = denormalisedProgram;
+            programTextInput();
+        }
+    }
+
+    document.getElementById("normalise").selectedIndex = 0;
+}
+
+/** Execute or stop the program as provided by the "output" element
+ */
+function runStopMalbolge() {
+    if (isProgramRunning()) {
+        stopMalbolge();
+        return;
+    }
+
+    programRunning(true);
     document.getElementById("output").value = "";
     const programText = new CString(document.getElementById("program").value);
     if (programText.pointer == null) {
         consoleWrite("Failed to allocate program source heap",
-                     LogLevel.error);
-        running(false);
+            LogLevel.error);
+        programRunning(false);
         return;
     }
 
     // Load and validate the program
-    let vmem = _malbolge_load_program(programText.pointer,
-                                      programText.size,
-                                      0,
-                                      0);
+    let vmem = null;
+    if (Module.malbolgeProgramNormalised) {
+        vmem = _malbolge_load_normalised_program(programText.pointer,
+            programText.size,
+            0,
+            0);
+    } else {
+        vmem = _malbolge_load_program(programText.pointer,
+            programText.size,
+            0,
+            0);
+    }
     programText.destroy();
 
     if (!vmem) {
-        running(false);
+        programRunning(false);
         return;
     }
 
     // Now execute it
     let vcpu = _malbolge_vcpu_run_wasm(vmem);
     if (!vcpu) {
-        running(false);
+        programRunning(false);
         return;
     }
 
@@ -137,7 +240,7 @@ function runMalbolge() {
 /** Stop the Malbolge program execution.
  */
 function stopMalbolge() {
-    running(false);
+    programRunning(false);
     document.getElementById("input_button").disabled = true;
     _malbolge_vcpu_stop(Module.malbolgeVcpu);
 }
@@ -151,7 +254,7 @@ function setInputText() {
         const ctext = new CString(text + "\n");
         if (ctext.pointer == null) {
             consoleWrite("Failed to allocate input text heap",
-                         LogLevel.error);
+                LogLevel.error);
             return;
         }
 
@@ -169,13 +272,13 @@ function setInputText() {
 function finishedLoading() {
     // Print the version once the WASM initialisation has finished
     stdOut("Malbolge Virtual Machine v" +
-           UTF8ToString(_malbolge_version()) +
-           "\nCopyright Cam Mannett 2020");
+        UTF8ToString(_malbolge_version()) +
+        "\nCopyright Cam Mannett 2020");
 
     // Increase the log level
     _malbolge_set_log_level(2);
 
-    document.getElementById("run_button").disabled = false;
+    programRunning(false);
 }
 
 /** Emscripten callback for Malbolge for handling std::cout.
@@ -222,12 +325,12 @@ function consoleWrite(msg, logLevel) {
             break;
         case LogLevel.emscripten:
             consoleDiv.innerHTML += "<p><span style=\"color:orange\">" + msg +
-                                    "\n</span></p>";
+                "\n</span></p>";
             console.warn(msg);
             break;
         case LogLevel.error:
             consoleDiv.innerHTML += "<p><span style=\"color:red\">" + msg +
-                                    "\n</span></p>";
+                "\n</span></p>";
             console.error(msg);
     }
 
@@ -250,22 +353,23 @@ function setDebugLevel() {
 function loadPreset() {
     let pane = "";
     switch (document.getElementById("preset").value) {
-    case "0":
-        pane = "";
-        break;
-    case "1":
-        pane = "('&%:9]!~}|z2Vxwv-,POqponl$Hjig%eB@@>}=<M:9wv6WsU2T|nm-,jcL(I&%$#\"`CB]V?Tx<uVtT`Rpo3NlF.Jh++FdbCBA@?]!~|4XzyTT43Qsqq(Lnmkj\"Fhg${z@>"
-        break;
-    case "2":
-        pane = `(=BA#9"=<;:3y7x54-21q/p-,+*)"!h%B0/.
+        case "0":
+            pane = "";
+            break;
+        case "1":
+            pane = "('&%:9]!~}|z2Vxwv-,POqponl$Hjig%eB@@>}=<M:9wv6WsU2T|nm-,jcL(I&%$#\"`CB]V?Tx<uVtT`Rpo3NlF.Jh++FdbCBA@?]!~|4XzyTT43Qsqq(Lnmkj\"Fhg${z@>"
+            break;
+        case "2":
+            pane = `(=BA#9"=<;:3y7x54-21q/p-,+*)"!h%B0/.
 ~P<
 <:(8&
 66#"!~}|{zyxwvu
 gJ%`;
-        break;
+            break;
     }
 
     document.getElementById("program").value = pane;
+    programTextInput();
 }
 
 var Module = {
@@ -277,4 +381,5 @@ var Module = {
     malbolgeVcpu: undefined,
     malbolgeStoppedCb: undefined,
     malbolgeWaitingCb: undefined,
+    malbolgeProgramNormalised: false
 };

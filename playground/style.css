@@ -69,6 +69,22 @@ button:active {
     transform: translateY(4px);
 }
 
+#program_button[value=stop] {
+    background-color: #a73737;
+}
+
+#program_button[value=stop]:hover {
+    background-color: #e46161;
+}
+
+#program_button[value=run] {
+    background-color: #40a737;
+}
+
+#program_button[value=run]:hover {
+    background-color: #61e467;
+}
+
 #console {
     border: 2px solid #8b8b8b;
     border-radius: 8px;

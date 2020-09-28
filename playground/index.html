@@ -12,16 +12,27 @@
 <div class="grid-container">
     <div class="program_div">
         <p>Malbolge Program</p>
-        <textarea id="program" placeholder="Paste your code here"></textarea>
+        <textarea id="program"
+                  oninput="programTextInput()"
+                  placeholder="Paste your code here"
+                  disabled></textarea>
         <br>
 
-        <button id="run_button" onclick="runMalbolge()" disabled>Run</button>  
-        <button id="stop_button" onclick="stopMalbolge()" disabled>Stop</button>
+        <button id="program_button"
+                onclick="runStopMalbolge()"
+                value="run"
+                disabled>Run</button>
 
         <select class="dropdown" id="preset" onchange="loadPreset()">
             <option value="0" selected>No Preset</option>
             <option value="1">Hello World</option>
             <option value="2">Echo</option>
+        </select>
+
+        <select class="dropdown" id="normalise" onchange="normaliseProgram()" disabled>
+            <option value="0" selected>Convert</option>
+            <option value="1">Normalise</option>
+            <option value="2">Denormalise</option>
         </select>
     </div>
     <div class="input_div">

@@ -63,6 +63,50 @@ int malbolge_set_log_level(unsigned int level);
  */
 const char *malbolge_version();
 
+/** Returns true if the input source is likely to be normalised.
+ *
+ * See malbolge::is_likely_normalised_source(InputIt, InputIt) for further
+ * explanation on this function.
+ * @param buffer Program source
+ * @param size Size in bytes of @a buffer
+ * @return 1 if true, 0 otherwise
+ */
+int malbolge_is_likely_normalised_source(char *buffer, unsigned long size);
+
+/** Normalises the program source in @a buffer.
+ *
+ * For an explanation on normalistion, refer to
+ * malbolge::normalise_source(InputIt first, InputIt last).
+ * @param buffer Program source
+ * @param size Size in bytes of @a buffer
+ * @param new_size Normalised program size - always less than @a size, no data
+ * is freed, but the one-past-the-end buffer element is set to null
+ * @param fail_line If parsing fails, this is set to the line in the source
+ * where the failure occurred.  Ignored if NULL
+ * @param fail_column If the parsing fails, this is set to the column in the
+ * source where the failure occurred.  Ignored if NULL
+ * @return 0 for success, a negative error code in case of failure
+ */
+int malbolge_normalise_source(char *buffer,
+                              unsigned long size,
+                              unsigned long *new_size,
+                              unsigned int *fail_line,
+                              unsigned int *fail_column);
+
+/** Denormalises the program source in @a buffer.
+ *
+ * For an explanation on normalistion, refer to
+ * malbolge::denormalise_source(InputIt first, InputIt last).
+ * @param buffer Program source
+ * @param size Size in bytes of @a buffer
+ * @param fail_column If the parsing fails, this is set to the column in the
+ * source where the failure occurred.  Ignored if NULL
+ * @return 0 for success, a negative error code in case of failure
+ */
+int malbolge_denormalise_source(char *buffer,
+                                unsigned long size,
+                                unsigned int *fail_column);
+
 /** Creates a malbolge::virtual memory instance and loads the program source
  * into it.
  *
@@ -71,7 +115,7 @@ const char *malbolge_version();
  *
  * @a buffer is not freed by this function.
  * @param buffer Program source
- * @param size Size in bytes of @a data
+ * @param size Size in bytes of @a buffer
  * @param fail_line If parsing fails, this is set to the line in the source
  * where the failure occurred.  Ignored if NULL
  * @param fail_column If the parsing fails, this is set to the column in the
@@ -91,7 +135,7 @@ malbolge_virtual_memory malbolge_load_program(char *buffer,
  *
  * @a buffer is not freed by this function.
  * @param buffer Program source
- * @param size Size in bytes of @a data
+ * @param size Size in bytes of @a buffer
  * @param fail_line If parsing fails, this is set to the line in the source
  * where the failure occurred.  Ignored if NULL
  * @param fail_column If the parsing fails, this is set to the column in the
