@@ -9,7 +9,7 @@ endif()
 
 set(WASM_BUILD_OPTIONS
     "-Wno-pthreads-mem-growth"
-    "SHELL:-s EXPORTED_FUNCTIONS=[\"_malbolge_log_level\",\"_malbolge_set_log_level\",\"_malbolge_version\",\"_malbolge_load_program\",\"_malbolge_free_virtual_memory\",\"_malbolge_vcpu_run_wasm\",\"_malbolge_vcpu_stop\",\"_malbolge_vcpu_input\"]"
+    "SHELL:-s EXPORTED_FUNCTIONS=[\"_malbolge_log_level\",\"_malbolge_set_log_level\",\"_malbolge_version\",\"_malbolge_load_program\",\"_malbolge_load_normalised_program\",\"_malbolge_free_virtual_memory\",\"_malbolge_vcpu_run_wasm\",\"_malbolge_vcpu_stop\",\"_malbolge_vcpu_input\",\"_malbolge_is_likely_normalised_source\",\"_malbolge_normalise_source\",\"_malbolge_denormalise_source\"]"
     "SHELL:-s ALLOW_MEMORY_GROWTH"
     "SHELL:-s ALLOW_TABLE_GROWTH"
     "SHELL:-s DISABLE_EXCEPTION_CATCHING=0"

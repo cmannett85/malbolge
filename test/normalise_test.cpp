@@ -194,4 +194,36 @@ BOOST_AUTO_TEST_CASE(end_to_end)
     BOOST_CHECK_EQUAL(hello_world, result);
 }
 
+BOOST_AUTO_TEST_CASE(is_likely_normalised_test)
+{
+    auto f = [](auto&& source, auto&& expected) {
+        // Iterator version
+        {
+            const auto r = is_likely_normalised_source(source.begin(),
+                                                       source.end());
+            BOOST_CHECK_EQUAL(r, expected);
+        }
+
+        // Range version
+        {
+            const auto r = is_likely_normalised_source(source);
+            BOOST_CHECK_EQUAL(r, expected);
+        }
+    };
+
+    test::data_set(
+        f,
+        {
+            std::tuple{"jpoo*pjoooop*ojoopoo*ojoooooppjoivvvo/i<ivivi<vvvvvvvvvvvvvoji"s,
+                       true},
+            std::tuple{R"_(('&%#^"!~}{XE)_"s,
+                       false},
+            std::tuple{"jjjjjjjjjjjjjjjjdjjjjjjj*<jjjjjjjjjjjjjjjjjjjjjjjj*<v"s,
+                       false},
+            std::tuple{""s,
+                       true},
+        }
+    );
+}
+
 BOOST_AUTO_TEST_SUITE_END()

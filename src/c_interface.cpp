@@ -135,6 +135,85 @@ const char *malbolge_version()
     return version_string;
 }
 
+int malbolge_is_likely_normalised_source(char *buffer, unsigned long size)
+{
+    if (!buffer) {
+        log::print(log::ERROR, "NULL program source pointer");
+        return -EINVAL;
+    }
+
+    return is_likely_normalised_source(buffer, buffer + size);
+}
+
+int malbolge_normalise_source(char *buffer,
+                              unsigned long size,
+                              unsigned long *new_size,
+                              unsigned int *fail_line,
+                              unsigned int *fail_column)
+{
+    if (!buffer) {
+        log::print(log::ERROR, "NULL program source pointer");
+        return -EINVAL;
+    }
+    if (!new_size) {
+        log::print(log::ERROR, "NULL normalised program size pointer");
+        return -EINVAL;
+    }
+
+    try {
+        auto it = normalise_source(buffer, buffer + size);
+        *new_size = std::distance(buffer, it);
+
+        if (*new_size < size) {
+            buffer[*new_size] = '\n';
+        }
+
+        return 0;
+    } catch (parse_exception& e) {
+        log::print(log::ERROR, e.what());
+
+        if (e.has_location()) {
+            if (fail_line) {
+                *fail_line = e.location()->line;
+            }
+            if (fail_column) {
+                *fail_column = e.location()->column;
+            }
+        }
+    } catch (...) {
+        log::print(log::ERROR, "Unknown exception");
+    }
+
+    return -EINVAL;
+}
+
+int malbolge_denormalise_source(char *buffer,
+                                unsigned long size,
+                                unsigned int *fail_column)
+{
+    if (!buffer) {
+        log::print(log::ERROR, "NULL program source pointer");
+        return -EINVAL;
+    }
+
+    try {
+        denormalise_source(buffer, buffer + size);
+        return 0;
+    } catch (parse_exception& e) {
+        log::print(log::ERROR, e.what());
+
+        if (e.has_location()) {
+            if (fail_column) {
+                *fail_column = e.location()->column;
+            }
+        }
+    } catch (...) {
+        log::print(log::ERROR, "Unknown exception");
+    }
+
+    return -EINVAL;
+}
+
 malbolge_virtual_memory malbolge_load_program(char *buffer,
                                               unsigned long size,
                                               unsigned int *fail_line,

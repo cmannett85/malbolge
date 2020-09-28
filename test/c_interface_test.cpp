@@ -89,6 +89,139 @@ BOOST_AUTO_TEST_CASE(version)
     BOOST_CHECK_EQUAL(std::strcmp(malbolge_version(), version_string), 0);
 }
 
+BOOST_AUTO_TEST_CASE(is_likely_normalised_test)
+{
+    auto f = [](auto&& source, auto&& expected) {
+        const auto r = malbolge_is_likely_normalised_source(source.data(),
+                                                            source.size());
+        BOOST_CHECK_EQUAL(r, expected);
+    };
+
+    test::data_set(
+        f,
+        {
+            std::tuple{"jpoo*pjoooop*ojoopoo*ojoooooppjoivvvo/i<ivivi<vvvvvvvvvvvvvoji"s,
+                       1},
+            std::tuple{R"_(('&%#^"!~}{XE)_"s,
+                       0},
+            std::tuple{"jjjjjjjjjjjjjjjjdjjjjjjj*<jjjjjjjjjjjjjjjjjjjjjjjj*<v"s,
+                       0},
+            std::tuple{""s,
+                       1},
+        }
+    );
+}
+
+BOOST_AUTO_TEST_CASE(normalise_source_test)
+{
+    auto f = [](auto source, auto&& expected, auto loc, auto fail) {
+        auto fail_line = 0u;
+        auto fail_column = 0u;
+        auto new_size = 0ul;
+        const auto r = malbolge_normalise_source(source.data(),
+                                                 source.size(),
+                                                 &new_size,
+                                                 loc ? &fail_line : nullptr,
+                                                 loc ? &fail_column : nullptr);
+        BOOST_CHECK_EQUAL(r != 0, fail);
+
+        if (r == 0) {
+            if (new_size < source.size()) {
+                BOOST_CHECK_EQUAL(source[new_size], '\n');
+            }
+            source.resize(new_size);
+            BOOST_CHECK_EQUAL(source, expected);
+        }
+
+        if (loc) {
+            BOOST_CHECK(fail);
+            BOOST_CHECK_EQUAL(loc->line, fail_line);
+            BOOST_CHECK_EQUAL(loc->column, fail_column);
+        } else {
+            BOOST_CHECK_EQUAL(0, fail_line);
+            BOOST_CHECK_EQUAL(0, fail_column);
+        }
+    };
+
+    test::data_set(
+        f,
+        {
+            std::tuple{R"_((=BA#9"=<;:3y7x54-21q/p-,+*)"!h%B0/.~P<<:(8&66#"!~}|{zyxwvugJ%)_"s,
+                       "jpoo*pjoooop*ojoopoo*ojoooooppjoivvvo/i<ivivi<vvvvvvvvvvvvvoji"s,
+                       optional_source_location{},
+                       false},
+            std::tuple{R"_((=BA#9"=<;:3y7x54- 21q/p-,+*)"!h%B0/.~P<<:(8&66#"!~}|{zyxwvugJ%)_"s,
+                       "jpoo*pjoooop*ojoopoo*ojoooooppjoivvvo/i<ivivi<vvvvvvvvvvvvvoji"s,
+                       optional_source_location{},
+                       false},
+            std::tuple{R"_(('&%#^"!~f}{XE)_"s,
+                       ""s,
+                       optional_source_location{},
+                       true},
+            std::tuple{R"_(('&%#^"!~f}{XE)_"s,
+                       ""s,
+                       optional_source_location{source_location{1, 10}},
+                       true},
+        }
+    );
+
+    // Null tests
+    auto new_size = 0ul;
+    auto r = malbolge_normalise_source(nullptr, 0u, &new_size, nullptr, nullptr);
+    BOOST_CHECK_EQUAL(r, -EINVAL);
+
+    auto source = ""s;
+    r = malbolge_normalise_source(source.data(), 0u, nullptr, nullptr, nullptr);
+    BOOST_CHECK_EQUAL(r, -EINVAL);
+
+    r = malbolge_normalise_source(nullptr, 0u, nullptr, nullptr, nullptr);
+    BOOST_CHECK_EQUAL(r, -EINVAL);
+}
+
+BOOST_AUTO_TEST_CASE(denormalise_source_test)
+{
+    auto f = [](auto source, auto&& expected, auto loc, auto fail) {
+        auto fail_column = 0u;
+        const auto r = malbolge_denormalise_source(source.data(),
+                                                   source.size(),
+                                                   loc ? &fail_column : nullptr);
+        BOOST_CHECK_EQUAL(r != 0, fail);
+
+        if (r == 0) {
+            BOOST_CHECK_EQUAL(source, expected);
+        }
+
+        if (loc) {
+            BOOST_CHECK(fail);
+            BOOST_CHECK_EQUAL(loc->column, fail_column);
+        } else {
+            BOOST_CHECK_EQUAL(0, fail_column);
+        }
+    };
+
+    test::data_set(
+        f,
+        {
+            std::tuple{"jpoo*pjoooop*ojoopoo*ojoooooppjoivvvo/i<ivivi<vvvvvvvvvvvvvoji"s,
+                       R"_((=BA#9"=<;:3y7x54-21q/p-,+*)"!h%B0/.~P<<:(8&66#"!~}|{zyxwvugJ%)_"s,
+                       optional_source_location{},
+                       false},
+            std::tuple{"jjjj*<jjfjj*<v"s,
+                       ""s,
+                       optional_source_location{},
+                       true},
+            std::tuple{"jjjj*<jjfjj*<v"s,
+                       ""s,
+                       optional_source_location{source_location{1, 9}},
+                       true},
+        }
+    );
+
+    // Null tests
+    auto r = malbolge_denormalise_source(nullptr, 0u, nullptr);
+    BOOST_CHECK_EQUAL(r, -EINVAL);
+}
+
 BOOST_AUTO_TEST_CASE(load)
 {
     using pdata_t = std::tuple<std::vector<char>,

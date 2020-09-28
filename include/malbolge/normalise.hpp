@@ -137,15 +137,17 @@ void denormalise_source(InputIt first, InputIt last)
                   "InputIt must not be a const iterator");
 
     constexpr auto map = std::array{
-        std::array{'*', '\''},
-        std::array{'j', '('},
-        std::array{'p', '>'},
-        std::array{'o', 'D'},
-        std::array{'v', 'Q'},
-        std::array{'i', 'b'},
-        std::array{'<', 'c'},
-        std::array{'/', 'u'}
+        std::array<char, 2>{cpu_instruction::rotate,         '\''},
+        std::array<char, 2>{cpu_instruction::set_data_ptr,   '('},
+        std::array<char, 2>{cpu_instruction::op,             '>'},
+        std::array<char, 2>{cpu_instruction::nop,            'D'},
+        std::array<char, 2>{cpu_instruction::stop,           'Q'},
+        std::array<char, 2>{cpu_instruction::set_code_ptr,   'b'},
+        std::array<char, 2>{cpu_instruction::write,          'c'},
+        std::array<char, 2>{cpu_instruction::read,           'u'}
     };
+    static_assert(map.size() == cpu_instruction::all.size(),
+                  "CPU instruction list changed without updating normalisation map");
 
     for (auto i = 0u; first != last; ++first, ++i) {
 #ifdef EMSCRIPTEN
@@ -187,5 +189,45 @@ void denormalise_source(InputRange&& source)
     using std::end;
 
     denormalise_source(begin(source), end(source));
+}
+
+/** Returns true if the input source is likely to be normalised.
+ *
+ * This function reads the input source and returns true if it only contains
+ * Malbolge vCPU instructions.  There is a @em very small chance that a
+ * non-normalised program contains only vCPU instructions so do not use this
+ * function as critical check.
+ * @note Will return true on an empty input
+ * @tparam InputIt Input iterator type
+ * @param first Source input begin iterator
+ * @param last Source input one-past-the-end iterator
+ * @return True if the input source is likely to be normalised
+ */
+template <typename InputIt>
+bool is_likely_normalised_source(InputIt first, InputIt last)
+{
+    for (; first != last; ++first) {
+        if (!is_cpu_instruction(*first)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+/** Range-based overload.
+ *
+ * @note Will return true on an empty input
+ * @tparam InputRange Input range type
+ * @param source Source input range
+ * @return True if the input source is likely to be normalised
+ */
+template <typename InputRange>
+bool is_likely_normalised_source(InputRange&& source)
+{
+    using std::begin;
+    using std::end;
+
+    return is_likely_normalised_source(begin(source), end(source));
 }
 }
