@@ -10,7 +10,7 @@
 <img src="logo.svg" alt="Malbolge Logo" width="125"/>
 
 <div class="grid-container">
-    <div class="program_div">
+    <div class="programDiv">
         <p>Malbolge Program</p>
         <textarea id="program"
                   oninput="programTextInput()"
@@ -18,44 +18,65 @@
                   disabled></textarea>
         <br>
 
-        <button id="program_button"
-                onclick="runStopMalbolge()"
-                value="run"
-                disabled>Run</button>
+        <div class="tooltip">
+            <span class="tooltipText">Execute the program</span>
+            <button id="programButton"
+                    onclick="runStopMalbolge()"
+                    value="run"
+                    disabled>Run</button>
+        </div>
 
-        <select class="dropdown" id="preset" onchange="loadPreset()">
-            <option value="0" selected>No Preset</option>
-            <option value="1">Hello World</option>
-            <option value="2">Echo</option>
-        </select>
+        <div class="tooltip">
+            <span class="tooltipText">Load a preset</span>
+            <select class="dropdown" id="preset" onchange="loadPreset()">
+                <option value="0" selected>No Preset</option>
+                <option value="1">Hello World</option>
+                <option value="2">Echo</option>
+            </select>
+        </div>
 
-        <select class="dropdown" id="normalise" onchange="normaliseProgram()" disabled>
-            <option value="0" selected>Convert</option>
-            <option value="1">Normalise</option>
-            <option value="2">Denormalise</option>
-        </select>
+        <div class="tooltip">
+            <span class="tooltipText">Normalise or denormalise the program source</span>
+            <select class="dropdown" id="normalise" onchange="normaliseProgram()" disabled>
+                <option value="0" selected>Convert Source</option>
+                <option value="1">Normalise</option>
+                <option value="2">Denormalise</option>
+            </select>
+        </div>
     </div>
-    <div class="input_div">
+
+    <div class="inputDiv">
         <p>Input</p>
         <textarea id="input"></textarea>
         <br>
-        <button id="input_button" onclick="setInputText()" disabled>Submit</button>
+        <div class="tooltip">
+            <span class="tooltipText">Submit the input text to the running program</span>
+            <button id="inputButton" onclick="setInputText()" disabled>Submit</button>
+        </div>
     </div>
-    <div class="output_div">
+    
+    <div class="outputDiv">
         <p>Output</p>
         <textarea id="output" readonly></textarea>
     </div>
-    <div class="console_div">
+
+    <div class="consoleDiv">
         <p>Console</p>
         <div id="console"></div>
-        <select class="dropdown" id="debug_level" onchange="setDebugLevel()">
-            <option value="0">Error</option>
-            <option value="1">Info</option>
-            <option value="2" selected>Debug</option>
-            <option value="3">Verbose Debug</option>
-        </select>
+        <div class="tooltip">
+            <span class="tooltipText">Set the program debug output level</span>
+            <select class="dropdown" id="debug_level" onchange="setDebugLevel()">
+                <option value="0">Error</option>
+                <option value="1">Info</option>
+                <option value="2" selected>Debug</option>
+                <option value="3">Verbose Debug</option>
+            </select>
+        </div>
 
-        <button id="clear_button" onclick="clearConsole()">Clear</button>
+        <div class="tooltip">
+            <span class="tooltipText">Clear the program debug output</span>
+            <button id="clearButton" onclick="clearConsole()">Clear</button>
+        </div>
     </div>
 </div>
 
