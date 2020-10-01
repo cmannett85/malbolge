@@ -71,16 +71,16 @@ const LogLevel = {
  */
 function programRunning(isRunning) {
     if (isRunning) {
-        document.getElementById("program_button").innerText = "Stop";
+        document.getElementById("programButton").innerText = "Stop";
     } else {
         if (Module.malbolgeProgramNormalised) {
-            document.getElementById("program_button").innerText = "Run Normalised";
+            document.getElementById("programButton").innerText = "Run Normalised";
         } else {
-            document.getElementById("program_button").innerText = "Run";
+            document.getElementById("programButton").innerText = "Run";
         }
     }
 
-    document.getElementById("program_button").value = isRunning ? "stop" : "run";
+    document.getElementById("programButton").value = isRunning ? "stop" : "run";
     document.getElementById("preset").disabled = isRunning;
     document.getElementById("program").disabled = isRunning;
 }
@@ -90,7 +90,7 @@ function programRunning(isRunning) {
  * @return True if running
  */
 function isProgramRunning() {
-    return document.getElementById("program_button").innerText == "Stop";
+    return document.getElementById("programButton").innerText == "Stop";
 }
 
 /** Wrap the original message handling with support for our own messages
@@ -106,7 +106,7 @@ function wrapWorkerHandler() {
         if (e.data.cmd === "malbolgeStopped") {
             programRunning(false);
         } else if (e.data.cmd === "malbolgeWaitingForInput") {
-            document.getElementById("input_button").disabled = false;
+            document.getElementById("inputButton").disabled = false;
             console.log("Waiting for input");
         } else {
             standardHandlers(e);
@@ -124,7 +124,7 @@ function programTextInput() {
     const isEmpty = programText.length == 0;
 
     document.getElementById("normalise").disabled = isEmpty;
-    document.getElementById("program_button").disabled = isEmpty;
+    document.getElementById("programButton").disabled = isEmpty;
 
     if (isEmpty) {
         return;
@@ -139,7 +139,7 @@ function programTextInput() {
 
     // Select the appropriate normalise dropdown
     Module.malbolgeProgramNormalised = normalised;
-    document.getElementById("program_button").innerText = normalised ? "Run Normalised" : "Run";
+    document.getElementById("programButton").innerText = normalised ? "Run Normalised" : "Run";
 }
 
 /** Normalies or denormalises the program source depending on the corresponding
@@ -241,7 +241,7 @@ function runStopMalbolge() {
  */
 function stopMalbolge() {
     programRunning(false);
-    document.getElementById("input_button").disabled = true;
+    document.getElementById("inputButton").disabled = true;
     _malbolge_vcpu_stop(Module.malbolgeVcpu);
 }
 
@@ -262,7 +262,7 @@ function setInputText() {
         ctext.destroy();
 
         document.getElementById("input").value = "";
-        document.getElementById("input_button").disabled = true;
+        document.getElementById("inputButton").disabled = true;
     }
 }
 
