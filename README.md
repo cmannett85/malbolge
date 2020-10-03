@@ -3,9 +3,7 @@
 <img src="./playground/logo.svg" alt="Malbolge Logo" width="250"/>
 
 # malbolge
-A virtual machine to execute Malbolge programs, written in C++20 and dependent on Boost v1.67.
-
-Only tested using g++ v10.0.1 on Linux, and for the WASM build using Emscripten v1.39.19.
+A virtual machine to execute Malbolge programs, written in C++20.
 
 ## Usage
 You can load from a file like this:
@@ -43,6 +41,13 @@ API documentation for Malbolge is available [here](https://cmannett85.github.io/
 
 ## Playground
 You can try out Malbolge programs in your browser using the new (_extremely_ primitive!) [playground](https://cmannett85.github.io/malbolge/playground).  The focus of the next Malbolge release will be to dramatically improve the playground.
+
+## Dependencies
+* C++ toolchain supporting C++20 (only tested using g++ v10.0.1)
+* Boost v1.67
+* CMake v3.12
+* Emscripten v2.0.6 (only needed for WASM build)
+* Doxygen (only needed for Documentation build)
 
 ---
 
