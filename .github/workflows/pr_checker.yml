@@ -199,7 +199,7 @@ jobs:
     - name: Install Emscripten
       run: |
         cd ${GITHUB_WORKSPACE}/..
-        git clone https://github.com/emscripten-core/emsdk.git
+        git clone --depth 1 --single-branch --branch 2.0.6 https://github.com/emscripten-core/emsdk.git
         cd ./emsdk/
         ./emsdk install latest-upstream
         ./emsdk activate latest-upstream
