@@ -3,6 +3,20 @@
  * See LICENSE file
  */
 
+ /** Allocates fromthe heap and zeroes out the allocation.
+  * 
+  * @param {*} size Number of bytes to allocate
+  * @return Pointer to start of allocated region
+  */
+ function zmalloc(size) {
+    let ptr = _malloc(size);
+    for (i = 0; i < size; ++i) {
+        GROWABLE_HEAP_I8()[ptr + i] = 0;
+    }
+
+    return ptr;
+ }
+
 /** A simple wrapper around a raw C-String as managed by the WASM heap memory.
  */
 class CString {
@@ -83,6 +97,10 @@ function programRunning(isRunning) {
     document.getElementById("programButton").value = isRunning ? "stop" : "run";
     document.getElementById("preset").disabled = isRunning;
     document.getElementById("program").disabled = isRunning;
+    
+    document.getElementById("runTooltip").innerText = isRunning ?
+        "Stop the executing program" :
+        "Execute the program "
 }
 
 /** Returns true if the program is running.
@@ -155,8 +173,7 @@ function normaliseProgram() {
     const normalise = selectedIndex == 1;
 
     if (normalise) {
-        let newSizePtr = _malloc(8); // Size is 64bit
-        setValue(newSizePtr, 0, "i64");
+        let newSizePtr = zmalloc(8); // Size is 64bit
 
         const ret = _malbolge_normalise_source(programText.pointer,
             programText.size,
