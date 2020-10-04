@@ -39,15 +39,19 @@ Hello World!
 ## API Documentation
 API documentation for Malbolge is available [here](https://cmannett85.github.io/malbolge).
 
-## Playground
-You can try out Malbolge programs in your browser using the new (_extremely_ primitive!) [playground](https://cmannett85.github.io/malbolge/playground).  The focus of the next Malbolge release will be to dramatically improve the playground.
-
 ## Dependencies
 * C++ toolchain supporting C++20 (only tested using g++ v10.0.1)
 * Boost v1.67
 * CMake v3.12
 * Emscripten v2.0.6 (only needed for WASM build)
 * Doxygen (only needed for Documentation build)
+
+---
+
+## Playground
+You can try out Malbolge programs in your browser using the [Playground](https://cmannett85.github.io/malbolge/playground).  There are a couple of built in presets to get you started.
+
+It also has features that allow you to convert between normalised and denormalised Malbolge.  Normalisation is Malbolge but with the whitespace and [initial mapping](#pre-ciphering) removed leaving only the initial [vCPU instructions](#vcpu-instructions), denormalisation is the reverse.
 
 ---
 
@@ -142,6 +146,7 @@ b = 0120120120
 **Note** this is referred to as the 'crazy operation' on Wikipedia, I don't know where that name came from as it is not in the original specification or reference implementation - so I don't use it.  Also,
  it's not crazy, it's ridiculous.
 
+<a name="vcpu-instructions"></a>
 #### vCPU Instructions
 | Instruction | (as decimal) |                                                            Execution                                                            |
 |:-----------:|:-----------:|:--------------------------------------------------------------------------------------------------------------------------------|
