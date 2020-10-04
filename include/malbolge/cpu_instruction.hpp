@@ -22,14 +22,14 @@ namespace cpu_instruction
  * 
  * Only these instructions are allowed during program load, once running any
  * non-whitespace ASCII not in this enum is considered a nop.
+ * 
+ * @note The read and write operations are switched between the specification
+ * and the reference implementation.  The reference implementation's version is
+ * used here
  */
 enum type : char
 {
     /** Sets the data pointer address to the value at the data pointer.
-     *
-     * @note The read and write operations are switched between the
-     * specification and the reference implementation.  The reference
-     * implementation's version is used here
      */
     set_data_ptr = 'j',
     /** Sets the code pointer address to the value at the data pointer.
