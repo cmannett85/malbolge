@@ -17,6 +17,7 @@ set(TEST_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/algorithm/remove_from_range_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/c_interface_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/cpu_instruction_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/debugger_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/loader_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/main_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/math/ipow_test.cpp
@@ -24,6 +25,7 @@ set(TEST_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/math/ternary_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/normalise_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/argument_parser_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/utility/gate_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/raii_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/stream_lock_guard_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/virtual_memory_test.cpp

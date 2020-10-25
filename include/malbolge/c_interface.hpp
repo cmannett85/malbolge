@@ -24,20 +24,19 @@ typedef void* malbolge_virtual_cpu;
 
 /** Function pointer signature for the program stopped callback.
  *
- * Args:
- * -# The negative error code that triggered the stop, or 0 if execution ended
- * successfully
- * -# vCPU handle that has stopped.  Note that the handle has already freed
- * when this function is called
+ * @param error_code The negative error code that triggered the stop, or 0 if
+ * execution ended successfully
+ * @param vcpu vCPU handle that has stopped.  Note that the handle has already
+ * freed when this function is called
  */
-typedef void (*malbolge_program_stopped)(int, malbolge_virtual_cpu);
+typedef void (*malbolge_program_stopped)(int error_code,
+                                         malbolge_virtual_cpu vcpu);
 
 /** Function pointer signature for the waiting for user input callback.
  *
- * Args:
- * -# vCPU handle that is waiting
+ * @param vcpu vCPU handle that is waiting
  */
-typedef void (*malbolge_program_waiting_for_input)(malbolge_virtual_cpu);
+typedef void (*malbolge_program_waiting_for_input)(malbolge_virtual_cpu vcpu);
 
 /** Returns the current minimum logging level.
  *

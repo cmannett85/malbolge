@@ -226,3 +226,20 @@ inline std::ostream& operator<<(std::ostream& stream, const ternary& t)
 }
 }
 }
+
+namespace std
+{
+template <>
+struct hash<malbolge::math::ternary>
+{
+    std::size_t operator()(const malbolge::math::ternary& t) const
+    {
+        static_assert(sizeof(std::size_t) >= sizeof(malbolge::math::ternary::underlying_type),
+                      "std::size_t must be the same or larger than ternay underlying type");
+
+        // Hash function is just the identity, useful for unordered containers
+        // DO NOT USE FOR CRYPTOGRAPHIC FUNCTIONALITY!
+        return static_cast<std::size_t>(t);
+    }
+};
+}
