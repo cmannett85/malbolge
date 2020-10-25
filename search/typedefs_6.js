@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['pointer',['pointer',['../classmalbolge_1_1virtual__memory_1_1iterator__generic.html#af86c87b9bba89b0e3116482e360aa6b0',1,'malbolge::virtual_memory::iterator_generic::pointer()'],['../classmalbolge_1_1virtual__memory.html#a688abcf6bcab1fd27ae820f0217b80a5',1,'malbolge::virtual_memory::pointer()']]]
+  ['optional_5fsource_5flocation',['optional_source_location',['../namespacemalbolge.html#a962762895be04c5fd57e55e462ea6c93',1,'malbolge']]]
 ];

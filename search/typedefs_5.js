@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['optional_5fsource_5flocation',['optional_source_location',['../namespacemalbolge.html#a962762895be04c5fd57e55e462ea6c93',1,'malbolge']]]
+  ['notifier_5ftype',['notifier_type',['../classmalbolge_1_1utility_1_1gate.html#aeb9a0512ce41bfcb93e2ca658c1f8087',1,'malbolge::utility::gate']]]
 ];

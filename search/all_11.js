@@ -1,6 +1,8 @@
 var searchData=
 [
+  ['value',['value',['../structmalbolge_1_1debugger_1_1vcpu__register_1_1data.html#a7b67bac3bae9350527cad88386a2a060',1,'malbolge::debugger::vcpu_register::data']]],
   ['value_5ftype',['value_type',['../classmalbolge_1_1virtual__memory.html#a5e2a6d3b2249aa1e9f6e44a3c8b44983',1,'malbolge::virtual_memory::value_type()'],['../classmalbolge_1_1virtual__memory_1_1iterator__generic.html#ab8220340ac461d179ad85bef7e68e112',1,'malbolge::virtual_memory::iterator_generic::value_type()']]],
+  ['vcpu_5fcontrol',['vcpu_control',['../structmalbolge_1_1debugger_1_1vcpu__control.html',1,'malbolge::debugger']]],
   ['verbose_5fdebug',['VERBOSE_DEBUG',['../namespacemalbolge_1_1log.html#a237f237f9c3fda0478e4dba3aaffc3f0a4765935ba5e9f4d000a54841cf69e914',1,'malbolge::log']]],
   ['version',['version',['../classmalbolge_1_1argument__parser.html#adad7db62fb987e4b2811d869f89c3eb9',1,'malbolge::argument_parser']]],
   ['version_2ehpp',['version.hpp',['../version_8hpp.html',1,'']]],

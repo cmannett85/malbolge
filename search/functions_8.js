@@ -1,18 +1,8 @@
 var searchData=
 [
-  ['malbolge_5fdenormalise_5fsource',['malbolge_denormalise_source',['../c__interface_8hpp.html#ab3fe3de193106890b826ff36536a6c01',1,'c_interface.hpp']]],
-  ['malbolge_5ffree_5fvirtual_5fmemory',['malbolge_free_virtual_memory',['../c__interface_8hpp.html#acf8682000db7d6d6cb19abeb55ba84ec',1,'c_interface.hpp']]],
-  ['malbolge_5fis_5flikely_5fnormalised_5fsource',['malbolge_is_likely_normalised_source',['../c__interface_8hpp.html#ae5037409d2537edfd62e04feae6997ef',1,'c_interface.hpp']]],
-  ['malbolge_5fload_5fnormalised_5fprogram',['malbolge_load_normalised_program',['../c__interface_8hpp.html#a99624edc0501c26f691297ba26f7c27b',1,'c_interface.hpp']]],
-  ['malbolge_5fload_5fprogram',['malbolge_load_program',['../c__interface_8hpp.html#aca9085ca174f4798d2b454426ff8960e',1,'c_interface.hpp']]],
-  ['malbolge_5flog_5flevel',['malbolge_log_level',['../c__interface_8hpp.html#a4833873d446d1831912a2720169a971a',1,'c_interface.hpp']]],
-  ['malbolge_5fnormalise_5fsource',['malbolge_normalise_source',['../c__interface_8hpp.html#a6b8e977feaee90e3adde7742e4fb1952',1,'c_interface.hpp']]],
-  ['malbolge_5fset_5flog_5flevel',['malbolge_set_log_level',['../c__interface_8hpp.html#ab59f51f6a9e9c8909c1b9e8f98ac1de2',1,'c_interface.hpp']]],
-  ['malbolge_5fvcpu_5finput',['malbolge_vcpu_input',['../c__interface_8hpp.html#ae3f2f8b25fd50c34d8bbb1c81070ddd7',1,'c_interface.hpp']]],
-  ['malbolge_5fvcpu_5frun',['malbolge_vcpu_run',['../c__interface_8hpp.html#aab3f5204473302c4c526ecf33acb3638',1,'c_interface.hpp']]],
-  ['malbolge_5fvcpu_5frun_5fwasm',['malbolge_vcpu_run_wasm',['../c__interface__wasm_8hpp.html#a703482d003bf7eaa6d003fd0044ba99a',1,'c_interface_wasm.hpp']]],
-  ['malbolge_5fvcpu_5fstop',['malbolge_vcpu_stop',['../c__interface_8hpp.html#ae314756573b71c9194e0eabeff221000',1,'c_interface.hpp']]],
-  ['malbolge_5fversion',['malbolge_version',['../c__interface_8hpp.html#aae0eb68fd86649a134a1bbe2faaedae3',1,'c_interface.hpp']]],
-  ['max_5fsize',['max_size',['../classmalbolge_1_1virtual__memory.html#a1c728114449a835d5e00cdb27f739c9a',1,'malbolge::virtual_memory']]],
-  ['mutex_5fwrapper',['mutex_wrapper',['../classmalbolge_1_1utility_1_1mutex__wrapper.html#a4b8b6a95bae4cb8dfb26073b3d3c0511',1,'malbolge::utility::mutex_wrapper::mutex_wrapper()=default'],['../classmalbolge_1_1utility_1_1mutex__wrapper.html#a045e7b26194bdeb003c0d0b193ffc03f',1,'malbolge::utility::mutex_wrapper::mutex_wrapper(Mutex &amp;mtx)']]]
+  ['load',['load',['../namespacemalbolge.html#aa6ae2b44c24ae929e465ba919ac0a672',1,'malbolge::load(InputIt first, InputIt last, bool normalised=false)'],['../namespacemalbolge.html#a2c6387199bdd6c2510153f467cfedb48',1,'malbolge::load(R &amp;&amp;range, bool normalised=false)'],['../namespacemalbolge.html#ac28069bae8937b79a946783dc4d06c38',1,'malbolge::load(const std::filesystem::path &amp;path, bool normalised=false)']]],
+  ['load_5ffrom_5fcin',['load_from_cin',['../namespacemalbolge.html#a49823342105c3aad1b62ddcf6b6cda6d',1,'malbolge']]],
+  ['location',['location',['../classmalbolge_1_1parse__exception.html#acbbe1e3764a789a71ef02baa50b892d3',1,'malbolge::parse_exception']]],
+  ['lock',['lock',['../classmalbolge_1_1utility_1_1mutex__wrapper.html#ac55840c0b966b442881fd8535ab965f7',1,'malbolge::utility::mutex_wrapper']]],
+  ['log_5flevel',['log_level',['../classmalbolge_1_1argument__parser.html#a53fce88cb6f04f25daef029aa80798a4',1,'malbolge::argument_parser::log_level()'],['../namespacemalbolge_1_1log.html#ae1ad89551a9b5f336fe824ba7ef7155e',1,'malbolge::log::log_level()']]]
 ];

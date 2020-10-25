@@ -1,8 +1,10 @@
 var searchData=
 [
-  ['load',['load',['../namespacemalbolge.html#aa6ae2b44c24ae929e465ba919ac0a672',1,'malbolge::load(InputIt first, InputIt last, bool normalised=false)'],['../namespacemalbolge.html#a2c6387199bdd6c2510153f467cfedb48',1,'malbolge::load(R &amp;&amp;range, bool normalised=false)'],['../namespacemalbolge.html#ac28069bae8937b79a946783dc4d06c38',1,'malbolge::load(const std::filesystem::path &amp;path, bool normalised=false)']]],
-  ['load_5ffrom_5fcin',['load_from_cin',['../namespacemalbolge.html#a49823342105c3aad1b62ddcf6b6cda6d',1,'malbolge']]],
-  ['location',['location',['../classmalbolge_1_1parse__exception.html#acbbe1e3764a789a71ef02baa50b892d3',1,'malbolge::parse_exception']]],
-  ['lock',['lock',['../classmalbolge_1_1utility_1_1mutex__wrapper.html#ac55840c0b966b442881fd8535ab965f7',1,'malbolge::utility::mutex_wrapper']]],
-  ['log_5flevel',['log_level',['../classmalbolge_1_1argument__parser.html#a53fce88cb6f04f25daef029aa80798a4',1,'malbolge::argument_parser::log_level()'],['../namespacemalbolge_1_1log.html#ae1ad89551a9b5f336fe824ba7ef7155e',1,'malbolge::log::log_level()']]]
+  ['ignore_5fcount',['ignore_count',['../classmalbolge_1_1debugger_1_1client__control_1_1breakpoint.html#a3ea8929b68f7982d2e55b1967fa739ee',1,'malbolge::debugger::client_control::breakpoint']]],
+  ['ipow',['ipow',['../namespacemalbolge_1_1math.html#ab48d98e37a7a64ead0a280ab480006d5',1,'malbolge::math::ipow()'],['../namespacemalbolge_1_1math.html#aa346ee50bbb55f818000c45c59328f7e',1,'malbolge::math::ipow(B &amp;&amp;base, E &amp;&amp;expo)']]],
+  ['is_5fcpu_5finstruction',['is_cpu_instruction',['../namespacemalbolge.html#a060ef80ddffa3b90eeb312383f8e25eb',1,'malbolge']]],
+  ['is_5fgraphical_5fascii',['is_graphical_ascii',['../namespacemalbolge.html#a842edbfeba136252eb64b737306456e4',1,'malbolge']]],
+  ['is_5flikely_5fnormalised_5fsource',['is_likely_normalised_source',['../namespacemalbolge.html#a03e3a97cf70022393465f73d9060d46f',1,'malbolge::is_likely_normalised_source(InputIt first, InputIt last)'],['../namespacemalbolge.html#a08ec0efc79e052aac6437856987d20f6',1,'malbolge::is_likely_normalised_source(InputRange &amp;&amp;source)']]],
+  ['is_5fvalid',['is_valid',['../classmalbolge_1_1utility_1_1mutex__wrapper.html#a50ccabd33f69ff94b350eb060b81a87a',1,'malbolge::utility::mutex_wrapper']]],
+  ['iterator_5fgeneric',['iterator_generic',['../classmalbolge_1_1virtual__memory_1_1iterator__generic.html#ae54fad58aab4cfada8faedcafb3ed15b',1,'malbolge::virtual_memory::iterator_generic']]]
 ];

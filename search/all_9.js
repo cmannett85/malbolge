@@ -2,6 +2,7 @@ var searchData=
 [
   ['cipher',['cipher',['../namespacemalbolge_1_1cipher.html',1,'malbolge']]],
   ['cpu_5finstruction',['cpu_instruction',['../namespacemalbolge_1_1cpu__instruction.html',1,'malbolge']]],
+  ['debugger',['debugger',['../namespacemalbolge_1_1debugger.html',1,'malbolge']]],
   ['literals',['literals',['../namespacemalbolge_1_1literals.html',1,'malbolge']]],
   ['log',['log',['../namespacemalbolge_1_1log.html',1,'malbolge']]],
   ['malbolge',['malbolge',['../namespacemalbolge.html',1,'']]],
@@ -12,8 +13,8 @@ var searchData=
   ['malbolge_5fload_5fprogram',['malbolge_load_program',['../c__interface_8hpp.html#aca9085ca174f4798d2b454426ff8960e',1,'c_interface.hpp']]],
   ['malbolge_5flog_5flevel',['malbolge_log_level',['../c__interface_8hpp.html#a4833873d446d1831912a2720169a971a',1,'c_interface.hpp']]],
   ['malbolge_5fnormalise_5fsource',['malbolge_normalise_source',['../c__interface_8hpp.html#a6b8e977feaee90e3adde7742e4fb1952',1,'c_interface.hpp']]],
-  ['malbolge_5fprogram_5fstopped',['malbolge_program_stopped',['../c__interface_8hpp.html#af0cd7a2539d49a39011213b0b85cff88',1,'c_interface.hpp']]],
-  ['malbolge_5fprogram_5fwaiting_5ffor_5finput',['malbolge_program_waiting_for_input',['../c__interface_8hpp.html#a7496ad5d2af5f9a376df00fdcf589ccf',1,'c_interface.hpp']]],
+  ['malbolge_5fprogram_5fstopped',['malbolge_program_stopped',['../c__interface_8hpp.html#ae1f72dd6adfc50e0605612f49d984c25',1,'c_interface.hpp']]],
+  ['malbolge_5fprogram_5fwaiting_5ffor_5finput',['malbolge_program_waiting_for_input',['../c__interface_8hpp.html#ab2378d3316928531761d0e9f97eff943',1,'c_interface.hpp']]],
   ['malbolge_5fset_5flog_5flevel',['malbolge_set_log_level',['../c__interface_8hpp.html#ab59f51f6a9e9c8909c1b9e8f98ac1de2',1,'c_interface.hpp']]],
   ['malbolge_5fvcpu_5finput',['malbolge_vcpu_input',['../c__interface_8hpp.html#ae3f2f8b25fd50c34d8bbb1c81070ddd7',1,'c_interface.hpp']]],
   ['malbolge_5fvcpu_5frun',['malbolge_vcpu_run',['../c__interface_8hpp.html#aab3f5204473302c4c526ecf33acb3638',1,'c_interface.hpp']]],
@@ -23,11 +24,12 @@ var searchData=
   ['malbolge_5fvirtual_5fcpu',['malbolge_virtual_cpu',['../c__interface_8hpp.html#a2c550a1e787f94deef1515d637ad8d97',1,'c_interface.hpp']]],
   ['malbolge_5fvirtual_5fmemory',['malbolge_virtual_memory',['../c__interface_8hpp.html#a84b1e464beba3bd6868aae44b57eaef4',1,'c_interface.hpp']]],
   ['math',['math',['../namespacemalbolge_1_1math.html',1,'malbolge']]],
-  ['max',['max',['../classmalbolge_1_1math_1_1ternary.html#a8ea492506b51484b9b8632c884a869f7',1,'malbolge::math::ternary::max()'],['../classmalbolge_1_1math_1_1tritset.html#add7881ea6587c13c49cfba794922a431',1,'malbolge::math::tritset::max()'],['../classmalbolge_1_1argument__parser.html#adc00569a834a50a1ed64470e150e0a9ea26a4b44a837bf97b972628509912b4a5',1,'malbolge::argument_parser::MAX()']]],
+  ['max',['MAX',['../classmalbolge_1_1argument__parser.html#adc00569a834a50a1ed64470e150e0a9ea26a4b44a837bf97b972628509912b4a5',1,'malbolge::argument_parser::MAX()'],['../classmalbolge_1_1math_1_1ternary.html#a8ea492506b51484b9b8632c884a869f7',1,'malbolge::math::ternary::max()'],['../classmalbolge_1_1math_1_1tritset.html#add7881ea6587c13c49cfba794922a431',1,'malbolge::math::tritset::max()']]],
   ['max_5fsize',['max_size',['../classmalbolge_1_1virtual__memory.html#a1c728114449a835d5e00cdb27f739c9a',1,'malbolge::virtual_memory']]],
   ['min_5fwidth_5ftype',['min_width_type',['../structmalbolge_1_1math_1_1trit_1_1min__width__type.html',1,'malbolge::math::trit']]],
   ['min_5fwidth_5ftype_5ft',['min_width_type_t',['../namespacemalbolge_1_1math_1_1trit.html#a33da4c7c79347f2d5a9c2788644d27b2',1,'malbolge::math::trit']]],
   ['mutex_5fwrapper',['mutex_wrapper',['../classmalbolge_1_1utility_1_1mutex__wrapper.html',1,'malbolge::utility::mutex_wrapper'],['../classmalbolge_1_1utility_1_1mutex__wrapper.html#a4b8b6a95bae4cb8dfb26073b3d3c0511',1,'malbolge::utility::mutex_wrapper::mutex_wrapper()=default'],['../classmalbolge_1_1utility_1_1mutex__wrapper.html#a045e7b26194bdeb003c0d0b193ffc03f',1,'malbolge::utility::mutex_wrapper::mutex_wrapper(Mutex &amp;mtx)']]],
   ['trit',['trit',['../namespacemalbolge_1_1math_1_1trit.html',1,'malbolge::math']]],
-  ['utility',['utility',['../namespacemalbolge_1_1utility.html',1,'malbolge']]]
+  ['utility',['utility',['../namespacemalbolge_1_1utility.html',1,'malbolge']]],
+  ['vcpu_5fregister',['vcpu_register',['../namespacemalbolge_1_1debugger_1_1vcpu__register.html',1,'malbolge::debugger']]]
 ];

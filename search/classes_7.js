@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['ternary',['ternary',['../classmalbolge_1_1math_1_1ternary.html',1,'malbolge::math']]],
-  ['tritset',['tritset',['../classmalbolge_1_1math_1_1tritset.html',1,'malbolge::math']]]
+  ['min_5fwidth_5ftype',['min_width_type',['../structmalbolge_1_1math_1_1trit_1_1min__width__type.html',1,'malbolge::math::trit']]],
+  ['mutex_5fwrapper',['mutex_wrapper',['../classmalbolge_1_1utility_1_1mutex__wrapper.html',1,'malbolge::utility']]]
 ];

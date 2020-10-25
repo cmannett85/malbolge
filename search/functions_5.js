@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['has_5flocation',['has_location',['../classmalbolge_1_1parse__exception.html#a63683ad3998ecd1d702fe0032742b4ad',1,'malbolge::parse_exception']]],
-  ['help',['help',['../classmalbolge_1_1argument__parser.html#abf9933a1f37270468808384d9350c44b',1,'malbolge::argument_parser']]]
+  ['gate',['gate',['../classmalbolge_1_1utility_1_1gate.html#a6d89bed37813dbe94e07d4b37f04d81d',1,'malbolge::utility::gate']]]
 ];

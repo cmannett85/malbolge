@@ -1,5 +1,7 @@
 var searchData=
 [
+  ['id',['id',['../namespacemalbolge_1_1debugger_1_1vcpu__register.html#a4e8367bf978b0da112a69306e4a1d2d4',1,'malbolge::debugger::vcpu_register']]],
+  ['ignore_5fcount',['ignore_count',['../classmalbolge_1_1debugger_1_1client__control_1_1breakpoint.html#a3ea8929b68f7982d2e55b1967fa739ee',1,'malbolge::debugger::client_control::breakpoint']]],
   ['info',['INFO',['../namespacemalbolge_1_1log.html#a237f237f9c3fda0478e4dba3aaffc3f0a6d99bbbc2ede1e9689151a79bfad1e57',1,'malbolge::log']]],
   ['ipow',['ipow',['../namespacemalbolge_1_1math.html#ab48d98e37a7a64ead0a280ab480006d5',1,'malbolge::math::ipow()'],['../namespacemalbolge_1_1math.html#aa346ee50bbb55f818000c45c59328f7e',1,'malbolge::math::ipow(B &amp;&amp;base, E &amp;&amp;expo)']]],
   ['is_5fcpu_5finstruction',['is_cpu_instruction',['../namespacemalbolge.html#a060ef80ddffa3b90eeb312383f8e25eb',1,'malbolge']]],

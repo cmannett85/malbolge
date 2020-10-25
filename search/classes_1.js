@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['execution_5fexception',['execution_exception',['../classmalbolge_1_1execution__exception.html',1,'malbolge']]]
+  ['breakpoint',['breakpoint',['../classmalbolge_1_1debugger_1_1client__control_1_1breakpoint.html',1,'malbolge::debugger::client_control']]]
 ];

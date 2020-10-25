@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['iterator_5fgeneric',['iterator_generic',['../classmalbolge_1_1virtual__memory_1_1iterator__generic.html',1,'malbolge::virtual_memory']]]
+  ['client_5fcontrol',['client_control',['../classmalbolge_1_1debugger_1_1client__control.html',1,'malbolge::debugger']]]
 ];

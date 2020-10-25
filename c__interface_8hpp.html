@@ -86,10 +86,10 @@ Typedefs</h2></td></tr>
 <tr class="separator:a84b1e464beba3bd6868aae44b57eaef4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2c550a1e787f94deef1515d637ad8d97"><td class="memItemLeft" align="right" valign="top">typedef void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#a2c550a1e787f94deef1515d637ad8d97">malbolge_virtual_cpu</a></td></tr>
 <tr class="separator:a2c550a1e787f94deef1515d637ad8d97"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af0cd7a2539d49a39011213b0b85cff88"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#af0cd7a2539d49a39011213b0b85cff88">malbolge_program_stopped</a>) (int, <a class="el" href="c__interface_8hpp.html#a2c550a1e787f94deef1515d637ad8d97">malbolge_virtual_cpu</a>)</td></tr>
-<tr class="separator:af0cd7a2539d49a39011213b0b85cff88"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7496ad5d2af5f9a376df00fdcf589ccf"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#a7496ad5d2af5f9a376df00fdcf589ccf">malbolge_program_waiting_for_input</a>) (<a class="el" href="c__interface_8hpp.html#a2c550a1e787f94deef1515d637ad8d97">malbolge_virtual_cpu</a>)</td></tr>
-<tr class="separator:a7496ad5d2af5f9a376df00fdcf589ccf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae1f72dd6adfc50e0605612f49d984c25"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#ae1f72dd6adfc50e0605612f49d984c25">malbolge_program_stopped</a>) (int error_code, <a class="el" href="c__interface_8hpp.html#a2c550a1e787f94deef1515d637ad8d97">malbolge_virtual_cpu</a> vcpu)</td></tr>
+<tr class="separator:ae1f72dd6adfc50e0605612f49d984c25"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab2378d3316928531761d0e9f97eff943"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#ab2378d3316928531761d0e9f97eff943">malbolge_program_waiting_for_input</a>) (<a class="el" href="c__interface_8hpp.html#a2c550a1e787f94deef1515d637ad8d97">malbolge_virtual_cpu</a> vcpu)</td></tr>
+<tr class="separator:ab2378d3316928531761d0e9f97eff943"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -111,7 +111,7 @@ Functions</h2></td></tr>
 <tr class="separator:a99624edc0501c26f691297ba26f7c27b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acf8682000db7d6d6cb19abeb55ba84ec"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#acf8682000db7d6d6cb19abeb55ba84ec">malbolge_free_virtual_memory</a> (<a class="el" href="c__interface_8hpp.html#a84b1e464beba3bd6868aae44b57eaef4">malbolge_virtual_memory</a> vmem)</td></tr>
 <tr class="separator:acf8682000db7d6d6cb19abeb55ba84ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aab3f5204473302c4c526ecf33acb3638"><td class="memItemLeft" align="right" valign="top"><a class="el" href="c__interface_8hpp.html#a2c550a1e787f94deef1515d637ad8d97">malbolge_virtual_cpu</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#aab3f5204473302c4c526ecf33acb3638">malbolge_vcpu_run</a> (<a class="el" href="c__interface_8hpp.html#a84b1e464beba3bd6868aae44b57eaef4">malbolge_virtual_memory</a> vmem, <a class="el" href="c__interface_8hpp.html#af0cd7a2539d49a39011213b0b85cff88">malbolge_program_stopped</a> stopped_cb, <a class="el" href="c__interface_8hpp.html#a7496ad5d2af5f9a376df00fdcf589ccf">malbolge_program_waiting_for_input</a> waiting_cb, int use_cin)</td></tr>
+<tr class="memitem:aab3f5204473302c4c526ecf33acb3638"><td class="memItemLeft" align="right" valign="top"><a class="el" href="c__interface_8hpp.html#a2c550a1e787f94deef1515d637ad8d97">malbolge_virtual_cpu</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#aab3f5204473302c4c526ecf33acb3638">malbolge_vcpu_run</a> (<a class="el" href="c__interface_8hpp.html#a84b1e464beba3bd6868aae44b57eaef4">malbolge_virtual_memory</a> vmem, <a class="el" href="c__interface_8hpp.html#ae1f72dd6adfc50e0605612f49d984c25">malbolge_program_stopped</a> stopped_cb, <a class="el" href="c__interface_8hpp.html#ab2378d3316928531761d0e9f97eff943">malbolge_program_waiting_for_input</a> waiting_cb, int use_cin)</td></tr>
 <tr class="separator:aab3f5204473302c4c526ecf33acb3638"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae314756573b71c9194e0eabeff221000"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#ae314756573b71c9194e0eabeff221000">malbolge_vcpu_stop</a> (<a class="el" href="c__interface_8hpp.html#a2c550a1e787f94deef1515d637ad8d97">malbolge_virtual_cpu</a> vcpu)</td></tr>
 <tr class="separator:ae314756573b71c9194e0eabeff221000"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -124,44 +124,50 @@ Functions</h2></td></tr>
 
 <p class="definition">Definition in file <a class="el" href="c__interface_8hpp_source.html">c_interface.hpp</a>.</p>
 </div><h2 class="groupheader">Typedef Documentation</h2>
-<a id="af0cd7a2539d49a39011213b0b85cff88"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af0cd7a2539d49a39011213b0b85cff88">&#9670;&nbsp;</a></span>malbolge_program_stopped</h2>
+<a id="ae1f72dd6adfc50e0605612f49d984c25"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae1f72dd6adfc50e0605612f49d984c25">&#9670;&nbsp;</a></span>malbolge_program_stopped</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">typedef void(* malbolge_program_stopped) (int, <a class="el" href="c__interface_8hpp.html#a2c550a1e787f94deef1515d637ad8d97">malbolge_virtual_cpu</a>)</td>
+          <td class="memname">typedef void(* malbolge_program_stopped) (int error_code, <a class="el" href="c__interface_8hpp.html#a2c550a1e787f94deef1515d637ad8d97">malbolge_virtual_cpu</a> vcpu)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 <p>Function pointer signature for the program stopped callback.</p>
-<p>Args:</p><ol type="1">
-<li>The negative error code that triggered the stop, or 0 if execution ended successfully</li>
-<li>vCPU handle that has stopped. Note that the handle has already freed when this function is called </li>
-</ol>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">error_code</td><td>The negative error code that triggered the stop, or 0 if execution ended successfully </td></tr>
+    <tr><td class="paramname">vcpu</td><td>vCPU handle that has stopped. Note that the handle has already freed when this function is called </td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p class="definition">Definition at line <a class="el" href="c__interface_8hpp_source.html#l00033">33</a> of file <a class="el" href="c__interface_8hpp_source.html">c_interface.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="c__interface_8hpp_source.html#l00032">32</a> of file <a class="el" href="c__interface_8hpp_source.html">c_interface.hpp</a>.</p>
 
 </div>
 </div>
-<a id="a7496ad5d2af5f9a376df00fdcf589ccf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7496ad5d2af5f9a376df00fdcf589ccf">&#9670;&nbsp;</a></span>malbolge_program_waiting_for_input</h2>
+<a id="ab2378d3316928531761d0e9f97eff943"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab2378d3316928531761d0e9f97eff943">&#9670;&nbsp;</a></span>malbolge_program_waiting_for_input</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">typedef void(* malbolge_program_waiting_for_input) (<a class="el" href="c__interface_8hpp.html#a2c550a1e787f94deef1515d637ad8d97">malbolge_virtual_cpu</a>)</td>
+          <td class="memname">typedef void(* malbolge_program_waiting_for_input) (<a class="el" href="c__interface_8hpp.html#a2c550a1e787f94deef1515d637ad8d97">malbolge_virtual_cpu</a> vcpu)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 <p>Function pointer signature for the waiting for user input callback.</p>
-<p>Args:</p><ol type="1">
-<li>vCPU handle that is waiting </li>
-</ol>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">vcpu</td><td>vCPU handle that is waiting </td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p class="definition">Definition at line <a class="el" href="c__interface_8hpp_source.html#l00040">40</a> of file <a class="el" href="c__interface_8hpp_source.html">c_interface.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="c__interface_8hpp_source.html#l00039">39</a> of file <a class="el" href="c__interface_8hpp_source.html">c_interface.hpp</a>.</p>
 
 </div>
 </div>
@@ -573,13 +579,13 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="c__interface_8hpp.html#af0cd7a2539d49a39011213b0b85cff88">malbolge_program_stopped</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="c__interface_8hpp.html#ae1f72dd6adfc50e0605612f49d984c25">malbolge_program_stopped</a>&#160;</td>
           <td class="paramname"><em>stopped_cb</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="c__interface_8hpp.html#a7496ad5d2af5f9a376df00fdcf589ccf">malbolge_program_waiting_for_input</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="c__interface_8hpp.html#ab2378d3316928531761d0e9f97eff943">malbolge_program_waiting_for_input</a>&#160;</td>
           <td class="paramname"><em>waiting_cb</em>, </td>
         </tr>
         <tr>

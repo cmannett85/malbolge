@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['verbose_5fdebug',['VERBOSE_DEBUG',['../namespacemalbolge_1_1log.html#a237f237f9c3fda0478e4dba3aaffc3f0a4765935ba5e9f4d000a54841cf69e914',1,'malbolge::log']]]
+  ['paused',['PAUSED',['../classmalbolge_1_1debugger_1_1client__control.html#a6b45764d9c84d04c1b4e23bf3af10665a99b2439e63f73ad515f7ab2447a80673',1,'malbolge::debugger::client_control']]]
 ];

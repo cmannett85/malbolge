@@ -1,6 +1,8 @@
 var searchData=
 [
   ['parse_5fexception',['parse_exception',['../classmalbolge_1_1parse__exception.html',1,'malbolge::parse_exception'],['../classmalbolge_1_1parse__exception.html#a5df55f1fdb55b6e289033ee517c4e0a6',1,'malbolge::parse_exception::parse_exception()']]],
+  ['pause',['pause',['../structmalbolge_1_1debugger_1_1vcpu__control.html#ab99de0fe456811af69fc344684721662',1,'malbolge::debugger::vcpu_control::pause()'],['../classmalbolge_1_1debugger_1_1client__control.html#a9cc1f84bc36153d2cad247df56db5d3c',1,'malbolge::debugger::client_control::pause()']]],
+  ['paused',['PAUSED',['../classmalbolge_1_1debugger_1_1client__control.html#a6b45764d9c84d04c1b4e23bf3af10665a99b2439e63f73ad515f7ab2447a80673',1,'malbolge::debugger::client_control']]],
   ['pointer',['pointer',['../classmalbolge_1_1virtual__memory_1_1iterator__generic.html#af86c87b9bba89b0e3116482e360aa6b0',1,'malbolge::virtual_memory::iterator_generic::pointer()'],['../classmalbolge_1_1virtual__memory.html#a688abcf6bcab1fd27ae820f0217b80a5',1,'malbolge::virtual_memory::pointer()']]],
   ['post',['post',['../namespacemalbolge_1_1cipher.html#a4bcc04fb8b2d4cf65d8972fc4db42057',1,'malbolge::cipher']]],
   ['post_5fcipher_5finstruction',['post_cipher_instruction',['../namespacemalbolge.html#aeb1ec5f872d2a259614fca9c103c6743',1,'malbolge']]],

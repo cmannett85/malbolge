@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['op',['op',['../namespacemalbolge_1_1cpu__instruction.html#a0f9eeaa34725e4d574bfb4240a5322efa36b231f852a5086e195808b8576cc623',1,'malbolge::cpu_instruction']]]
+  ['max',['MAX',['../classmalbolge_1_1argument__parser.html#adc00569a834a50a1ed64470e150e0a9ea26a4b44a837bf97b972628509912b4a5',1,'malbolge::argument_parser']]]
 ];

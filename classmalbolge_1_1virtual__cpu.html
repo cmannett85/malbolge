@@ -83,6 +83,10 @@ Public Types</h2></td></tr>
 <a class="el" href="classmalbolge_1_1virtual__cpu.html#a6e6d243fefb70b081550b4ed4a4b9088ac3b0252c73b7ed744bf142be820cfedd">execution_state::NUM_STATES</a>
  }</td></tr>
 <tr class="separator:a6e6d243fefb70b081550b4ed4a4b9088"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ffd9b45432ac7d4428652f39547dec4"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1virtual__cpu.html#a6ffd9b45432ac7d4428652f39547dec4">running_callback_type</a> = std::function&lt; void(<a class="el" href="classmalbolge_1_1debugger_1_1client__control.html#a6b45764d9c84d04c1b4e23bf3af10665">debugger::client_control::execution_state</a> <a class="el" href="classmalbolge_1_1virtual__cpu.html#a64bc3341ed665c611a9467491a520a3b">state</a>)&gt;</td></tr>
+<tr class="separator:a6ffd9b45432ac7d4428652f39547dec4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a999489db3b74efdc13f875d1ff23043b"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1virtual__cpu.html#a999489db3b74efdc13f875d1ff23043b">step_data_callback_type</a> = <a class="el" href="classmalbolge_1_1debugger_1_1client__control_1_1breakpoint.html#a2041cc577f895fc8cf3dd738720c6147">debugger::client_control::breakpoint::callback_type</a></td></tr>
+<tr class="separator:a999489db3b74efdc13f875d1ff23043b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -102,13 +106,56 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a0dd8c3dd51d3ab03c1281fe114f97b9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae728d1a4d88a889dc2f71a09502a95b4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1virtual__cpu.html#ae728d1a4d88a889dc2f71a09502a95b4">stop</a> ()</td></tr>
 <tr class="separator:ae728d1a4d88a889dc2f71a09502a95b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a888f7b95626ca40cb7e78dd6fdc1853a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structmalbolge_1_1debugger_1_1vcpu__control.html">debugger::vcpu_control</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1virtual__cpu.html#a888f7b95626ca40cb7e78dd6fdc1853a">configure_debugger</a> (<a class="el" href="classmalbolge_1_1virtual__cpu.html#a6ffd9b45432ac7d4428652f39547dec4">running_callback_type</a> running, <a class="el" href="classmalbolge_1_1virtual__cpu.html#a999489db3b74efdc13f875d1ff23043b">step_data_callback_type</a> step_data)</td></tr>
+<tr class="separator:a888f7b95626ca40cb7e78dd6fdc1853a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Represents a virtual CPU.</p>
 <p>This class can not be copied, but can be moved. </p>
 
-<p class="definition">Definition at line <a class="el" href="virtual__cpu_8hpp_source.html#l00022">22</a> of file <a class="el" href="virtual__cpu_8hpp_source.html">virtual_cpu.hpp</a>.</p>
-</div><h2 class="groupheader">Member Enumeration Documentation</h2>
+<p class="definition">Definition at line <a class="el" href="virtual__cpu_8hpp_source.html#l00024">24</a> of file <a class="el" href="virtual__cpu_8hpp_source.html">virtual_cpu.hpp</a>.</p>
+</div><h2 class="groupheader">Member Typedef Documentation</h2>
+<a id="a6ffd9b45432ac7d4428652f39547dec4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6ffd9b45432ac7d4428652f39547dec4">&#9670;&nbsp;</a></span>running_callback_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classmalbolge_1_1virtual__cpu.html#a6ffd9b45432ac7d4428652f39547dec4">malbolge::virtual_cpu::running_callback_type</a> =  std::function&lt;void (<a class="el" href="classmalbolge_1_1debugger_1_1client__control.html#a6b45764d9c84d04c1b4e23bf3af10665">debugger::client_control::execution_state</a> <a class="el" href="classmalbolge_1_1virtual__cpu.html#a64bc3341ed665c611a9467491a520a3b">state</a>)&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Callback type used to provide the debugger with program execution state.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">state</td><td>Debugger execution state </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="virtual__cpu_8hpp_source.html#l00031">31</a> of file <a class="el" href="virtual__cpu_8hpp_source.html">virtual_cpu.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a999489db3b74efdc13f875d1ff23043b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a999489db3b74efdc13f875d1ff23043b">&#9670;&nbsp;</a></span>step_data_callback_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classmalbolge_1_1virtual__cpu.html#a999489db3b74efdc13f875d1ff23043b">malbolge::virtual_cpu::step_data_callback_type</a> =  <a class="el" href="classmalbolge_1_1debugger_1_1client__control_1_1breakpoint.html#a2041cc577f895fc8cf3dd738720c6147">debugger::client_control::breakpoint::callback_type</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Callback type used to provide the debugger with execution step data. </p>
+
+<p class="definition">Definition at line <a class="el" href="virtual__cpu_8hpp_source.html#l00035">35</a> of file <a class="el" href="virtual__cpu_8hpp_source.html">virtual_cpu.hpp</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Enumeration Documentation</h2>
 <a id="a6e6d243fefb70b081550b4ed4a4b9088"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6e6d243fefb70b081550b4ed4a4b9088">&#9670;&nbsp;</a></span>execution_state</h2>
 
@@ -140,7 +187,7 @@ Public Member Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="virtual__cpu_8hpp_source.html#l00027">27</a> of file <a class="el" href="virtual__cpu_8hpp_source.html">virtual_cpu.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="virtual__cpu_8hpp_source.html#l00039">39</a> of file <a class="el" href="virtual__cpu_8hpp_source.html">virtual_cpu.hpp</a>.</p>
 
 </div>
 </div>
@@ -164,7 +211,7 @@ Public Member Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">explicit</span></span>  </td>
+<span class="mlabels"><span class="mlabel">explicit</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -175,8 +222,6 @@ Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-
-<p class="definition">Definition at line <a class="el" href="virtual__cpu_8hpp_source.html#l00039">39</a> of file <a class="el" href="virtual__cpu_8hpp_source.html">virtual_cpu.hpp</a>.</p>
 
 </div>
 </div>
@@ -232,6 +277,49 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a888f7b95626ca40cb7e78dd6fdc1853a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a888f7b95626ca40cb7e78dd6fdc1853a">&#9670;&nbsp;</a></span>configure_debugger()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structmalbolge_1_1debugger_1_1vcpu__control.html">debugger::vcpu_control</a> malbolge::virtual_cpu::configure_debugger </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classmalbolge_1_1virtual__cpu.html#a6ffd9b45432ac7d4428652f39547dec4">running_callback_type</a>&#160;</td>
+          <td class="paramname"><em>running</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classmalbolge_1_1virtual__cpu.html#a999489db3b74efdc13f875d1ff23043b">step_data_callback_type</a>&#160;</td>
+          <td class="paramname"><em>step_data</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Configure a debugger to gain control of the execution and view memory.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">running</td><td>Callback to notify the debugger that the program is running (note that a debugger paused program is still running) </td></tr>
+    <tr><td class="paramname">step_data</td><td>Callback to notify the debugger of the current memory access and which register (C or D) initiated the access </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A configured vCPU controller </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">basic_exception</td><td>Thrown if the program is already running, or a debugger has already been configured </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a3f6edef9d7bf6792cbc5b5f83f24d3ab"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3f6edef9d7bf6792cbc5b5f83f24d3ab">&#9670;&nbsp;</a></span>operator=()</h2>
 
@@ -397,7 +485,7 @@ Public Member Functions</h2></td></tr>
 <p>Returns the vCPU execution state.</p>
 <dl class="section return"><dt>Returns</dt><dd>Execution state </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="virtual__cpu_8hpp_source.html#l00068">68</a> of file <a class="el" href="virtual__cpu_8hpp_source.html">virtual_cpu.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="virtual__cpu_8hpp_source.html#l00077">77</a> of file <a class="el" href="virtual__cpu_8hpp_source.html">virtual_cpu.hpp</a>.</p>
 
 </div>
 </div>
