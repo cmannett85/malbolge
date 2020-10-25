@@ -98,9 +98,9 @@ public:
     }
 
 private:
-    [[no_unique_address]] std::function<void ()> lock_;
-    [[no_unique_address]] std::function<void ()> unlock_;
-    [[no_unique_address]] std::function<bool ()> try_lock_;
+    std::function<void ()> lock_;
+    std::function<void ()> unlock_;
+    std::function<bool ()> try_lock_;
 };
 }
 }

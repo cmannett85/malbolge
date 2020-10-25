@@ -6,7 +6,9 @@
 #pragma once
 
 #include "malbolge/virtual_memory.hpp"
+#include "malbolge/utility/gate.hpp"
 #include "malbolge/utility/mutex_wrapper.hpp"
+#include "malbolge/debugger.hpp"
 
 #include <iostream>
 #include <thread>
@@ -22,6 +24,16 @@ namespace malbolge
 class virtual_cpu
 {
 public:
+    /** Callback type used to provide the debugger with program execution state.
+     *
+     * @param state Debugger execution state
+     */
+    using running_callback_type = std::function<void (debugger::client_control::execution_state state)>;
+
+    /** Callback type used to provide the debugger with execution step data.
+     */
+    using step_data_callback_type = debugger::client_control::breakpoint::callback_type;
+
     /** Execution state.
      */
     enum class execution_state {
@@ -36,10 +48,7 @@ public:
      * @param vmem Virtual memory containing the initialised memory space
      * (including program data)
      */
-    explicit virtual_cpu(virtual_memory vmem) :
-        state_{std::make_shared<decltype(state_)::element_type>(execution_state::READY)},
-        vmem_(std::move(vmem))
-    {}
+    explicit virtual_cpu(virtual_memory vmem);
 
     /** Destructor.
      */
@@ -110,14 +119,50 @@ public:
      */
     void stop();
 
+    /** Configure a debugger to gain control of the execution and view memory.
+     *
+     * @param running Callback to notify the debugger that the program is
+     * running (note that a debugger paused program is still running)
+     * @param step_data Callback to notify the debugger of the current memory
+     * access and which register (C or D) initiated the access
+     * @return A configured vCPU controller
+     * @exception basic_exception Thrown if the program is already running,
+     * or a debugger has already been configured
+     */
+    debugger::vcpu_control
+    configure_debugger(running_callback_type running,
+                       step_data_callback_type step_data);
+
 private:
+    struct debugger_data
+    {
+        running_callback_type running_cb;
+        step_data_callback_type step_data_cb;
+
+        // Populated once the worker thread starts
+        decltype(debugger::vcpu_control::address_value) address_value;
+        decltype(debugger::vcpu_control::register_value) register_value;
+
+        utility::gate gate;
+    };
+
     void basic_run_check(std::istream& istr,
                          std::ostream& ostr,
                          utility::mutex_wrapper mtx);
 
+    static void vcpu_loop(virtual_memory& vmem,
+                          std::atomic<virtual_cpu::execution_state>& state,
+                          std::function<void ()> waiting_for_input,
+                          std::istream& istr,
+                          std::ostream& ostr,
+                          utility::mutex_wrapper mtx,
+                          std::shared_ptr<debugger_data> debugger);
+
     std::thread thread_;
     std::shared_ptr<std::atomic<execution_state>> state_;
     virtual_memory vmem_;
+
+    std::shared_ptr<debugger_data> debugger_;
 };
 
 /** Textual streaming operator.
