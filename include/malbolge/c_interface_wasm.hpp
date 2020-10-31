@@ -14,11 +14,10 @@
 
 extern "C"
 {
-/** Creates a virtual CPU and begins asynchronously executing the code in
- * @a vmem.
+/** Run the program loading in @a vcpu.
  *
  * This is equivalent to
- * malbolge_vcpu_run(malbolge_virtual_memory, malbolge_program_stopped, malbolge_program_waiting_for_input, int),
+ * malbolge_vcpu_run(malbolge_virtual_cpu, malbolge_program_stopped, malbolge_program_waiting_for_input, int),
  * except the that <TT>use_cin</TT> argument is implicitly false and the
  * callbacks are implemented as <TT>EM_JS</TT> function calls.  The callbacks
  * use the JS Worker API to post messages back to the main thread where they can
@@ -73,10 +72,12 @@ extern "C"
  * }
  * @endcode
  *
- * @param vmem Virtual memory handle returned from malbolge_load_program,
- * @a vmem is freed by this function.
- * @return Malbolge virtual CPU handle, or NULL if early checks failed.  This is
- * freed when execution stops.
+ * @param vcpu vCPU handle
+ * @return
+ * - MALBOLGE_ERR_SUCCESS for success
+ * - MALBOLGE_ERR_NULL_ARG if @a vcpu is NULL
+ * - MALBOLGE_ERR_EXECUTION_FAIL if vCPU execution initialisation fails
+ * - MALBOLGE_ERR_UNKNOWN if an unknown failure occurs
  */
-malbolge_virtual_cpu malbolge_vcpu_run_wasm(malbolge_virtual_memory vmem);
+int malbolge_vcpu_run_wasm(malbolge_virtual_cpu vcpu);
 }

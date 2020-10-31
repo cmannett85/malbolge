@@ -123,6 +123,8 @@ function wrapWorkerHandler() {
     worker.onmessage = function (e) {
         if (e.data.cmd === "malbolgeStopped") {
             programRunning(false);
+            _malbolge_free_vcpu(Module.malbolgeVcpu);
+            Module.malbolgeVcpu = undefined;
         } else if (e.data.cmd === "malbolgeWaitingForInput") {
             document.getElementById("inputButton").disabled = false;
             console.log("Waiting for input");
@@ -241,16 +243,22 @@ function runStopMalbolge() {
         return;
     }
 
-    // Now execute it
-    let vcpu = _malbolge_vcpu_run_wasm(vmem);
+    // Create a vCPU, this will free vmem
+    let vcpu = _malbolge_create_vcpu(vmem);
     if (!vcpu) {
         programRunning(false);
         return;
     }
 
+    let err = _malbolge_vcpu_run_wasm(vcpu);
+    if (err) {
+        programRunning(false);
+        _malbolge_free_vcpu(vcpu);
+        return;
+    }
+
     wrapWorkerHandler();
 
-    Module.malbolgeVmem = vmem;
     Module.malbolgeVcpu = vcpu;
 }
 
@@ -341,8 +349,6 @@ function consoleWrite(msg, logLevel) {
             console.log(msg);
             break;
         case LogLevel.emscripten:
-            consoleDiv.innerHTML += "<p><span style=\"color:orange\">" + msg +
-                "\n</span></p>";
             console.warn(msg);
             break;
         case LogLevel.error:
@@ -394,7 +400,6 @@ var Module = {
     onRuntimeInitialized: finishedLoading,
     print: stdOut,
     printErr: stdClog,
-    malbolgeVmem: undefined,
     malbolgeVcpu: undefined,
     malbolgeStoppedCb: undefined,
     malbolgeWaitingCb: undefined,

@@ -137,6 +137,7 @@ BOOST_AUTO_TEST_CASE(hello_world_debugger)
     };
     dbg.add_breakpoint({expected_address, bp_cb});
     dbg.add_breakpoint({expected_address + 10, std::move(bp_cb)});
+    dbg.add_breakpoint({expected_address + 11, std::move(bp_cb)});
 
     auto ostr = std::stringstream{};
     auto mtx = std::mutex{};
@@ -159,7 +160,6 @@ BOOST_AUTO_TEST_CASE(hello_world_debugger)
         BOOST_CHECK_EQUAL(dbg.register_value(vcpu_register::D),
                           (vcpu_register::data{62, 37}));
 
-        BOOST_TEST_MESSAGE("Before step");
         dbg.step();
         std::this_thread::sleep_for(100ms);
         BOOST_CHECK_EQUAL(dbg.state(), client_control::execution_state::PAUSED);
@@ -171,8 +171,6 @@ BOOST_AUTO_TEST_CASE(hello_world_debugger)
                           (vcpu_register::data{10, 124}));
         BOOST_CHECK_EQUAL(dbg.register_value(vcpu_register::D),
                           (vcpu_register::data{38, 61}));
-
-        BOOST_TEST_MESSAGE("After step");
 
         // BP2
         callback_reached = false;
@@ -192,14 +190,22 @@ BOOST_AUTO_TEST_CASE(hello_world_debugger)
         BOOST_CHECK_EQUAL(dbg.register_value(vcpu_register::D),
                           (vcpu_register::data{37, 125}));
 
+        callback_reached = false;
+        dbg.remove_breakpoint(expected_address + 1);
         dbg.resume();
+
+        dbg.pause();
+        std::this_thread::sleep_for(100ms);
+        BOOST_CHECK_EQUAL(dbg.state(), client_control::execution_state::PAUSED);
+        dbg.resume();
+        BOOST_CHECK(!callback_reached);
     }
 
     fut.get();
     BOOST_CHECK_EQUAL(ostr.str(), "Hello World!");
     BOOST_CHECK_EQUAL(vcpu.state(), virtual_cpu::execution_state::STOPPED);
     BOOST_CHECK_EQUAL(dbg.state(), client_control::execution_state::NOT_RUNNING);
-    BOOST_CHECK(callback_reached);
+    BOOST_CHECK(!callback_reached);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

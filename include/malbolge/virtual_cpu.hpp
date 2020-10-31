@@ -116,6 +116,8 @@ public:
              utility::mutex_wrapper mtx = {});
 
     /** Asynchronously stops execution.
+     *
+     * This is ignored if a program is not running.
      */
     void stop();
 
