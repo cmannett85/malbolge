@@ -2,7 +2,7 @@ var searchData=
 [
   ['add_5fbreakpoint',['add_breakpoint',['../classmalbolge_1_1debugger_1_1client__control.html#a72aa9d332156a09868252da377bedc21',1,'malbolge::debugger::client_control']]],
   ['address',['address',['../classmalbolge_1_1debugger_1_1client__control_1_1breakpoint.html#a99e4113533fe1c8b69bfd0dada39cde1',1,'malbolge::debugger::client_control::breakpoint']]],
-  ['address_5fvalue',['address_value',['../classmalbolge_1_1debugger_1_1client__control.html#ae60453b0367a52bc6e8a2db0ab32d73c',1,'malbolge::debugger::client_control']]],
+  ['address_5fvalue',['address_value',['../classmalbolge_1_1debugger_1_1client__control.html#a692eb2e46d22fc584e5d24c0f003473a',1,'malbolge::debugger::client_control']]],
   ['any_5fof',['any_of',['../namespacemalbolge.html#a1f9e7580216221223e639c44131e7cff',1,'malbolge']]],
   ['any_5fof_5fcontainer',['any_of_container',['../namespacemalbolge.html#a7aa628eaabc9eb4a6b78cf502c5f90df',1,'malbolge']]],
   ['argument_5fparser',['argument_parser',['../classmalbolge_1_1argument__parser.html#a0b765b6b107d6ca5c32a308c94f75ceb',1,'malbolge::argument_parser']]],

@@ -66,6 +66,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#typedef-members">Typedefs</a> &#124;
+<a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">c_interface.hpp File Reference</div>  </div>
@@ -86,10 +87,39 @@ Typedefs</h2></td></tr>
 <tr class="separator:a84b1e464beba3bd6868aae44b57eaef4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2c550a1e787f94deef1515d637ad8d97"><td class="memItemLeft" align="right" valign="top">typedef void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#a2c550a1e787f94deef1515d637ad8d97">malbolge_virtual_cpu</a></td></tr>
 <tr class="separator:a2c550a1e787f94deef1515d637ad8d97"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a610bbd15be1961d45fababf1b0fd7fb5"><td class="memItemLeft" align="right" valign="top">typedef void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#a610bbd15be1961d45fababf1b0fd7fb5">malbolge_debugger</a></td></tr>
+<tr class="separator:a610bbd15be1961d45fababf1b0fd7fb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae1f72dd6adfc50e0605612f49d984c25"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#ae1f72dd6adfc50e0605612f49d984c25">malbolge_program_stopped</a>) (int error_code, <a class="el" href="c__interface_8hpp.html#a2c550a1e787f94deef1515d637ad8d97">malbolge_virtual_cpu</a> vcpu)</td></tr>
 <tr class="separator:ae1f72dd6adfc50e0605612f49d984c25"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab2378d3316928531761d0e9f97eff943"><td class="memItemLeft" align="right" valign="top">typedef void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#ab2378d3316928531761d0e9f97eff943">malbolge_program_waiting_for_input</a>) (<a class="el" href="c__interface_8hpp.html#a2c550a1e787f94deef1515d637ad8d97">malbolge_virtual_cpu</a> vcpu)</td></tr>
 <tr class="separator:ab2378d3316928531761d0e9f97eff943"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa936d09c17e2d9b57f6e7e74ee5eb529"><td class="memItemLeft" align="right" valign="top">typedef int(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#aa936d09c17e2d9b57f6e7e74ee5eb529">malbolge_debugger_breakpoint_callback</a>) (unsigned int address, <a class="el" href="c__interface_8hpp.html#a6cb8bd4a9ea8eee24b8093c9b16e0872">malbolge_debugger_vcpu_register_id</a> reg)</td></tr>
+<tr class="separator:aa936d09c17e2d9b57f6e7e74ee5eb529"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:aeba820fd6f4b05c9469b5c0e40909731"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#aeba820fd6f4b05c9469b5c0e40909731">malbolge_result</a> { <br />
+&#160;&#160;<a class="el" href="c__interface_8hpp.html#aeba820fd6f4b05c9469b5c0e40909731ae59f29eaf173c9382e15ecf4afe8e941">MALBOLGE_ERR_TRUE</a> = 0x0001, 
+<a class="el" href="c__interface_8hpp.html#aeba820fd6f4b05c9469b5c0e40909731a2c173227a88be82bbdf96b28b7ce2e82">MALBOLGE_ERR_FALSE</a> = 0x0000, 
+<a class="el" href="c__interface_8hpp.html#aeba820fd6f4b05c9469b5c0e40909731afcf7d22ae340eecc67bf372a6ccb906b">MALBOLGE_ERR_SUCCESS</a> = 0x0000, 
+<a class="el" href="c__interface_8hpp.html#aeba820fd6f4b05c9469b5c0e40909731aac73a1cc9c8093475ef06cd91e10137b">MALBOLGE_ERR_UNKNOWN</a> = -0x1000, 
+<br />
+&#160;&#160;<a class="el" href="c__interface_8hpp.html#aeba820fd6f4b05c9469b5c0e40909731ac5f6a16c9507c5dad3c8eda55bf95157">MALBOLGE_ERR_INVALID_LOG_LEVEL</a> = -0x1001, 
+<a class="el" href="c__interface_8hpp.html#aeba820fd6f4b05c9469b5c0e40909731a5c4de57db5bec024421b60eb139d5740">MALBOLGE_ERR_NULL_ARG</a> = -0x1002, 
+<a class="el" href="c__interface_8hpp.html#aeba820fd6f4b05c9469b5c0e40909731a0976ce5dd5f83f6ee5ac099a9a1f770d">MALBOLGE_ERR_PARSE_FAIL</a> = -0x1003, 
+<a class="el" href="c__interface_8hpp.html#aeba820fd6f4b05c9469b5c0e40909731a46b655de1aa47008d2aff8335d701e99">MALBOLGE_ERR_EXECUTION_FAIL</a> = -0x1004, 
+<br />
+&#160;&#160;<a class="el" href="c__interface_8hpp.html#aeba820fd6f4b05c9469b5c0e40909731a5efd71ee0c3912d75ef3b8513327a58c">MALBOLGE_ERR_CIN_OR_STOPPED</a> = -0x1005, 
+<a class="el" href="c__interface_8hpp.html#aeba820fd6f4b05c9469b5c0e40909731a1da7a7f504e11d14c5245f56e2a32c81">MALBOLGE_ERR_DBG_WRONG_STATE</a> = -0x1100
+<br />
+ }</td></tr>
+<tr class="separator:aeba820fd6f4b05c9469b5c0e40909731"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6cb8bd4a9ea8eee24b8093c9b16e0872"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#a6cb8bd4a9ea8eee24b8093c9b16e0872">malbolge_debugger_vcpu_register_id</a> { <a class="el" href="c__interface_8hpp.html#a6cb8bd4a9ea8eee24b8093c9b16e0872a02b62288a7175244606af442bc26c284">MALBOLGE_DBG_REGISTER_A</a>, 
+<a class="el" href="c__interface_8hpp.html#a6cb8bd4a9ea8eee24b8093c9b16e0872a0352b26176e61b6ea7527e5bf90d74e1">MALBOLGE_DBG_REGISTER_C</a>, 
+<a class="el" href="c__interface_8hpp.html#a6cb8bd4a9ea8eee24b8093c9b16e0872af795004afc4f265140914b3412080cdb">MALBOLGE_DBG_REGISTER_D</a>, 
+<a class="el" href="c__interface_8hpp.html#a6cb8bd4a9ea8eee24b8093c9b16e0872a39694995228e695e0a7ee26cd8497b11">MALBOLGE_DBG_REGISTER_MAX</a>
+ }</td></tr>
+<tr class="separator:a6cb8bd4a9ea8eee24b8093c9b16e0872"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -99,8 +129,8 @@ Functions</h2></td></tr>
 <tr class="separator:ab59f51f6a9e9c8909c1b9e8f98ac1de2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aae0eb68fd86649a134a1bbe2faaedae3"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#aae0eb68fd86649a134a1bbe2faaedae3">malbolge_version</a> ()</td></tr>
 <tr class="separator:aae0eb68fd86649a134a1bbe2faaedae3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae5037409d2537edfd62e04feae6997ef"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#ae5037409d2537edfd62e04feae6997ef">malbolge_is_likely_normalised_source</a> (char *buffer, unsigned long size)</td></tr>
-<tr class="separator:ae5037409d2537edfd62e04feae6997ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acc2617cbeb5be51d55f71a2a226e2cdd"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#acc2617cbeb5be51d55f71a2a226e2cdd">malbolge_is_likely_normalised_source</a> (const char *buffer, unsigned long size)</td></tr>
+<tr class="separator:acc2617cbeb5be51d55f71a2a226e2cdd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6b8e977feaee90e3adde7742e4fb1952"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#a6b8e977feaee90e3adde7742e4fb1952">malbolge_normalise_source</a> (char *buffer, unsigned long size, unsigned long *new_size, unsigned int *fail_line, unsigned int *fail_column)</td></tr>
 <tr class="separator:a6b8e977feaee90e3adde7742e4fb1952"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab3fe3de193106890b826ff36536a6c01"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#ab3fe3de193106890b826ff36536a6c01">malbolge_denormalise_source</a> (char *buffer, unsigned long size, unsigned int *fail_column)</td></tr>
@@ -111,12 +141,32 @@ Functions</h2></td></tr>
 <tr class="separator:a99624edc0501c26f691297ba26f7c27b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acf8682000db7d6d6cb19abeb55ba84ec"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#acf8682000db7d6d6cb19abeb55ba84ec">malbolge_free_virtual_memory</a> (<a class="el" href="c__interface_8hpp.html#a84b1e464beba3bd6868aae44b57eaef4">malbolge_virtual_memory</a> vmem)</td></tr>
 <tr class="separator:acf8682000db7d6d6cb19abeb55ba84ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aab3f5204473302c4c526ecf33acb3638"><td class="memItemLeft" align="right" valign="top"><a class="el" href="c__interface_8hpp.html#a2c550a1e787f94deef1515d637ad8d97">malbolge_virtual_cpu</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#aab3f5204473302c4c526ecf33acb3638">malbolge_vcpu_run</a> (<a class="el" href="c__interface_8hpp.html#a84b1e464beba3bd6868aae44b57eaef4">malbolge_virtual_memory</a> vmem, <a class="el" href="c__interface_8hpp.html#ae1f72dd6adfc50e0605612f49d984c25">malbolge_program_stopped</a> stopped_cb, <a class="el" href="c__interface_8hpp.html#ab2378d3316928531761d0e9f97eff943">malbolge_program_waiting_for_input</a> waiting_cb, int use_cin)</td></tr>
-<tr class="separator:aab3f5204473302c4c526ecf33acb3638"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae314756573b71c9194e0eabeff221000"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#ae314756573b71c9194e0eabeff221000">malbolge_vcpu_stop</a> (<a class="el" href="c__interface_8hpp.html#a2c550a1e787f94deef1515d637ad8d97">malbolge_virtual_cpu</a> vcpu)</td></tr>
-<tr class="separator:ae314756573b71c9194e0eabeff221000"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2721a101593c6c1b30f9280460805f55"><td class="memItemLeft" align="right" valign="top"><a class="el" href="c__interface_8hpp.html#a2c550a1e787f94deef1515d637ad8d97">malbolge_virtual_cpu</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#a2721a101593c6c1b30f9280460805f55">malbolge_create_vcpu</a> (<a class="el" href="c__interface_8hpp.html#a84b1e464beba3bd6868aae44b57eaef4">malbolge_virtual_memory</a> vmem)</td></tr>
+<tr class="separator:a2721a101593c6c1b30f9280460805f55"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8457adeff39f00c6c06613108c508a07"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#a8457adeff39f00c6c06613108c508a07">malbolge_free_vcpu</a> (<a class="el" href="c__interface_8hpp.html#a2c550a1e787f94deef1515d637ad8d97">malbolge_virtual_cpu</a> vcpu)</td></tr>
+<tr class="separator:a8457adeff39f00c6c06613108c508a07"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a76be76750774680ea8bd8c287e95a437"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#a76be76750774680ea8bd8c287e95a437">malbolge_vcpu_run</a> (<a class="el" href="c__interface_8hpp.html#a2c550a1e787f94deef1515d637ad8d97">malbolge_virtual_cpu</a> vcpu, <a class="el" href="c__interface_8hpp.html#ae1f72dd6adfc50e0605612f49d984c25">malbolge_program_stopped</a> stopped_cb, <a class="el" href="c__interface_8hpp.html#ab2378d3316928531761d0e9f97eff943">malbolge_program_waiting_for_input</a> waiting_cb, int use_cin)</td></tr>
+<tr class="separator:a76be76750774680ea8bd8c287e95a437"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef9ced0479dd812fbe776c8fea82a9cf"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#aef9ced0479dd812fbe776c8fea82a9cf">malbolge_vcpu_stop</a> (<a class="el" href="c__interface_8hpp.html#a2c550a1e787f94deef1515d637ad8d97">malbolge_virtual_cpu</a> vcpu)</td></tr>
+<tr class="separator:aef9ced0479dd812fbe776c8fea82a9cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae3f2f8b25fd50c34d8bbb1c81070ddd7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#ae3f2f8b25fd50c34d8bbb1c81070ddd7">malbolge_vcpu_input</a> (<a class="el" href="c__interface_8hpp.html#a2c550a1e787f94deef1515d637ad8d97">malbolge_virtual_cpu</a> vcpu, const char *buffer, unsigned int size)</td></tr>
 <tr class="separator:ae3f2f8b25fd50c34d8bbb1c81070ddd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3155074d80edb242bd9b4bb9779aef82"><td class="memItemLeft" align="right" valign="top"><a class="el" href="c__interface_8hpp.html#a610bbd15be1961d45fababf1b0fd7fb5">malbolge_debugger</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#a3155074d80edb242bd9b4bb9779aef82">malbolge_debugger_attach</a> (<a class="el" href="c__interface_8hpp.html#a2c550a1e787f94deef1515d637ad8d97">malbolge_virtual_cpu</a> vcpu)</td></tr>
+<tr class="separator:a3155074d80edb242bd9b4bb9779aef82"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6440d93d483370635509e2a69a1dfb64"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#a6440d93d483370635509e2a69a1dfb64">malbolge_debugger_pause</a> (<a class="el" href="c__interface_8hpp.html#a610bbd15be1961d45fababf1b0fd7fb5">malbolge_debugger</a> debugger)</td></tr>
+<tr class="separator:a6440d93d483370635509e2a69a1dfb64"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a74945a536afb413887a9ecd871fece13"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#a74945a536afb413887a9ecd871fece13">malbolge_debugger_step</a> (<a class="el" href="c__interface_8hpp.html#a610bbd15be1961d45fababf1b0fd7fb5">malbolge_debugger</a> debugger)</td></tr>
+<tr class="separator:a74945a536afb413887a9ecd871fece13"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae99f534327ec439c1ce15b3181d88b66"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#ae99f534327ec439c1ce15b3181d88b66">malbolge_debugger_resume</a> (<a class="el" href="c__interface_8hpp.html#a610bbd15be1961d45fababf1b0fd7fb5">malbolge_debugger</a> debugger)</td></tr>
+<tr class="separator:ae99f534327ec439c1ce15b3181d88b66"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a178ebb17a5bf6f2f6454a6d655d21179"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#a178ebb17a5bf6f2f6454a6d655d21179">malbolge_debugger_address_value</a> (<a class="el" href="c__interface_8hpp.html#a610bbd15be1961d45fababf1b0fd7fb5">malbolge_debugger</a> debugger, unsigned int address)</td></tr>
+<tr class="separator:a178ebb17a5bf6f2f6454a6d655d21179"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afebba679119585b9e3f633ef7d4076f5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#afebba679119585b9e3f633ef7d4076f5">malbolge_debugger_register_value</a> (<a class="el" href="c__interface_8hpp.html#a610bbd15be1961d45fababf1b0fd7fb5">malbolge_debugger</a> debugger, enum <a class="el" href="c__interface_8hpp.html#a6cb8bd4a9ea8eee24b8093c9b16e0872">malbolge_debugger_vcpu_register_id</a> reg, unsigned int **address)</td></tr>
+<tr class="separator:afebba679119585b9e3f633ef7d4076f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:accf88b76f03d9daf8fdc08f041e67e57"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#accf88b76f03d9daf8fdc08f041e67e57">malbolge_debugger_add_breakpoint</a> (<a class="el" href="c__interface_8hpp.html#a610bbd15be1961d45fababf1b0fd7fb5">malbolge_debugger</a> debugger, unsigned int address, <a class="el" href="c__interface_8hpp.html#aa936d09c17e2d9b57f6e7e74ee5eb529">malbolge_debugger_breakpoint_callback</a> cb, unsigned int ignore_count)</td></tr>
+<tr class="separator:accf88b76f03d9daf8fdc08f041e67e57"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad777c36df9fcbd903bf9a19c08500b35"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="c__interface_8hpp.html#ad777c36df9fcbd903bf9a19c08500b35">malbolge_debugger_remove_breakpoint</a> (<a class="el" href="c__interface_8hpp.html#a610bbd15be1961d45fababf1b0fd7fb5">malbolge_debugger</a> debugger, unsigned int address)</td></tr>
+<tr class="separator:ad777c36df9fcbd903bf9a19c08500b35"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Exposes a C89 interface to the important parts of the library.</p>
@@ -124,6 +174,52 @@ Functions</h2></td></tr>
 
 <p class="definition">Definition in file <a class="el" href="c__interface_8hpp_source.html">c_interface.hpp</a>.</p>
 </div><h2 class="groupheader">Typedef Documentation</h2>
+<a id="a610bbd15be1961d45fababf1b0fd7fb5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a610bbd15be1961d45fababf1b0fd7fb5">&#9670;&nbsp;</a></span>malbolge_debugger</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef void* <a class="el" href="c__interface_8hpp.html#a610bbd15be1961d45fababf1b0fd7fb5">malbolge_debugger</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Opaque handle for a debugger. </p>
+
+<p class="definition">Definition at line <a class="el" href="c__interface_8hpp_source.html#l00027">27</a> of file <a class="el" href="c__interface_8hpp_source.html">c_interface.hpp</a>.</p>
+
+</div>
+</div>
+<a id="aa936d09c17e2d9b57f6e7e74ee5eb529"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa936d09c17e2d9b57f6e7e74ee5eb529">&#9670;&nbsp;</a></span>malbolge_debugger_breakpoint_callback</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef int(* malbolge_debugger_breakpoint_callback) (unsigned int address, <a class="el" href="c__interface_8hpp.html#a6cb8bd4a9ea8eee24b8093c9b16e0872">malbolge_debugger_vcpu_register_id</a> reg)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Function pointer signature for a callback fired when a breakpoint is hit.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">address</td><td>Address the breakpoint resides on </td></tr>
+    <tr><td class="paramname">reg</td><td>vCPU register that triggered the breakpoint </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><ul>
+<li>MALBOLGE_ERR_TRUE to stop execution</li>
+<li>MALBOLGE_ERR_FALSE to continue execution </li>
+</ul>
+</dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="c__interface_8hpp_source.html#l00088">88</a> of file <a class="el" href="c__interface_8hpp_source.html">c_interface.hpp</a>.</p>
+
+</div>
+</div>
 <a id="ae1f72dd6adfc50e0605612f49d984c25"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae1f72dd6adfc50e0605612f49d984c25">&#9670;&nbsp;</a></span>malbolge_program_stopped</h2>
 
@@ -138,13 +234,13 @@ Functions</h2></td></tr>
 <p>Function pointer signature for the program stopped callback.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">error_code</td><td>The negative error code that triggered the stop, or 0 if execution ended successfully </td></tr>
+    <tr><td class="paramname">error_code</td><td>The negative error code that triggered the stop, or MALBOLGE_ERR_SUCCESS if execution ended successfully </td></tr>
     <tr><td class="paramname">vcpu</td><td>vCPU handle that has stopped. Note that the handle has already freed when this function is called </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="c__interface_8hpp_source.html#l00032">32</a> of file <a class="el" href="c__interface_8hpp_source.html">c_interface.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="c__interface_8hpp_source.html#l00071">71</a> of file <a class="el" href="c__interface_8hpp_source.html">c_interface.hpp</a>.</p>
 
 </div>
 </div>
@@ -167,7 +263,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="c__interface_8hpp_source.html#l00039">39</a> of file <a class="el" href="c__interface_8hpp_source.html">c_interface.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="c__interface_8hpp_source.html#l00078">78</a> of file <a class="el" href="c__interface_8hpp_source.html">c_interface.hpp</a>.</p>
 
 </div>
 </div>
@@ -205,7 +301,412 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="a6cb8bd4a9ea8eee24b8093c9b16e0872"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6cb8bd4a9ea8eee24b8093c9b16e0872">&#9670;&nbsp;</a></span>malbolge_debugger_vcpu_register_id</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="c__interface_8hpp.html#a6cb8bd4a9ea8eee24b8093c9b16e0872">malbolge_debugger_vcpu_register_id</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>vCPU register identifiers for the debugger.</p>
+<p>C equivalent to <a class="el" href="namespacemalbolge_1_1debugger_1_1vcpu__register.html#a4e8367bf978b0da112a69306e4a1d2d4">malbolge::debugger::vcpu_register::id</a>. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a6cb8bd4a9ea8eee24b8093c9b16e0872a02b62288a7175244606af442bc26c284"></a>MALBOLGE_DBG_REGISTER_A&#160;</td><td class="fielddoc"><p>Accumulator. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a6cb8bd4a9ea8eee24b8093c9b16e0872a0352b26176e61b6ea7527e5bf90d74e1"></a>MALBOLGE_DBG_REGISTER_C&#160;</td><td class="fielddoc"><p>Code pointer. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a6cb8bd4a9ea8eee24b8093c9b16e0872af795004afc4f265140914b3412080cdb"></a>MALBOLGE_DBG_REGISTER_D&#160;</td><td class="fielddoc"><p>Data pointer. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a6cb8bd4a9ea8eee24b8093c9b16e0872a39694995228e695e0a7ee26cd8497b11"></a>MALBOLGE_DBG_REGISTER_MAX&#160;</td><td class="fielddoc"><p>Number of registers. </p>
+</td></tr>
+</table>
+
+<p class="definition">Definition at line <a class="el" href="c__interface_8hpp_source.html#l00056">56</a> of file <a class="el" href="c__interface_8hpp_source.html">c_interface.hpp</a>.</p>
+
+</div>
+</div>
+<a id="aeba820fd6f4b05c9469b5c0e40909731"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeba820fd6f4b05c9469b5c0e40909731">&#9670;&nbsp;</a></span>malbolge_result</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="c__interface_8hpp.html#aeba820fd6f4b05c9469b5c0e40909731">malbolge_result</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Enum for Malbolge return codes.</p>
+<p>Errors start at -0x1000, so standard platform error codes can be used as well. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="aeba820fd6f4b05c9469b5c0e40909731ae59f29eaf173c9382e15ecf4afe8e941"></a>MALBOLGE_ERR_TRUE&#160;</td><td class="fielddoc"><p>True. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aeba820fd6f4b05c9469b5c0e40909731a2c173227a88be82bbdf96b28b7ce2e82"></a>MALBOLGE_ERR_FALSE&#160;</td><td class="fielddoc"><p>False. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aeba820fd6f4b05c9469b5c0e40909731afcf7d22ae340eecc67bf372a6ccb906b"></a>MALBOLGE_ERR_SUCCESS&#160;</td><td class="fielddoc"><p>Success. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aeba820fd6f4b05c9469b5c0e40909731aac73a1cc9c8093475ef06cd91e10137b"></a>MALBOLGE_ERR_UNKNOWN&#160;</td><td class="fielddoc"><p>An unknown/generic error occurred. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aeba820fd6f4b05c9469b5c0e40909731ac5f6a16c9507c5dad3c8eda55bf95157"></a>MALBOLGE_ERR_INVALID_LOG_LEVEL&#160;</td><td class="fielddoc"><p>Invalid log level requested. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aeba820fd6f4b05c9469b5c0e40909731a5c4de57db5bec024421b60eb139d5740"></a>MALBOLGE_ERR_NULL_ARG&#160;</td><td class="fielddoc"><p>An input was unexpectedly NULL. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aeba820fd6f4b05c9469b5c0e40909731a0976ce5dd5f83f6ee5ac099a9a1f770d"></a>MALBOLGE_ERR_PARSE_FAIL&#160;</td><td class="fielddoc"><p>Program source parse failure. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aeba820fd6f4b05c9469b5c0e40909731a46b655de1aa47008d2aff8335d701e99"></a>MALBOLGE_ERR_EXECUTION_FAIL&#160;</td><td class="fielddoc"><p>Program execution failure. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aeba820fd6f4b05c9469b5c0e40909731a5efd71ee0c3912d75ef3b8513327a58c"></a>MALBOLGE_ERR_CIN_OR_STOPPED&#160;</td><td class="fielddoc"><p>vCPU input requested but cin was specified, or program stopped </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aeba820fd6f4b05c9469b5c0e40909731a1da7a7f504e11d14c5245f56e2a32c81"></a>MALBOLGE_ERR_DBG_WRONG_STATE&#160;</td><td class="fielddoc"><p>Debugger operation whilst program is in wrong state </p>
+</td></tr>
+</table>
+
+<p class="definition">Definition at line <a class="el" href="c__interface_8hpp_source.html#l00034">34</a> of file <a class="el" href="c__interface_8hpp_source.html">c_interface.hpp</a>.</p>
+
+</div>
+</div>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="a2721a101593c6c1b30f9280460805f55"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2721a101593c6c1b30f9280460805f55">&#9670;&nbsp;</a></span>malbolge_create_vcpu()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="c__interface_8hpp.html#a2c550a1e787f94deef1515d637ad8d97">malbolge_virtual_cpu</a> malbolge_create_vcpu </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="c__interface_8hpp.html#a84b1e464beba3bd6868aae44b57eaef4">malbolge_virtual_memory</a>&#160;</td>
+          <td class="paramname"><em>vmem</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Creates a virtual CPU from the program in <em>vmem</em>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">vmem</td><td>Virtual memory handle returned from malbolge_load_program, <em>vmem</em> is freed by this function </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Malbolge virtual CPU handle, or NULL if <em>vmem</em> is NULL </dd></dl>
+
+</div>
+</div>
+<a id="accf88b76f03d9daf8fdc08f041e67e57"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#accf88b76f03d9daf8fdc08f041e67e57">&#9670;&nbsp;</a></span>malbolge_debugger_add_breakpoint()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int malbolge_debugger_add_breakpoint </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="c__interface_8hpp.html#a610bbd15be1961d45fababf1b0fd7fb5">malbolge_debugger</a>&#160;</td>
+          <td class="paramname"><em>debugger</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>address</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="c__interface_8hpp.html#aa936d09c17e2d9b57f6e7e74ee5eb529">malbolge_debugger_breakpoint_callback</a>&#160;</td>
+          <td class="paramname"><em>cb</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>ignore_count</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Adds a breakpoint.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">debugger</td><td>Debugger handle returned from <a class="el" href="c__interface_8hpp.html#a3155074d80edb242bd9b4bb9779aef82">malbolge_debugger_attach(malbolge_virtual_cpu)</a> </td></tr>
+    <tr><td class="paramname">address</td><td>vmem address to attach the breakpoint to </td></tr>
+    <tr><td class="paramname">cb</td><td>Callback fired when the breakpoint is hit, or NULL to use the default (<a class="el" href="classmalbolge_1_1debugger_1_1client__control_1_1breakpoint.html#a28dfee4e5b2a482c358ad83ce578ea8c">malbolge::debugger::client_control::breakpoint::default_callback</a>) </td></tr>
+    <tr><td class="paramname">ignore_count</td><td>Number times the breakpoint is hit before the callback is triggered </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><ul>
+<li>MALBOLGE_ERR_SUCCESS for success</li>
+<li>MALBOLGE_ERR_NULL_ARG if <em>debugger</em> is NULL </li>
+</ul>
+</dd></dl>
+
+</div>
+</div>
+<a id="a178ebb17a5bf6f2f6454a6d655d21179"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a178ebb17a5bf6f2f6454a6d655d21179">&#9670;&nbsp;</a></span>malbolge_debugger_address_value()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int malbolge_debugger_address_value </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="c__interface_8hpp.html#a610bbd15be1961d45fababf1b0fd7fb5">malbolge_debugger</a>&#160;</td>
+          <td class="paramname"><em>debugger</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>address</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns the value at a given vmem address.</p>
+<p>See <a class="el" href="classmalbolge_1_1debugger_1_1client__control.html#a692eb2e46d22fc584e5d24c0f003473a">malbolge::debugger::client_control::address_value(math::ternary) const</a> for more information. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">debugger</td><td>Debugger handle returned from <a class="el" href="c__interface_8hpp.html#a3155074d80edb242bd9b4bb9779aef82">malbolge_debugger_attach(malbolge_virtual_cpu)</a> </td></tr>
+    <tr><td class="paramname">address</td><td>vmem address, will wrap if same or larger than math::ternary::max </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>If positive then the value at vmem <em>address</em>. Otherwise:<ul>
+<li>MALBOLGE_ERR_NULL_ARG if <em>debugger</em> is NULL</li>
+<li>MALBOLGE_ERR_DBG_WRONG_STATE if program is running</li>
+<li>MALBOLGE_ERR_UNKNOWN if an unknown failure occurs </li>
+</ul>
+</dd></dl>
+
+</div>
+</div>
+<a id="a3155074d80edb242bd9b4bb9779aef82"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3155074d80edb242bd9b4bb9779aef82">&#9670;&nbsp;</a></span>malbolge_debugger_attach()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="c__interface_8hpp.html#a610bbd15be1961d45fababf1b0fd7fb5">malbolge_debugger</a> malbolge_debugger_attach </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="c__interface_8hpp.html#a2c550a1e787f94deef1515d637ad8d97">malbolge_virtual_cpu</a>&#160;</td>
+          <td class="paramname"><em>vcpu</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Attach a debugger to a vCPU.</p>
+<p>See <a class="el" href="classmalbolge_1_1debugger_1_1client__control.html">malbolge::debugger::client_control</a> for more information. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">vcpu</td><td>Virtual CPU handle returned from <a class="el" href="c__interface_8hpp.html#a2721a101593c6c1b30f9280460805f55">malbolge_create_vcpu(malbolge_virtual_memory)</a> </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Debugger handle, or NULL if <em>vcpu</em> is NULL or the attachment failed </dd></dl>
+
+</div>
+</div>
+<a id="a6440d93d483370635509e2a69a1dfb64"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6440d93d483370635509e2a69a1dfb64">&#9670;&nbsp;</a></span>malbolge_debugger_pause()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int malbolge_debugger_pause </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="c__interface_8hpp.html#a610bbd15be1961d45fababf1b0fd7fb5">malbolge_debugger</a>&#160;</td>
+          <td class="paramname"><em>debugger</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Pause the debugged program.</p>
+<p>See <a class="el" href="classmalbolge_1_1debugger_1_1client__control.html#a9cc1f84bc36153d2cad247df56db5d3c">malbolge::debugger::client_control::pause()</a> for more information. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">debugger</td><td>Debugger handle returned from <a class="el" href="c__interface_8hpp.html#a3155074d80edb242bd9b4bb9779aef82">malbolge_debugger_attach(malbolge_virtual_cpu)</a> </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><ul>
+<li>MALBOLGE_ERR_SUCCESS for success</li>
+<li>MALBOLGE_ERR_NULL_ARG if <em>debugger</em> is NULL</li>
+<li>MALBOLGE_ERR_DBG_WRONG_STATE if program is stopped or not started</li>
+<li>MALBOLGE_ERR_UNKNOWN if an unknown failure occurs </li>
+</ul>
+</dd></dl>
+
+</div>
+</div>
+<a id="afebba679119585b9e3f633ef7d4076f5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afebba679119585b9e3f633ef7d4076f5">&#9670;&nbsp;</a></span>malbolge_debugger_register_value()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int malbolge_debugger_register_value </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="c__interface_8hpp.html#a610bbd15be1961d45fababf1b0fd7fb5">malbolge_debugger</a>&#160;</td>
+          <td class="paramname"><em>debugger</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">enum <a class="el" href="c__interface_8hpp.html#a6cb8bd4a9ea8eee24b8093c9b16e0872">malbolge_debugger_vcpu_register_id</a>&#160;</td>
+          <td class="paramname"><em>reg</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int **&#160;</td>
+          <td class="paramname"><em>address</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns the address and/or value of a given register.</p>
+<p>See <a class="el" href="classmalbolge_1_1debugger_1_1client__control.html#ad109589ee18024167facc8ec4bc96a22">malbolge::debugger::client_control::register_value(vcpu_register::id) const</a> for more information. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">debugger</td><td>Debugger handle returned from <a class="el" href="c__interface_8hpp.html#a3155074d80edb242bd9b4bb9779aef82">malbolge_debugger_attach(malbolge_virtual_cpu)</a> </td></tr>
+    <tr><td class="paramname">reg</td><td>vCPU register to query </td></tr>
+    <tr><td class="paramname">address</td><td>The value pointed at by the register, or NULL if querying the A register. Ignored if the input is NULL </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>If positive then the register value. Otherwise:<ul>
+<li>MALBOLGE_ERR_NULL_ARG if <em>debugger</em> is NULL</li>
+<li>MALBOLGE_ERR_DBG_WRONG_STATE if program is running</li>
+<li>MALBOLGE_ERR_UNKNOWN if an unknown failure occurs </li>
+</ul>
+</dd></dl>
+
+</div>
+</div>
+<a id="ad777c36df9fcbd903bf9a19c08500b35"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad777c36df9fcbd903bf9a19c08500b35">&#9670;&nbsp;</a></span>malbolge_debugger_remove_breakpoint()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int malbolge_debugger_remove_breakpoint </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="c__interface_8hpp.html#a610bbd15be1961d45fababf1b0fd7fb5">malbolge_debugger</a>&#160;</td>
+          <td class="paramname"><em>debugger</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>address</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Removes a breakpoint at the given address.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">debugger</td><td>Debugger handle returned from <a class="el" href="c__interface_8hpp.html#a3155074d80edb242bd9b4bb9779aef82">malbolge_debugger_attach(malbolge_virtual_cpu)</a> </td></tr>
+    <tr><td class="paramname">address</td><td>vmem address to remove the breakpoint from </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><ul>
+<li>MALBOLGE_ERR_TRUE if a breakpoint was removed</li>
+<li>MALBOLGE_ERR_FALSE if no breakpoint was at <em>address</em> </li>
+<li>MALBOLGE_ERR_NULL_ARG if <em>debugger</em> is NULL </li>
+</ul>
+</dd></dl>
+
+</div>
+</div>
+<a id="ae99f534327ec439c1ce15b3181d88b66"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae99f534327ec439c1ce15b3181d88b66">&#9670;&nbsp;</a></span>malbolge_debugger_resume()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int malbolge_debugger_resume </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="c__interface_8hpp.html#a610bbd15be1961d45fababf1b0fd7fb5">malbolge_debugger</a>&#160;</td>
+          <td class="paramname"><em>debugger</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Resume the debugged program.</p>
+<p>See <a class="el" href="classmalbolge_1_1debugger_1_1client__control.html#a29b2aa490ae85a92081b716799e421e1">malbolge::debugger::client_control::resume()</a> for more information. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">debugger</td><td>Debugger handle returned from <a class="el" href="c__interface_8hpp.html#a3155074d80edb242bd9b4bb9779aef82">malbolge_debugger_attach(malbolge_virtual_cpu)</a> </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><ul>
+<li>MALBOLGE_ERR_SUCCESS for success</li>
+<li>MALBOLGE_ERR_NULL_ARG if <em>debugger</em> is NULL</li>
+<li>MALBOLGE_ERR_DBG_WRONG_STATE if program is stopped or not started</li>
+<li>MALBOLGE_ERR_UNKNOWN if an unknown failure occurs </li>
+</ul>
+</dd></dl>
+
+</div>
+</div>
+<a id="a74945a536afb413887a9ecd871fece13"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a74945a536afb413887a9ecd871fece13">&#9670;&nbsp;</a></span>malbolge_debugger_step()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int malbolge_debugger_step </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="c__interface_8hpp.html#a610bbd15be1961d45fababf1b0fd7fb5">malbolge_debugger</a>&#160;</td>
+          <td class="paramname"><em>debugger</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Step the debugged program.</p>
+<p>See <a class="el" href="classmalbolge_1_1debugger_1_1client__control.html#a9f7bb0cc9dc27178b83a601819f10b57">malbolge::debugger::client_control::step()</a> for more information. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">debugger</td><td>Debugger handle returned from <a class="el" href="c__interface_8hpp.html#a3155074d80edb242bd9b4bb9779aef82">malbolge_debugger_attach(malbolge_virtual_cpu)</a> </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><ul>
+<li>MALBOLGE_ERR_SUCCESS for success</li>
+<li>MALBOLGE_ERR_NULL_ARG if <em>debugger</em> is NULL</li>
+<li>MALBOLGE_ERR_DBG_WRONG_STATE if program is not in a paused state</li>
+<li>MALBOLGE_ERR_UNKNOWN if an unknown failure occurs </li>
+</ul>
+</dd></dl>
+
+</div>
+</div>
 <a id="ab3fe3de193106890b826ff36536a6c01"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab3fe3de193106890b826ff36536a6c01">&#9670;&nbsp;</a></span>malbolge_denormalise_source()</h2>
 
@@ -246,7 +747,38 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>0 for success, a negative error code in case of failure </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><ul>
+<li>MALBOLGE_ERR_SUCCESS for success</li>
+<li>MALBOLGE_ERR_NULL_ARG if <em>buffer</em> is NULL</li>
+<li>MALBOLGE_ERR_PARSE_FAIL if the denormalisation process failed</li>
+<li>MALBOLGE_ERR_UNKNOWN if an unknown failure occurs </li>
+</ul>
+</dd></dl>
+
+</div>
+</div>
+<a id="a8457adeff39f00c6c06613108c508a07"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8457adeff39f00c6c06613108c508a07">&#9670;&nbsp;</a></span>malbolge_free_vcpu()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void malbolge_free_vcpu </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="c__interface_8hpp.html#a2c550a1e787f94deef1515d637ad8d97">malbolge_virtual_cpu</a>&#160;</td>
+          <td class="paramname"><em>vcpu</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Frees the vCPU created by <a class="el" href="c__interface_8hpp.html#a2721a101593c6c1b30f9280460805f55">malbolge_create_vcpu(malbolge_virtual_memory)</a>.</p>
+<p>No-op if vcpu is NULL. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">vcpu</td><td>vCPU to free </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -275,8 +807,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ae5037409d2537edfd62e04feae6997ef"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae5037409d2537edfd62e04feae6997ef">&#9670;&nbsp;</a></span>malbolge_is_likely_normalised_source()</h2>
+<a id="acc2617cbeb5be51d55f71a2a226e2cdd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acc2617cbeb5be51d55f71a2a226e2cdd">&#9670;&nbsp;</a></span>malbolge_is_likely_normalised_source()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -284,7 +816,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">int malbolge_is_likely_normalised_source </td>
           <td>(</td>
-          <td class="paramtype">char *&#160;</td>
+          <td class="paramtype">const char *&#160;</td>
           <td class="paramname"><em>buffer</em>, </td>
         </tr>
         <tr>
@@ -308,7 +840,12 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>1 if true, 0 otherwise </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><ul>
+<li>MALBOLGE_ERR_TRUE if normalised</li>
+<li>MALBOLGE_ERR_FALSE if not</li>
+<li>MALBOLGE_ERR_NULL_ARG if <em>buffer</em> is NULL </li>
+</ul>
+</dd></dl>
 
 </div>
 </div>
@@ -489,7 +1026,13 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>0 for success, a negative error code in case of failure </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><ul>
+<li>MALBOLGE_ERR_SUCCESS for success</li>
+<li>MALBOLGE_ERR_NULL_ARG if <em>buffer</em> or <em>new_size</em> is NULL</li>
+<li>MALBOLGE_ERR_PARSE_FAIL if the normalisation process failed</li>
+<li>MALBOLGE_ERR_UNKNOWN if an unknown failure occurs </li>
+</ul>
+</dd></dl>
 
 </div>
 </div>
@@ -515,7 +1058,11 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>0 for success, a negative error code in case of failure </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><ul>
+<li>MALBOLGE_ERR_SUCCESS for success</li>
+<li>MALBOLGE_ERR_INVALID_LOG_LEVEL if <em>level</em> is larger than the maximum </li>
+</ul>
+</dd></dl>
 
 </div>
 </div>
@@ -554,27 +1101,32 @@ Functions</h2></td></tr>
 <p>This request is ignored if <em>vcpu</em> was created with the <code>use_cin</code> argument set to true.</p>
 <p><em>buffer</em> is copied into an internal queue, so this can be called before <em>vcpu</em> is ready to receive user input. As the data is copied, you need to free <em>buffer</em> manually (assuming it was malloc-ed). </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">vcpu</td><td>Virtual CPU handle returned from malbolge_vcpu_run </td></tr>
+    <tr><td class="paramname">vcpu</td><td>Virtual CPU handle returned from <a class="el" href="c__interface_8hpp.html#a2721a101593c6c1b30f9280460805f55">malbolge_create_vcpu(malbolge_virtual_memory)</a> </td></tr>
     <tr><td class="paramname">buffer</td><td>Input data </td></tr>
     <tr><td class="paramname">size</td><td>Size of <em>buffer</em> </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>0 for success, a negative error code in case of failure </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><ul>
+<li>MALBOLGE_ERR_SUCCESS for success</li>
+<li>MALBOLGE_ERR_NULL_ARG if <em>vcpu</em> or <em>buffer</em> is NULL</li>
+<li>MALBOLGE_ERR_CIN_OR_STOPPED if <em>vcpu</em> is set to use cin, or already stopped </li>
+</ul>
+</dd></dl>
 
 </div>
 </div>
-<a id="aab3f5204473302c4c526ecf33acb3638"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aab3f5204473302c4c526ecf33acb3638">&#9670;&nbsp;</a></span>malbolge_vcpu_run()</h2>
+<a id="a76be76750774680ea8bd8c287e95a437"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a76be76750774680ea8bd8c287e95a437">&#9670;&nbsp;</a></span>malbolge_vcpu_run()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="c__interface_8hpp.html#a2c550a1e787f94deef1515d637ad8d97">malbolge_virtual_cpu</a> malbolge_vcpu_run </td>
+          <td class="memname">int malbolge_vcpu_run </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="c__interface_8hpp.html#a84b1e464beba3bd6868aae44b57eaef4">malbolge_virtual_memory</a>&#160;</td>
-          <td class="paramname"><em>vmem</em>, </td>
+          <td class="paramtype"><a class="el" href="c__interface_8hpp.html#a2c550a1e787f94deef1515d637ad8d97">malbolge_virtual_cpu</a>&#160;</td>
+          <td class="paramname"><em>vcpu</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -601,28 +1153,34 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Creates a virtual CPU and begins asynchronously executing the code in <em>vmem</em>.</p>
+<p>Run the program loading in <em>vcpu</em>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">vmem</td><td>Virtual memory handle returned from malbolge_load_program, <em>vmem</em> is freed by this function. </td></tr>
+    <tr><td class="paramname">vcpu</td><td>vCPU handle </td></tr>
     <tr><td class="paramname">stopped_cb</td><td>Callback called when the execution stops </td></tr>
     <tr><td class="paramname">waiting_cb</td><td>Callback called when the program is expecting user input </td></tr>
     <tr><td class="paramname">use_cin</td><td>If true, user input is extracted from cin. Otherwise input is passed in using malbolge_vcpu_input. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Malbolge virtual CPU handle, or NULL if early checks failed. This is freed when execution stops. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><ul>
+<li>MALBOLGE_ERR_SUCCESS for success</li>
+<li>MALBOLGE_ERR_NULL_ARG if <em>vcpu</em> is NULL</li>
+<li>MALBOLGE_ERR_EXECUTION_FAIL if vCPU execution initialisation fails</li>
+<li>MALBOLGE_ERR_UNKNOWN if an unknown failure occurs </li>
+</ul>
+</dd></dl>
 
 </div>
 </div>
-<a id="ae314756573b71c9194e0eabeff221000"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae314756573b71c9194e0eabeff221000">&#9670;&nbsp;</a></span>malbolge_vcpu_stop()</h2>
+<a id="aef9ced0479dd812fbe776c8fea82a9cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aef9ced0479dd812fbe776c8fea82a9cf">&#9670;&nbsp;</a></span>malbolge_vcpu_stop()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void malbolge_vcpu_stop </td>
+          <td class="memname">int malbolge_vcpu_stop </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="c__interface_8hpp.html#a2c550a1e787f94deef1515d637ad8d97">malbolge_virtual_cpu</a>&#160;</td>
           <td class="paramname"><em>vcpu</em></td><td>)</td>
@@ -633,10 +1191,15 @@ Functions</h2></td></tr>
 <p>Asynchronously stops the virtual CPU.</p>
 <p>The stopped callback assigned to <em>vcpu</em> is called. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">vcpu</td><td>Virtual CPU handle returned from malbolge_vcpu_run </td></tr>
+    <tr><td class="paramname">vcpu</td><td>Virtual CPU handle returned from <a class="el" href="c__interface_8hpp.html#a2721a101593c6c1b30f9280460805f55">malbolge_create_vcpu(malbolge_virtual_memory)</a> </td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd><ul>
+<li>MALBOLGE_ERR_SUCCESS for success</li>
+<li>MALBOLGE_ERR_NULL_ARG if <em>vcpu</em> is NULL </li>
+</ul>
+</dd></dl>
 
 </div>
 </div>
