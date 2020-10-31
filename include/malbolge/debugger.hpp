@@ -268,9 +268,12 @@ public:
      * and returns a populated vcpu_control instance.  See
      * virtual_cpu::configure_debugger(running_callback_type, step_data_callback_type)
      * for an example.
+     *
+     * Once attached the lifetimes of the vCPU and debugger are tied, as they
+     * share callbacks that call into each other.
      * @tparam vCPU vCPU type
      * @param vcpu vCPU instance to attach to
-     * @exception basic_exception Thrown if @a vpu is already running, or
+     * @exception basic_exception Thrown if @a vcpu is already running, or
      * already has a debugger attached, or the vcpu did not populate all of the
      * vcpu_control fields
      */
@@ -302,7 +305,6 @@ public:
 
     /** Pause the program.
      *
-     * This is a no-op if the program is already paused.
      * @exception basic_exception Thrown if the program has stopped or not been
      * started
      */
@@ -318,7 +320,6 @@ public:
 
     /** Resume program execution from a paused state.
      *
-     * This is a no-op if the program is already running.
      * @note This will not start a stopped program.
      * @exception basic_exception Thrown if the program has stopped or not been
      * started
@@ -331,7 +332,7 @@ public:
      * @return Value at @a address
      * @exception basic_exception Thrown if program is running
      */
-    math::ternary address_value(math::ternary address);
+    math::ternary address_value(math::ternary address) const;
 
     /** Returns the address and/or value of a given register.
      *
@@ -340,7 +341,7 @@ public:
      * and the value it points at, for the A register it only returns the value
      * @exception basic_exception Thrown if program is running
      */
-    vcpu_register::data register_value(vcpu_register::id reg);
+    vcpu_register::data register_value(vcpu_register::id reg) const;
 
     /** Adds a breakpoint.
      *
@@ -368,7 +369,7 @@ private:
     std::unordered_map<math::ternary, breakpoint> breakpoints_;
     execution_state state_;
     vcpu_control control_;
-    std::mutex mtx_;
+    mutable std::mutex mtx_;
 };
 
 /** Textual streaming operator for client_control::execution_state.

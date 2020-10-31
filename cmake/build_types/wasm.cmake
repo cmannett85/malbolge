@@ -9,13 +9,14 @@ endif()
 
 set(WASM_BUILD_OPTIONS
     "-Wno-pthreads-mem-growth"
-    "SHELL:-s EXPORTED_FUNCTIONS=[\"_malbolge_log_level\",\"_malbolge_set_log_level\",\"_malbolge_version\",\"_malbolge_load_program\",\"_malbolge_load_normalised_program\",\"_malbolge_free_virtual_memory\",\"_malbolge_vcpu_run_wasm\",\"_malbolge_vcpu_stop\",\"_malbolge_vcpu_input\",\"_malbolge_is_likely_normalised_source\",\"_malbolge_normalise_source\",\"_malbolge_denormalise_source\"]"
+    "SHELL:-s EXPORTED_FUNCTIONS=[\"_malbolge_log_level\",\"_malbolge_set_log_level\",\"_malbolge_version\",\"_malbolge_load_program\",\"_malbolge_load_normalised_program\",\"_malbolge_free_virtual_memory\",\"_malbolge_create_vcpu\",\"_malbolge_free_vcpu\",\"_malbolge_vcpu_run_wasm\",\"_malbolge_vcpu_stop\",\"_malbolge_vcpu_input\",\"_malbolge_is_likely_normalised_source\",\"_malbolge_normalise_source\",\"_malbolge_denormalise_source\"]"
+    "SHELL:-s ALLOW_BLOCKING_ON_MAIN_THREAD" # The vCPU worker always exits quickly
     "SHELL:-s ALLOW_MEMORY_GROWTH"
     "SHELL:-s ALLOW_TABLE_GROWTH"
     "SHELL:-s DISABLE_EXCEPTION_CATCHING=0"
     "SHELL:-s USE_BOOST_HEADERS"
     "SHELL:-s USE_PTHREADS"
-    "SHELL:-s PTHREAD_POOL_SIZE=\"1\"" # One more is added due to PROXY_TO_PTHREAD
+    "SHELL:-s PTHREAD_POOL_SIZE=\"1\""
     "SHELL:-s ENVIRONMENT=\"web,worker\""
     "SHELL:-s MINIMAL_RUNTIME_STREAMING_WASM_INSTANTIATION"
 )

@@ -146,6 +146,10 @@ void virtual_cpu::run(std::function<void (std::exception_ptr)> stopped,
 
 void virtual_cpu::stop()
 {
+    if (*state_ != execution_state::RUNNING) {
+        return;
+    }
+
     log::print(log::DEBUG, "Early exit requested");
     *state_ = execution_state::STOPPED;
 }
@@ -176,7 +180,9 @@ virtual_cpu::configure_debugger(running_callback_type running,
     }};
 
     auto controller = vcpu_control{};
-    controller.pause  = [this]() { debugger_->gate.close(); };
+    controller.pause  = [this]() {
+        debugger_->gate.close();
+    };
     controller.step   = [this]() { debugger_->gate.open(1); };
     controller.resume = [this]() { debugger_->gate.open(); };
 

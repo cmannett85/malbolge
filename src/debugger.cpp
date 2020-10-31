@@ -49,10 +49,6 @@ void debugger::client_control::pause()
         if (state_ == execution_state::NOT_RUNNING) {
             throw basic_exception{"Program not running"};
         }
-
-        if (state_ == execution_state::PAUSED) {
-            return;
-        }
     }
 
     control_.pause();
@@ -77,17 +73,13 @@ void debugger::client_control::resume()
         if (state_ == execution_state::NOT_RUNNING) {
             throw basic_exception{"Program not running"};
         }
-
-        if (state_ == execution_state::RUNNING) {
-            return;
-        }
     }
 
     control_.resume();
 }
 
 math::ternary
-debugger::client_control::address_value(math::ternary address)
+debugger::client_control::address_value(math::ternary address) const
 {
     {
         auto lock = std::lock_guard{mtx_};
@@ -100,7 +92,7 @@ debugger::client_control::address_value(math::ternary address)
 }
 
 debugger::vcpu_register::data
-debugger::client_control::register_value(vcpu_register::id reg)
+debugger::client_control::register_value(vcpu_register::id reg) const
 {
     {
         auto lock = std::lock_guard{mtx_};
