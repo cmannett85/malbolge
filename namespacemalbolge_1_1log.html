@@ -87,6 +87,17 @@ Enumerations</h2></td></tr>
 <br />
  }</td></tr>
 <tr class="separator:a237f237f9c3fda0478e4dba3aaffc3f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d43dad423f6e210116d8c6c3adc9513"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemalbolge_1_1log.html#a8d43dad423f6e210116d8c6c3adc9513">colour</a> { <br />
+&#160;&#160;<a class="el" href="namespacemalbolge_1_1log.html#a8d43dad423f6e210116d8c6c3adc9513a5b39c8b553c821e7cddc6da64b5bd2ee">colour::DEFAULT</a>, 
+<a class="el" href="namespacemalbolge_1_1log.html#a8d43dad423f6e210116d8c6c3adc9513aa2d9547b5d3dd9f05984475f7c926da0">colour::RED</a>, 
+<a class="el" href="namespacemalbolge_1_1log.html#a8d43dad423f6e210116d8c6c3adc9513a9de0e5dd94e861317e74964bed179fa0">colour::GREEN</a>, 
+<a class="el" href="namespacemalbolge_1_1log.html#a8d43dad423f6e210116d8c6c3adc9513a8a568e5f41b7e4da88fe5c4a00aad34e">colour::YELLOW</a>, 
+<br />
+&#160;&#160;<a class="el" href="namespacemalbolge_1_1log.html#a8d43dad423f6e210116d8c6c3adc9513a1b3e1ee9bff86431dea6b181365ba65f">colour::BLUE</a>, 
+<a class="el" href="namespacemalbolge_1_1log.html#a8d43dad423f6e210116d8c6c3adc9513a8234db3622f18a6d2019337d3a2ba5d4">colour::NUM_COLOURS</a>
+<br />
+ }</td></tr>
+<tr class="separator:a8d43dad423f6e210116d8c6c3adc9513"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -98,9 +109,9 @@ Functions</h2></td></tr>
 <tr class="separator:ae1ad89551a9b5f336fe824ba7ef7155e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a38978a4f3d47f085a2534a916079f652"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemalbolge_1_1log.html#a38978a4f3d47f085a2534a916079f652">set_log_level</a> (<a class="el" href="namespacemalbolge_1_1log.html#a237f237f9c3fda0478e4dba3aaffc3f0">level</a> lvl)</td></tr>
 <tr class="separator:a38978a4f3d47f085a2534a916079f652"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a931ed78362b30770fea0e5f3d2fcffcd"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; </td></tr>
-<tr class="memitem:a931ed78362b30770fea0e5f3d2fcffcd"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacemalbolge_1_1log.html#a931ed78362b30770fea0e5f3d2fcffcd">basic_print</a> (std::ostream &amp;stream, Args &amp;&amp;... args)</td></tr>
-<tr class="separator:a931ed78362b30770fea0e5f3d2fcffcd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a975d03462d2070906d3ad9ed68961b8f"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; </td></tr>
+<tr class="memitem:a975d03462d2070906d3ad9ed68961b8f"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacemalbolge_1_1log.html#a975d03462d2070906d3ad9ed68961b8f">basic_print</a> (std::ostream &amp;stream, <a class="el" href="namespacemalbolge_1_1log.html#a8d43dad423f6e210116d8c6c3adc9513">colour</a> c, Args &amp;&amp;... args)</td></tr>
+<tr class="separator:a975d03462d2070906d3ad9ed68961b8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af70f4a09d92d8f8a75b0c281eeb08d19"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; </td></tr>
 <tr class="memitem:af70f4a09d92d8f8a75b0c281eeb08d19"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacemalbolge_1_1log.html#af70f4a09d92d8f8a75b0c281eeb08d19">print</a> (<a class="el" href="namespacemalbolge_1_1log.html#a237f237f9c3fda0478e4dba3aaffc3f0">level</a> lvl, Args &amp;&amp;... args)</td></tr>
 <tr class="separator:af70f4a09d92d8f8a75b0c281eeb08d19"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -108,6 +119,45 @@ Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Namespace for logging types and functions. </p>
 </div><h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="a8d43dad423f6e210116d8c6c3adc9513"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8d43dad423f6e210116d8c6c3adc9513">&#9670;&nbsp;</a></span>colour</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="namespacemalbolge_1_1log.html#a8d43dad423f6e210116d8c6c3adc9513">malbolge::log::colour</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>ANSI terminal colour constants. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a8d43dad423f6e210116d8c6c3adc9513a5b39c8b553c821e7cddc6da64b5bd2ee"></a>DEFAULT&#160;</td><td class="fielddoc"><p>Default text colour. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a8d43dad423f6e210116d8c6c3adc9513aa2d9547b5d3dd9f05984475f7c926da0"></a>RED&#160;</td><td class="fielddoc"><p>Red. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a8d43dad423f6e210116d8c6c3adc9513a9de0e5dd94e861317e74964bed179fa0"></a>GREEN&#160;</td><td class="fielddoc"><p>Green. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a8d43dad423f6e210116d8c6c3adc9513a8a568e5f41b7e4da88fe5c4a00aad34e"></a>YELLOW&#160;</td><td class="fielddoc"><p>Yellow. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a8d43dad423f6e210116d8c6c3adc9513a1b3e1ee9bff86431dea6b181365ba65f"></a>BLUE&#160;</td><td class="fielddoc"><p>Blue. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a8d43dad423f6e210116d8c6c3adc9513a8234db3622f18a6d2019337d3a2ba5d4"></a>NUM_COLOURS&#160;</td><td class="fielddoc"><p>Number of colours. </p>
+</td></tr>
+</table>
+
+<p class="definition">Definition at line <a class="el" href="log_8hpp_source.html#l00063">63</a> of file <a class="el" href="log_8hpp_source.html">log.hpp</a>.</p>
+
+</div>
+</div>
 <a id="a237f237f9c3fda0478e4dba3aaffc3f0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a237f237f9c3fda0478e4dba3aaffc3f0">&#9670;&nbsp;</a></span>level</h2>
 
@@ -138,8 +188,8 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a931ed78362b30770fea0e5f3d2fcffcd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a931ed78362b30770fea0e5f3d2fcffcd">&#9670;&nbsp;</a></span>basic_print()</h2>
+<a id="a975d03462d2070906d3ad9ed68961b8f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a975d03462d2070906d3ad9ed68961b8f">&#9670;&nbsp;</a></span>basic_print()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -155,6 +205,12 @@ template&lt;typename... Args&gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="namespacemalbolge_1_1log.html#a8d43dad423f6e210116d8c6c3adc9513">colour</a>&#160;</td>
+          <td class="paramname"><em>c</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype">Args &amp;&amp;...&#160;</td>
           <td class="paramname"><em>args</em>&#160;</td>
         </tr>
@@ -166,7 +222,7 @@ template&lt;typename... Args&gt; </div>
       </table>
 </div><div class="memdoc">
 <p>Basic log print functionality that rights the standard prefix into <em>stream</em>.</p>
-<p>Pass your message components as if there is streaming operator where each comma is e.g.: </p><div class="fragment"><div class="line"><a class="code" href="namespacemalbolge_1_1log.html#a931ed78362b30770fea0e5f3d2fcffcd">log::basic_print</a>(std::cout, <span class="stringliteral">&quot; - Hello &quot;</span>, 42, <span class="stringliteral">&quot;!&quot;</span>);</div>
+<p>Pass your message components as if there is streaming operator where each comma is e.g.: </p><div class="fragment"><div class="line"><a class="code" href="namespacemalbolge_1_1log.html#a975d03462d2070906d3ad9ed68961b8f">log::basic_print</a>(std::cout, <span class="stringliteral">&quot; - Hello &quot;</span>, 42, <span class="stringliteral">&quot;!&quot;</span>);</div>
 <div class="line"><span class="comment">// Prints &quot;2020-12-19 09:57:15.486571467 - Hello 42!&quot;</span></div>
 </div><!-- fragment --> <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
@@ -177,12 +233,13 @@ template&lt;typename... Args&gt; </div>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">stream</td><td>Output stream </td></tr>
+    <tr><td class="paramname">c</td><td>Text colour </td></tr>
     <tr><td class="paramname">args</td><td>Message arguments, maybe empty in which case just the timestamp is printed </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="log_8hpp_source.html#l00076">76</a> of file <a class="el" href="log_8hpp_source.html">log.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="log_8hpp_source.html#l00095">95</a> of file <a class="el" href="log_8hpp_source.html">log.hpp</a>.</p>
 
 </div>
 </div>
@@ -296,7 +353,7 @@ template&lt;typename... Args&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="log_8hpp_source.html#l00095">95</a> of file <a class="el" href="log_8hpp_source.html">log.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="log_8hpp_source.html#l00116">116</a> of file <a class="el" href="log_8hpp_source.html">log.hpp</a>.</p>
 
 </div>
 </div>
@@ -352,9 +409,9 @@ template&lt;typename... Args&gt; </div>
 </div>
 </div>
 </div><!-- contents -->
-<div class="ttc" id="anamespacemalbolge_1_1log_html_a931ed78362b30770fea0e5f3d2fcffcd"><div class="ttname"><a href="namespacemalbolge_1_1log.html#a931ed78362b30770fea0e5f3d2fcffcd">malbolge::log::basic_print</a></div><div class="ttdeci">void basic_print(std::ostream &amp;stream, Args &amp;&amp;... args)</div><div class="ttdef"><b>Definition:</b> <a href="log_8hpp_source.html#l00076">log.hpp:76</a></div></div>
 <div class="ttc" id="anamespacemalbolge_1_1log_html_a237f237f9c3fda0478e4dba3aaffc3f0a6d99bbbc2ede1e9689151a79bfad1e57"><div class="ttname"><a href="namespacemalbolge_1_1log.html#a237f237f9c3fda0478e4dba3aaffc3f0a6d99bbbc2ede1e9689151a79bfad1e57">malbolge::log::INFO</a></div><div class="ttdeci">@ INFO</div><div class="ttdoc">Informational logging level.</div><div class="ttdef"><b>Definition:</b> <a href="log_8hpp_source.html#l00026">log.hpp:26</a></div></div>
-<div class="ttc" id="anamespacemalbolge_1_1log_html_af70f4a09d92d8f8a75b0c281eeb08d19"><div class="ttname"><a href="namespacemalbolge_1_1log.html#af70f4a09d92d8f8a75b0c281eeb08d19">malbolge::log::print</a></div><div class="ttdeci">void print(level lvl, Args &amp;&amp;... args)</div><div class="ttdef"><b>Definition:</b> <a href="log_8hpp_source.html#l00095">log.hpp:95</a></div></div>
+<div class="ttc" id="anamespacemalbolge_1_1log_html_a975d03462d2070906d3ad9ed68961b8f"><div class="ttname"><a href="namespacemalbolge_1_1log.html#a975d03462d2070906d3ad9ed68961b8f">malbolge::log::basic_print</a></div><div class="ttdeci">void basic_print(std::ostream &amp;stream, colour c, Args &amp;&amp;... args)</div><div class="ttdef"><b>Definition:</b> <a href="log_8hpp_source.html#l00095">log.hpp:95</a></div></div>
+<div class="ttc" id="anamespacemalbolge_1_1log_html_af70f4a09d92d8f8a75b0c281eeb08d19"><div class="ttname"><a href="namespacemalbolge_1_1log.html#af70f4a09d92d8f8a75b0c281eeb08d19">malbolge::log::print</a></div><div class="ttdeci">void print(level lvl, Args &amp;&amp;... args)</div><div class="ttdef"><b>Definition:</b> <a href="log_8hpp_source.html#l00116">log.hpp:116</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

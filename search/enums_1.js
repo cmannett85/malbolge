@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['id_528',['id',['../namespacemalbolge_1_1debugger_1_1vcpu__register.html#a4e8367bf978b0da112a69306e4a1d2d4',1,'malbolge::debugger::vcpu_register']]]
+  ['execution_5fstate_535',['execution_state',['../classmalbolge_1_1debugger_1_1client__control.html#a6b45764d9c84d04c1b4e23bf3af10665',1,'malbolge::debugger::client_control::execution_state()'],['../classmalbolge_1_1virtual__cpu.html#a6e6d243fefb70b081550b4ed4a4b9088',1,'malbolge::virtual_cpu::execution_state()']]]
 ];
