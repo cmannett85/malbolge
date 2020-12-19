@@ -8,6 +8,7 @@
 #include "malbolge/log.hpp"
 
 #include <optional>
+#include <filesystem>
 
 namespace malbolge
 {
@@ -91,11 +92,21 @@ public:
         return log_level_;
     }
 
+    /** Returns the debugger script path, or an empty optional if not specified.
+     *
+     * @return Debugger script path, if specified
+     */
+    const std::optional<std::filesystem::path>& debugger_script() const
+    {
+        return debugger_script_;
+    }
+
 private:
     bool help_;
     bool version_;
     program_data p_;
     log::level log_level_;
+    std::optional<std::filesystem::path> debugger_script_;
 };
 
 /** Prints the program source into @a stream.

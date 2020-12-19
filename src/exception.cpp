@@ -44,3 +44,7 @@ system_exception::system_exception(const std::string& msg, int error_code) :
                     msg},
     code_{to_ec(error_code)}
 {}
+
+system_exception::system_exception(const std::string& msg, std::errc error_code) :
+    system_exception{msg, static_cast<int>(error_code)}
+{}

@@ -14,7 +14,7 @@ BOOST_AUTO_TEST_SUITE(container_ops_suite)
 BOOST_AUTO_TEST_CASE(any_of_test)
 {
     auto f = [&](auto&& c, auto&& value, auto&& expected) {
-        BOOST_CHECK_EQUAL(any_of(c, value), expected);
+        BOOST_CHECK_EQUAL(algorithm::any_of(c, value), expected);
     };
 
     test::data_set(
@@ -32,7 +32,7 @@ BOOST_AUTO_TEST_CASE(any_of_test)
 BOOST_AUTO_TEST_CASE(any_of_container_test)
 {
     auto f = [&](auto&& c, auto&& value, auto&& expected) {
-        BOOST_CHECK_EQUAL(any_of_container(c, value), expected);
+        BOOST_CHECK_EQUAL(algorithm::any_of_container(c, value), expected);
     };
 
     test::data_set(

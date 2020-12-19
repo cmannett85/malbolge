@@ -8,6 +8,7 @@
 #include "malbolge/math/ternary.hpp"
 
 #include <optional>
+#include <system_error>
 
 namespace malbolge
 {
@@ -156,6 +157,15 @@ public:
      * @param error_code System error code
      */
     explicit system_exception(const std::string& msg, int error_code);
+
+    /** Constructor.
+     *
+     * The error code is used with std::system_category() to generate a
+     * std::error_code.
+     * @param msg Message
+     * @param error_code System error code
+     */
+    explicit system_exception(const std::string& msg, std::errc error_code);
 
     /** Destructor.
      */

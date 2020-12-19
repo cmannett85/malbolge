@@ -3,7 +3,7 @@
  * See LICENSE file
  */
 
-#include "malbolge/debugger.hpp"
+#include "malbolge/debugger/client_control.hpp"
 #include "malbolge/exception.hpp"
 
 #include "test_helpers.hpp"
@@ -24,39 +24,43 @@ class mock_vcpu
 public:
     explicit mock_vcpu() :
         skip_configuration{0},
-        pause_called{false},
-        step_called{false},
-        resume_called{false},
         stop_{false},
         value_ready_{false}
+    {}
+
+    ~mock_vcpu()
+    {
+        stop_ = true;
+    }
+
+    void run()
     {
         thread_ = std::jthread{[this]() {
+            running(true);
+
             while (!stop_) {
                 std::this_thread::sleep_for(20ms);
 
-                auto cmd = command::NONE;
+                auto cmd = command_queue_type::value_type{command::NONE, {}};
                 {
                     auto lock = std::lock_guard{command_queue_mtx_};
                     if (!command_queue_.empty()) {
-                        cmd = command_queue_.front();
+                        cmd = std::move(command_queue_.front());
                         command_queue_.pop_front();
                     }
                 }
 
-                switch (cmd) {
+                switch (cmd.first) {
                 case command::NONE:
                     break;
                 case command::PAUSE:
-                    running(client_control::execution_state::PAUSED);
-                    pause_called = true;
+                    cmd.second();
                     break;
                 case command::STEP:
-                    running(client_control::execution_state::PAUSED);
-                    step_called = true;
+                    cmd.second();
                     break;
                 case command::RESUME:
-                    running(client_control::execution_state::RUNNING);
-                    resume_called = true;
+                    cmd.second();
                     break;
                 case command::ADDRESS:
                 case command::REGISTER:
@@ -68,19 +72,15 @@ public:
                     break;
                 default:
                     BOOST_TEST_MESSAGE("Unknown command");
-                    return;
+                    break;
                 }
             }
+            running(false);
         }};
     }
 
-    ~mock_vcpu()
-    {
-        stop_ = true;
-    }
-
     vcpu_control
-    configure_debugger(std::function<void (client_control::execution_state)> r,
+    configure_debugger(std::function<void (bool)> r,
                        std::function<bool (math::ternary, vcpu_register::id)> s)
     {
         running = std::move(r);
@@ -88,21 +88,21 @@ public:
 
         auto control = vcpu_control{};
         if (!skip_configuration[0]) {
-            control.pause = [this]() {
+            control.pause = [this](auto cb) {
                 auto lock = std::lock_guard{command_queue_mtx_};
-                command_queue_.emplace_back(command::PAUSE);
+                command_queue_.emplace_back(command::PAUSE, std::move(cb));
             };
         }
         if (!skip_configuration[1]) {
-            control.step = [this]() {
+            control.step = [this](auto cb) {
                 auto lock = std::lock_guard{command_queue_mtx_};
-                command_queue_.emplace_back(command::STEP);
+                command_queue_.emplace_back(command::STEP, std::move(cb));
             };
         }
         if (!skip_configuration[2]) {
-            control.resume = [this]() {
+            control.resume = [this](auto cb) {
                 auto lock = std::lock_guard{command_queue_mtx_};
-                command_queue_.emplace_back(command::RESUME);
+                command_queue_.emplace_back(command::RESUME, std::move(cb));
             };
         }
 
@@ -111,7 +111,8 @@ public:
                 BOOST_CHECK_EQUAL(address, expected_address);
                 {
                     auto lock = std::lock_guard{command_queue_mtx_};
-                    command_queue_.emplace_back(command::ADDRESS);
+                    command_queue_.emplace_back(command::ADDRESS,
+                                                vcpu_control::callback_type{});
                 }
                 wait_for_value();
                 return address_return;
@@ -122,7 +123,8 @@ public:
                 BOOST_CHECK_EQUAL(reg, expected_register);
                 {
                     auto lock = std::lock_guard{command_queue_mtx_};
-                    command_queue_.emplace_back(command::REGISTER);
+                    command_queue_.emplace_back(command::REGISTER,
+                                                vcpu_control::callback_type{});
                 }
                 wait_for_value();
                 return register_return;
@@ -134,17 +136,13 @@ public:
 
     std::bitset<5> skip_configuration;
 
-    std::atomic_bool pause_called;
-    std::atomic_bool step_called;
-    std::atomic_bool resume_called;
-
     math::ternary expected_address;
     math::ternary address_return;
 
     vcpu_register::id expected_register;
     vcpu_register::data register_return;
 
-    std::function<void (client_control::execution_state)> running;
+    std::function<void (bool)> running;
     std::function<bool (math::ternary, vcpu_register::id)> step_data;
 
 private:
@@ -157,6 +155,10 @@ private:
         REGISTER
     };
 
+    using command_queue_type = std::deque<
+        std::pair<command, vcpu_control::callback_type>
+    >;
+
     void wait_for_value()
     {
         auto lock = std::unique_lock{command_queue_mtx_};
@@ -166,13 +168,13 @@ private:
     std::jthread thread_;
     std::atomic_bool stop_;
     std::mutex command_queue_mtx_;
-    std::deque<command> command_queue_;
+    command_queue_type command_queue_;
     std::condition_variable cv_;
     bool value_ready_;
 };
 }
 
-BOOST_AUTO_TEST_SUITE(debugger_suite)
+BOOST_AUTO_TEST_SUITE(client_control_suite)
 
 BOOST_AUTO_TEST_CASE(constructor)
 {
@@ -206,6 +208,8 @@ BOOST_AUTO_TEST_CASE(pause)
 {
     auto vcpu = mock_vcpu{};
     auto cc = client_control{vcpu};
+    auto cv = std::condition_variable{};
+    auto mtx = std::mutex{};
 
     // Program not running, so should fail
     try {
@@ -217,12 +221,24 @@ BOOST_AUTO_TEST_CASE(pause)
         BOOST_CHECK(false);
     }
 
-    vcpu.running(client_control::execution_state::RUNNING);
-    BOOST_CHECK_EQUAL(cc.state(), client_control::execution_state::RUNNING);
-    vcpu.pause_called = false;
-    cc.pause();
+    vcpu.run();
     std::this_thread::sleep_for(100ms);
-    BOOST_CHECK(vcpu.pause_called);
+    BOOST_CHECK_EQUAL(cc.state(), client_control::execution_state::RUNNING);
+
+    auto pause_called = false;
+    auto cb = [&]() {
+        {
+            auto lock = std::lock_guard{mtx};
+            pause_called = true;
+        }
+        cv.notify_one();
+    };
+
+    cc.pause(std::move(cb));
+    auto lock = std::unique_lock{mtx};
+    cv.wait(lock, [&]() { return pause_called; });
+
+    BOOST_CHECK(pause_called);
     BOOST_CHECK_EQUAL(cc.state(), client_control::execution_state::PAUSED);
 }
 
@@ -230,6 +246,8 @@ BOOST_AUTO_TEST_CASE(step)
 {
     auto vcpu = mock_vcpu{};
     auto cc = client_control{vcpu};
+    auto cv = std::condition_variable{};
+    auto mtx = std::mutex{};
 
     // Program not running, so should fail
     try {
@@ -241,7 +259,8 @@ BOOST_AUTO_TEST_CASE(step)
         BOOST_CHECK(false);
     }
 
-    vcpu.running(client_control::execution_state::RUNNING);
+    vcpu.run();
+    std::this_thread::sleep_for(100ms);
     BOOST_CHECK_EQUAL(cc.state(), client_control::execution_state::RUNNING);
 
     try {
@@ -253,16 +272,40 @@ BOOST_AUTO_TEST_CASE(step)
         BOOST_CHECK(false);
     }
 
-    vcpu.pause_called = false;
-    cc.pause();
-    std::this_thread::sleep_for(100ms);
-    BOOST_CHECK(vcpu.pause_called);
+    auto pause_called = false;
+    auto pause_cb = [&]() {
+        {
+            auto lock = std::lock_guard{mtx};
+            pause_called = true;
+        }
+        cv.notify_one();
+    };
+
+    cc.pause(std::move(pause_cb));
+    {
+        auto lock = std::unique_lock{mtx};
+        cv.wait(lock, [&]() { return pause_called; });
+    }
+
+    BOOST_CHECK(pause_called);
     BOOST_CHECK_EQUAL(cc.state(), client_control::execution_state::PAUSED);
 
-    vcpu.step_called = false;
-    cc.step();
-    std::this_thread::sleep_for(100ms);
-    BOOST_CHECK(vcpu.step_called);
+    auto step_called = false;
+    auto step_cb = [&]() {
+        {
+            auto lock = std::lock_guard{mtx};
+            step_called = true;
+        }
+        cv.notify_one();
+    };
+
+    cc.step(std::move(step_cb));
+    {
+        auto lock = std::unique_lock{mtx};
+        cv.wait(lock, [&]() { return step_called;});
+    }
+
+    BOOST_CHECK(step_called);
     BOOST_CHECK_EQUAL(cc.state(), client_control::execution_state::PAUSED);
 }
 
@@ -270,19 +313,44 @@ BOOST_AUTO_TEST_CASE(resume)
 {
     auto vcpu = mock_vcpu{};
     auto cc = client_control{vcpu};
+    auto cv = std::condition_variable{};
+    auto mtx = std::mutex{};
 
-    vcpu.running(client_control::execution_state::RUNNING);
-    BOOST_CHECK_EQUAL(cc.state(), client_control::execution_state::RUNNING);
-    vcpu.pause_called = false;
-    cc.pause();
+    vcpu.run();
     std::this_thread::sleep_for(100ms);
-    BOOST_CHECK(vcpu.pause_called);
+    BOOST_CHECK_EQUAL(cc.state(), client_control::execution_state::RUNNING);
+
+    auto pause_called = false;
+    auto pause_cb = [&]() {
+        {
+            auto lock = std::lock_guard{mtx};
+            pause_called = true;
+        }
+        cv.notify_one();
+    };
+
+    cc.pause(std::move(pause_cb));
+    {
+        auto lock = std::unique_lock{mtx};
+        cv.wait(lock, [&]() { return pause_called; });
+    }
+    BOOST_CHECK(pause_called);
     BOOST_CHECK_EQUAL(cc.state(), client_control::execution_state::PAUSED);
 
-    vcpu.resume_called = false;
-    cc.resume();
-    std::this_thread::sleep_for(100ms);
-    BOOST_CHECK(vcpu.resume_called);
+    auto resume_called = false;
+    auto resume_cb = [&]() {
+        {
+            auto lock = std::lock_guard{mtx};
+            resume_called = true;
+        }
+        cv.notify_one();
+    };
+    cc.resume(std::move(resume_cb));
+    {
+        auto lock = std::unique_lock{mtx};
+        cv.wait(lock, [&]() { return resume_called;});
+    }
+    BOOST_CHECK(resume_called);
     BOOST_CHECK_EQUAL(cc.state(), client_control::execution_state::RUNNING);
 }
 
@@ -290,14 +358,12 @@ BOOST_AUTO_TEST_CASE(address_value)
 {
     auto vcpu = mock_vcpu{};
     auto cc = client_control{vcpu};
-
-    vcpu.expected_address = 42;
-    vcpu.address_return = 96;
-    auto result = cc.address_value(vcpu.expected_address);
-    BOOST_CHECK_EQUAL(result, vcpu.address_return);
+    auto cv = std::condition_variable{};
+    auto mtx = std::mutex{};
 
     // Cannot call when running
-    vcpu.running(client_control::execution_state::RUNNING);
+    vcpu.run();
+    std::this_thread::sleep_for(100ms);
     BOOST_CHECK_EQUAL(cc.state(), client_control::execution_state::RUNNING);
 
     try {
@@ -308,25 +374,40 @@ BOOST_AUTO_TEST_CASE(address_value)
     } catch (...) {
         BOOST_CHECK(false);
     }
+
+    auto pause_called = false;
+    auto pause_cb = [&]() {
+        {
+            auto lock = std::lock_guard{mtx};
+            pause_called = true;
+        }
+        cv.notify_one();
+    };
+
+    cc.pause(std::move(pause_cb));
+    {
+        auto lock = std::unique_lock{mtx};
+        cv.wait(lock, [&]() { return pause_called; });
+    }
+    BOOST_CHECK(pause_called);
+    BOOST_CHECK_EQUAL(cc.state(), client_control::execution_state::PAUSED);
+
+    vcpu.expected_address = 42;
+    vcpu.address_return = 96;
+    auto result = cc.address_value(vcpu.expected_address);
+    BOOST_CHECK_EQUAL(result, vcpu.address_return);
 }
 
 BOOST_AUTO_TEST_CASE(register_value)
 {
     auto vcpu = mock_vcpu{};
     auto cc = client_control{vcpu};
-
-    vcpu.expected_register = vcpu_register::A;
-    vcpu.register_return = vcpu_register::data{24};
-    auto result = cc.register_value(vcpu.expected_register);
-    BOOST_CHECK_EQUAL(result, vcpu.register_return);
-
-    vcpu.expected_register = vcpu_register::C;
-    vcpu.register_return = vcpu_register::data{24, 48};
-    result = cc.register_value(vcpu.expected_register);
-    BOOST_CHECK_EQUAL(result, vcpu.register_return);
+    auto cv = std::condition_variable{};
+    auto mtx = std::mutex{};
 
     // Cannot call when running
-    vcpu.running(client_control::execution_state::RUNNING);
+    vcpu.run();
+    std::this_thread::sleep_for(100ms);
     BOOST_CHECK_EQUAL(cc.state(), client_control::execution_state::RUNNING);
 
     try {
@@ -337,6 +418,33 @@ BOOST_AUTO_TEST_CASE(register_value)
     } catch (...) {
         BOOST_CHECK(false);
     }
+
+    auto pause_called = false;
+    auto pause_cb = [&]() {
+        {
+            auto lock = std::lock_guard{mtx};
+            pause_called = true;
+        }
+        cv.notify_one();
+    };
+
+    cc.pause(std::move(pause_cb));
+    {
+        auto lock = std::unique_lock{mtx};
+        cv.wait(lock, [&]() { return pause_called; });
+    }
+    BOOST_CHECK(pause_called);
+    BOOST_CHECK_EQUAL(cc.state(), client_control::execution_state::PAUSED);
+
+    vcpu.expected_register = vcpu_register::A;
+    vcpu.register_return = vcpu_register::data{24};
+    auto result = cc.register_value(vcpu.expected_register);
+    BOOST_CHECK_EQUAL(result, vcpu.register_return);
+
+    vcpu.expected_register = vcpu_register::C;
+    vcpu.register_return = vcpu_register::data{24, 48};
+    result = cc.register_value(vcpu.expected_register);
+    BOOST_CHECK_EQUAL(result, vcpu.register_return);
 }
 
 BOOST_AUTO_TEST_CASE(default_breakpoint)

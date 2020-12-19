@@ -8,7 +8,7 @@
 #include "malbolge/virtual_memory.hpp"
 #include "malbolge/utility/gate.hpp"
 #include "malbolge/utility/mutex_wrapper.hpp"
-#include "malbolge/debugger.hpp"
+#include "malbolge/debugger/client_control.hpp"
 
 #include <iostream>
 #include <thread>
@@ -24,11 +24,12 @@ namespace malbolge
 class virtual_cpu
 {
 public:
-    /** Callback type used to provide the debugger with program execution state.
-     *
-     * @param state Debugger execution state
+    /** Callback type used to notify the debugger when the program has started
+     * and finished.
+     * @param started True if the program has started (i.e. READY), false if it
+     * has finished (i.e. STOPPED)
      */
-    using running_callback_type = std::function<void (debugger::client_control::execution_state state)>;
+    using running_callback_type = std::function<void (bool started)>;
 
     /** Callback type used to provide the debugger with execution step data.
      */
@@ -123,8 +124,8 @@ public:
 
     /** Configure a debugger to gain control of the execution and view memory.
      *
-     * @param running Callback to notify the debugger that the program is
-     * running (note that a debugger paused program is still running)
+     * @param running Callback to notify the debugger that the program has
+     * started or finished
      * @param step_data Callback to notify the debugger of the current memory
      * access and which register (C or D) initiated the access
      * @return A configured vCPU controller
@@ -135,11 +136,35 @@ public:
     configure_debugger(running_callback_type running,
                        step_data_callback_type step_data);
 
+    /** Applies a delay between instruction cycles, useful for
+     * debugging/tracing.
+     *
+     * As expected, a zero value duration disables the delay.
+     *
+     * Despite the template params, this method is usually called with the
+     * Chrono literals, e.g.:
+     * @code
+     * vcpu.set_cycle_delay(100ms);
+     * @endcode
+     * @tparam Rep Number of ticks
+     * @tparam Period Tick period ratio (i.e. the number of seconds per tick)
+     * @param delay Delay duration
+     */
+    template <class Rep, class Period>
+    void set_cycle_delay(const std::chrono::duration<Rep, Period>& delay)
+    {
+        *cycle_delay_ = std::chrono::duration_cast<std::chrono::milliseconds>(delay).count();
+    }
+
 private:
     struct debugger_data
     {
         running_callback_type running_cb;
         step_data_callback_type step_data_cb;
+
+        std::mutex mtx;
+        debugger::vcpu_control::callback_type stop_cb;
+        debugger::vcpu_control::callback_type resume_cb;
 
         // Populated once the worker thread starts
         decltype(debugger::vcpu_control::address_value) address_value;
@@ -158,12 +183,14 @@ private:
                           std::istream& istr,
                           std::ostream& ostr,
                           utility::mutex_wrapper mtx,
-                          std::shared_ptr<debugger_data> debugger);
+                          std::shared_ptr<debugger_data> debugger,
+                          std::shared_ptr<std::atomic_uint> cycle_delay);
 
     std::thread thread_;
     std::shared_ptr<std::atomic<execution_state>> state_;
     virtual_memory vmem_;
 
+    std::shared_ptr<std::atomic_uint> cycle_delay_;
     std::shared_ptr<debugger_data> debugger_;
 };
 

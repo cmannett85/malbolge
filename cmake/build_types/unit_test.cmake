@@ -15,19 +15,28 @@ set(TEST_HEADERS
 set(TEST_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/algorithm/container_ops_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/algorithm/remove_from_range_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/algorithm/trim_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/c_interface_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/cpu_instruction_test.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/debugger_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/debugger/client_control_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/debugger/script_parser_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/debugger/script_runner_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/loader_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/main_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/math/ipow_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/math/tritset_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/math/ternary_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/normalise_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/traits_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/argument_parser_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/utility/from_chars_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/gate_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/raii_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/stream_lock_guard_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/utility/string_constant_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/utility/string_view_ops_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/utility/tuple_iterator_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/utility/unescaper_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/virtual_memory_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/virtual_cpu_test.cpp
 )
@@ -35,7 +44,9 @@ set(TEST_SRCS
 set(TEST_FOR_IDE
     ${CMAKE_CURRENT_SOURCE_DIR}/programs/README.md
     ${CMAKE_CURRENT_SOURCE_DIR}/programs/hello_world.mal
+    ${CMAKE_CURRENT_SOURCE_DIR}/programs/hello_world_debugger_script.dbg
     ${CMAKE_CURRENT_SOURCE_DIR}/programs/echo.mal
+    ${CMAKE_CURRENT_SOURCE_DIR}/programs/echo_debugger_script.dbg
     ${CMAKE_CURRENT_SOURCE_DIR}/calculate_test_coverage.sh
 )
 

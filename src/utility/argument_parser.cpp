@@ -4,6 +4,7 @@
  */
 
 #include "malbolge/utility/argument_parser.hpp"
+#include "malbolge/utility/string_view_ops.hpp"
 #include "malbolge/algorithm/container_ops.hpp"
 #include "malbolge/exception.hpp"
 #include "malbolge/version.hpp"
@@ -11,15 +12,17 @@
 #include <deque>
 
 using namespace malbolge;
+using namespace utility::string_view_ops;
 using namespace std::literals::string_view_literals;
 using namespace std::string_literals;
 
 namespace
 {
-constexpr auto help_flags = std::array{"--help", "-h"};
-constexpr auto version_flags = std::array{"--version", "-v"};
-constexpr auto log_flag_prefix = "-l";
-constexpr auto string_flag = "--string";
+constexpr auto help_flags           = std::array{"--help", "-h"};
+constexpr auto version_flags        = std::array{"--version", "-v"};
+constexpr auto log_flag_prefix      = "-l";
+constexpr auto string_flag          = "--string";
+constexpr auto debugger_script_flag = "--debugger-script";
 }
 
 argument_parser::argument_parser(int argc, char* argv[]) :
@@ -28,15 +31,15 @@ argument_parser::argument_parser(int argc, char* argv[]) :
     p_{program_source::STDIN, ""},
     log_level_{log::ERROR}
 {
-    // Convert to strings, they're easier to work with and we only do this
-    // once
-    auto args = std::deque<std::string>(argc-1);
+    // Convert to string_views, they're easier to work with
+    auto args = std::deque<std::string_view>(argc-1);
     std::copy(argv+1, argv+argc, args.begin());
 
     // Help
-    if (any_of_container(args, help_flags)) {
+    if (algorithm::any_of_container(args, help_flags)) {
         if (args.size() != 1) {
-            throw system_exception{"Help flag must be unique", EINVAL};
+            throw system_exception{"Help flag must be unique",
+                                   std::errc::invalid_argument};
         }
 
         help_ = true;
@@ -44,26 +47,23 @@ argument_parser::argument_parser(int argc, char* argv[]) :
     }
 
     // Application version
-    if (any_of_container(args, version_flags)) {
+    if (algorithm::any_of_container(args, version_flags)) {
         if (args.size() != 1) {
-            throw system_exception{"Version flag must be unique", EINVAL};
+            throw system_exception{"Version flag must be unique",
+                                   std::errc::invalid_argument};
         }
 
         version_ = true;
         return;
     }
 
-#ifdef EMSCRIPTEN
     auto string_it = std::find(args.begin(), args.end(), string_flag);
-#else
-    auto string_it = std::ranges::find(args, string_flag);
-#endif
     if (string_it != args.end()) {
         // Move the iterator forward one to extract the program data
         if (++string_it == args.end()) {
             throw system_exception{
                 "String flag set but no program source present",
-                EINVAL
+                std::errc::invalid_argument
             };
         }
 
@@ -74,41 +74,50 @@ argument_parser::argument_parser(int argc, char* argv[]) :
         args.erase(string_it);
     }
 
+    auto debugger_script_it = std::find(args.begin(), args.end(), debugger_script_flag);
+    if (debugger_script_it != args.end()) {
+        // Move the iterator forward one to extract the script path
+        if (++debugger_script_it == args.end()) {
+            throw system_exception{
+                "String flag set but no program source present",
+                std::errc::invalid_argument
+            };
+        }
+
+        debugger_script_ = *debugger_script_it;
+
+        debugger_script_it = args.erase(--debugger_script_it);
+        args.erase(debugger_script_it);
+    }
+
     // Log level
     if (args.size() && args.front().starts_with(log_flag_prefix)) {
         // There must only be 'l's
-#ifdef EMSCRIPTEN
         const auto level = static_cast<std::size_t>(std::count(args.front().begin(),
                                                                args.front().end(),
                                                                'l'));
-#else
-        const auto level = static_cast<std::size_t>(std::ranges::count(args.front(), 'l'));
-#endif
         if (level == (args.front().size()-1)) {
-            if (level > 3) {
+            if (level >= log::NUM_LOG_LEVELS) {
                 throw system_exception{
                     "Maximum log level is "s + to_string(log::VERBOSE_DEBUG) +
                     " (" + std::to_string(log::NUM_LOG_LEVELS-1) + ")",
-                    EINVAL
+                    std::errc::invalid_argument
                 };
             }
 
-            log_level_ = static_cast<log::level>(log::ERROR - level);
+            log_level_ = static_cast<log::level>(log::NUM_LOG_LEVELS - 1 - level);
             args.pop_front();
         }
     }
 
     // There should be no other flags here
     {
-#ifdef EMSCRIPTEN
         auto it = std::find_if(args.begin(), args.end(), [](auto&& a) {
-#else
-        auto it = std::ranges::find_if(args, [](auto&& a) {
-#endif
             return a.starts_with('-');
         });
         if (it != args.end()) {
-            throw system_exception{"Unknown argument: " + *it, EINVAL};
+            throw system_exception{"Unknown argument: "s + *it,
+                                   std::errc::invalid_argument};
         }
     }
 
@@ -127,8 +136,8 @@ argument_parser::argument_parser(int argc, char* argv[]) :
         args.pop_front();
 
         if (!args.empty()) {
-            throw system_exception{"Unknown argument: " + args.front(),
-                                   EINVAL};
+            throw system_exception{"Unknown argument: "s + args.front(),
+                                   std::errc::invalid_argument};
         }
     }
 }
@@ -158,10 +167,14 @@ std::ostream& malbolge::operator<<(std::ostream& stream, const argument_parser&)
                      "\n\tmalbolge <file>\n"
                      "\tcat <file> | malbolge\n\n"
                      "Options:\n"
-                  << help_flags[1] << " " << help_flags[0]
-                  << "\tDisplay this help message\n"
-                  << version_flags[1] << " " << version_flags[0]
-                  << "\tDisplay the full application version\n"
-                  << log_flag_prefix
-                  << "\t\tLog level, repeat the l character for higher logging levels\n";
+                  << "\t" << help_flags[1] << " " << help_flags[0]
+                  << "\t\tDisplay this help message\n"
+                  << "\t" << version_flags[1] << " " << version_flags[0]
+                  << "\t\tDisplay the full application version\n"
+                  << "\t" << log_flag_prefix
+                  << "\t\t\tLog level, repeat the l character for higher logging levels\n"
+                  << "\t" << string_flag
+                  << "\t\tPass a string argument as the program to run\n"
+                  << "\t" << debugger_script_flag
+                  << "\tRun the given debugger script on the program";
 }

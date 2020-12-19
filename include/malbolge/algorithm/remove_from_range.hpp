@@ -9,6 +9,8 @@
 
 namespace malbolge
 {
+namespace algorithm
+{
 /** Removes an element from a range by moving all the higher elements down one.
  *
  * This will leave the last element in an undefined state.
@@ -23,5 +25,6 @@ ForwardIt remove_from_range(ForwardIt it, ForwardIt last)
 {
     auto first = it;
     return std::move(++first, last, it);
+}
 }
 }

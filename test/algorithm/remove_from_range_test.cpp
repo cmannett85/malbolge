@@ -20,7 +20,7 @@ BOOST_AUTO_TEST_CASE(remove_from_range_test)
     auto f = [](auto range, auto offset, auto new_range) {
         auto orig_last = std::end(range);
         auto it = std::begin(range) + offset;
-        auto last = remove_from_range(it, orig_last);
+        auto last = algorithm::remove_from_range(it, orig_last);
 
         BOOST_CHECK(orig_last-1 == last);
         BOOST_REQUIRE_EQUAL((last - std::begin(range)), new_range.size());

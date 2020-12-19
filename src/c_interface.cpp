@@ -131,7 +131,7 @@ int malbolge_set_log_level(unsigned int level)
         return MALBOLGE_ERR_INVALID_LOG_LEVEL;
     }
 
-    log::set_log_level(static_cast<log::level>(log::ERROR - level));
+    log::set_log_level(static_cast<log::level>(log::NUM_LOG_LEVELS - 1 - level));
     return MALBOLGE_ERR_SUCCESS;
 }
 
