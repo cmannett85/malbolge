@@ -58,6 +58,24 @@ level log_level();
  */
 void set_log_level(level lvl);
 
+/** ANSI terminal colour constants.
+ */
+enum class colour
+{
+    DEFAULT,    ///< Default text colour
+    RED,        ///< Red
+    GREEN,      ///< Green
+    YELLOW,     ///< Yellow
+    BLUE,       ///< Blue
+    NUM_COLOURS ///< Number of colours
+};
+
+namespace detail
+{
+std::string_view colour_to_ansi(colour c = colour::DEFAULT);
+colour log_level_to_colour(level lvl);
+}
+
 /** Basic log print functionality that rights the standard prefix into
  * @a stream.
  *
@@ -69,13 +87,16 @@ void set_log_level(level lvl);
  * @endcode
  * @tparam Args Message argument types
  * @param stream Output stream
+ * @param c Text colour
  * @param args Message arguments, maybe empty in which case just the timestamp
  * is printed
  */
 template <typename... Args>
-void basic_print(std::ostream& stream, Args&&... args)
+void basic_print(std::ostream& stream, colour c, Args&&... args)
 {
-    ((stream << detail::timestamp) << ... << std::forward<Args>(args)) << std::endl;
+    ((stream << detail::colour_to_ansi(c) << detail::timestamp)
+        << ... << std::forward<Args>(args))
+    << detail::colour_to_ansi() << std::endl;
 }
 
 /** Prints the log message.
@@ -97,7 +118,9 @@ void print(level lvl, Args&&... args)
     static_assert(sizeof...(Args) > 0, "Must be at least one argument");
 
     if (lvl >= log_level()) {
-        basic_print(std::clog, "[", lvl, "]: ", std::forward<Args>(args)...);
+        basic_print(std::clog, detail::log_level_to_colour(lvl),
+                    "[", lvl, "]: ",
+                    std::forward<Args>(args)...);
     }
 }
 }

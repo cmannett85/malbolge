@@ -19,6 +19,8 @@ using namespace std::string_view_literals;
 
 namespace
 {
+constexpr auto dbgr_colour = log::colour::BLUE;
+
 void validate_sequence(const script::functions::sequence& fn_seq)
 {
     // Check that:
@@ -229,7 +231,8 @@ void debugger::script::run(const functions::sequence& fn_seq,
 
                 const auto address = fn.value<MAL_STR(address)>();
                 const auto value = cc.address_value(address);
-                log::basic_print(dstr, "[DBGR]: ", fn, " = ", value);
+                log::basic_print(dstr, dbgr_colour,
+                                 "[DBGR]: ", fn, " = ", value);
             },
             [&](const functions::register_value& fn) {
                 if (gate_check()) {
@@ -238,7 +241,8 @@ void debugger::script::run(const functions::sequence& fn_seq,
 
                 const auto reg = fn.value<MAL_STR(reg)>();
                 const auto value = cc.register_value(reg);
-                log::basic_print(dstr, "[DBGR]: ", fn, " = ", value);
+                log::basic_print(dstr,  dbgr_colour,
+                                 "[DBGR]: ", fn, " = ", value);
             },
             [&](const functions::step&) {
                 if (gate_check()) {

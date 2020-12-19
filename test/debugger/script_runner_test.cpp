@@ -73,7 +73,7 @@ R"([DBGR]: address_value(address={d:9, t:0000000100}) = {d:125, t:0000011122}
     // We have to strip the timestamp off each dstr line
     auto result = ""s;
     for (auto line = ""s; std::getline(dstr, line); ) {
-        result += line.substr(29) + '\n';
+        result += line.substr(34, line.size()-38) + '\n';
     }
 
     BOOST_CHECK_EQUAL(result, dstr_expected);
