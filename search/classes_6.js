@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['iterator_5fgeneric',['iterator_generic',['../classmalbolge_1_1virtual__memory_1_1iterator__generic.html',1,'malbolge::virtual_memory']]]
+  ['gate_273',['gate',['../classmalbolge_1_1utility_1_1gate.html',1,'malbolge::utility']]]
 ];

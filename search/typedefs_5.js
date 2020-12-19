@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['notifier_5ftype',['notifier_type',['../classmalbolge_1_1utility_1_1gate.html#aeb9a0512ce41bfcb93e2ca658c1f8087',1,'malbolge::utility::gate']]]
+  ['iterator_493',['iterator',['../classmalbolge_1_1virtual__memory.html#a2f6f871eb4fa51e8dc0bd15bc693b6cd',1,'malbolge::virtual_memory']]],
+  ['iterator_5fcategory_494',['iterator_category',['../classmalbolge_1_1virtual__memory_1_1iterator__generic.html#a3b2ae216ad518bcf14304e7a7e0ba471',1,'malbolge::virtual_memory::iterator_generic']]]
 ];

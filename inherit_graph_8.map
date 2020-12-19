@@ -1,3 +1,7 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$structmalbolge_1_1math_1_1trit_1_1min__width__type.html" title="malbolge::math::trit\l::min_width_type\&lt; N \&gt;" alt="" coords="5,5,160,47"/>
+<area shape="rect" id="node1" title="STL class." alt="" coords="5,71,120,98"/>
+<area shape="rect" id="node2" title="STL class." alt="" coords="168,71,307,98"/>
+<area shape="rect" id="node3" href="$classmalbolge_1_1execution__exception.html" title=" " alt="" coords="383,5,537,47"/>
+<area shape="rect" id="node4" href="$classmalbolge_1_1parse__exception.html" title=" " alt="" coords="361,71,559,98"/>
+<area shape="rect" id="node5" href="$classmalbolge_1_1system__exception.html" title=" " alt="" coords="355,122,565,149"/>
 </map>

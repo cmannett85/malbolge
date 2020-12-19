@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['reference',['reference',['../classmalbolge_1_1virtual__memory_1_1iterator__generic.html#ad9942ab8e8e644d2ce03773092e0e288',1,'malbolge::virtual_memory::iterator_generic::reference()'],['../classmalbolge_1_1virtual__memory.html#acb4c4402b21135cd8450b8ff7f4b76aa',1,'malbolge::virtual_memory::reference()']]],
-  ['reverse_5fiterator',['reverse_iterator',['../classmalbolge_1_1virtual__memory.html#adc67aa276d9064efb716ec8022969846',1,'malbolge::virtual_memory']]],
-  ['running_5fcallback_5ftype',['running_callback_type',['../classmalbolge_1_1virtual__cpu.html#a6ffd9b45432ac7d4428652f39547dec4',1,'malbolge::virtual_cpu']]]
+  ['on_5finput_504',['on_input',['../namespacemalbolge_1_1debugger_1_1script_1_1functions.html#a36beaad7f17418ec6f4399af73495044',1,'malbolge::debugger::script::functions']]],
+  ['optional_5fsource_5flocation_505',['optional_source_location',['../namespacemalbolge.html#a962762895be04c5fd57e55e462ea6c93',1,'malbolge']]]
 ];

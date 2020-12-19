@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['has_5flocation',['has_location',['../classmalbolge_1_1parse__exception.html#a63683ad3998ecd1d702fe0032742b4ad',1,'malbolge::parse_exception']]],
-  ['help',['help',['../classmalbolge_1_1argument__parser.html#abf9933a1f37270468808384d9350c44b',1,'malbolge::argument_parser']]]
+  ['gate_55',['gate',['../classmalbolge_1_1utility_1_1gate.html',1,'malbolge::utility::gate'],['../classmalbolge_1_1utility_1_1gate.html#ab4245921bc47c9f917d5e41b3883644e',1,'malbolge::utility::gate::gate()']]],
+  ['git_5frevision_56',['git_revision',['../namespacemalbolge.html#ab5de4177306ae7e3c65301a3b810fd37',1,'malbolge']]],
+  ['graphical_5fascii_5frange_57',['graphical_ascii_range',['../namespacemalbolge.html#ae4d84f203ef3d78c728b68499080657c',1,'malbolge']]]
 ];

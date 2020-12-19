@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['min_5fwidth_5ftype',['min_width_type',['../structmalbolge_1_1math_1_1trit_1_1min__width__type.html',1,'malbolge::math::trit']]],
-  ['mutex_5fwrapper',['mutex_wrapper',['../classmalbolge_1_1utility_1_1mutex__wrapper.html',1,'malbolge::utility']]]
+  ['is_5fspecialisation_274',['is_specialisation',['../structmalbolge_1_1traits_1_1is__specialisation.html',1,'malbolge::traits']]],
+  ['is_5ftuple_5flike_275',['is_tuple_like',['../structmalbolge_1_1traits_1_1is__tuple__like.html',1,'malbolge::traits']]],
+  ['iterator_5fgeneric_276',['iterator_generic',['../classmalbolge_1_1virtual__memory_1_1iterator__generic.html',1,'malbolge::virtual_memory']]]
 ];
