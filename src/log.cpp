@@ -15,7 +15,7 @@ namespace
 log::level filter_level = log::INFO;
 }
 
-std::ostream& log::detail::log_prefix(std::ostream& stream)
+std::ostream& log::detail::timestamp(std::ostream& stream)
 {
     const auto now = std::chrono::system_clock::now();
     const auto c_now = std::chrono::system_clock::to_time_t(now);
@@ -32,8 +32,7 @@ std::ostream& log::detail::log_prefix(std::ostream& stream)
 #endif
 
     return stream << std::put_time(std::localtime(&c_now), "%F %T")
-                  << "." << std::setfill('0') << std::setw(width) << fractional
-                  << "[";
+                  << "." << std::setfill('0') << std::setw(width) << fractional;
 }
 
 const char* log::to_string(level lvl)

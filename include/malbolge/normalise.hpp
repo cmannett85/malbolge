@@ -150,13 +150,7 @@ void denormalise_source(InputIt first, InputIt last)
                   "CPU instruction list changed without updating normalisation map");
 
     for (auto i = 0u; first != last; ++first, ++i) {
-#ifdef EMSCRIPTEN
-        using std::begin;
-        using std::end;
-        auto m_it = std::find_if(begin(map), end(map), [&](auto k) {
-#else
-        auto m_it = std::ranges::find_if(map, [&](auto k) {
-#endif
+        auto m_it = std::find_if(map.begin(), map.end(), [&](auto k) {
                 return *first == k.front();
         });
         if (m_it == map.end()) {

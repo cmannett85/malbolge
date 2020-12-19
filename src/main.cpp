@@ -6,6 +6,7 @@
 #include "malbolge/loader.hpp"
 #include "malbolge/version.hpp"
 #include "malbolge/utility/argument_parser.hpp"
+#include "malbolge/debugger/script_parser.hpp"
 
 #include <iostream>
 #include <optional>
@@ -29,6 +30,18 @@ virtual_cpu create_vcpu(argument_parser& parser)
         return virtual_cpu{load_from_cin()};
     }
 }
+
+void run(argument_parser& parser, virtual_cpu& vcpu)
+{
+    auto script_path = parser.debugger_script();
+    if (script_path) {
+        const auto seq = debugger::script::parse(*script_path);
+        debugger::script::run(seq, vcpu);
+    } else {
+        auto fut = vcpu.run();
+        fut.get();
+    }
+}
 }
 
 int main(int argc, char* argv[])
@@ -50,8 +63,7 @@ int main(int argc, char* argv[])
         log::set_log_level(arg_parser.log_level());
 
         auto vcpu = create_vcpu(arg_parser);
-        auto fut = vcpu.run();
-        fut.get();
+        run(arg_parser, vcpu);
     } catch (system_exception& e) {
         log::print(log::ERROR, e.what());
         return e.code().value();

@@ -74,11 +74,11 @@ BOOST_AUTO_TEST_CASE(gate_notifier)
         is_closed = closed;
     };
 
-    auto g = utility::gate{std::move(notifier)};
+    auto g = utility::gate{};
     g.close();
 
     auto thread = std::thread{[&]() {
-            g();
+            g(notifier);
     }};
 
     std::this_thread::sleep_for(100ms);

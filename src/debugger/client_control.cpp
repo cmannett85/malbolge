@@ -3,7 +3,7 @@
  * See LICENSE file
  */
 
-#include "malbolge/debugger.hpp"
+#include "malbolge/debugger/client_control.hpp"
 #include "malbolge/exception.hpp"
 
 using namespace malbolge;
@@ -29,7 +29,7 @@ std::ostream& debugger::vcpu_register::operator<<(std::ostream& stream,
                                                   const data& d)
 {
     if (d.address) {
-        stream << "{{" << *(d.address) << "}, ";
+        stream << "{" << *(d.address) << ", ";
     } else {
         stream << "{{}, ";
     }
@@ -42,7 +42,7 @@ debugger::client_control::breakpoint::default_callback =
     return true;
 };
 
-void debugger::client_control::pause()
+void debugger::client_control::pause(vcpu_control::callback_type cb)
 {
     {
         auto lock = std::lock_guard{mtx_};
@@ -51,10 +51,22 @@ void debugger::client_control::pause()
         }
     }
 
-    control_.pause();
+    // Wrap the callback so that we can set the debugger state
+    cb = [this, user_cb = std::move(cb)]() {
+        if (user_cb) {
+            user_cb();
+        }
+
+        // No need to lock mtx_ as it is already locked when called in
+        // check_vcpu_step(..)
+        state_ = execution_state::PAUSED;
+        return;
+    };
+
+    control_.pause(std::move(cb));
 }
 
-void debugger::client_control::step()
+void debugger::client_control::step(vcpu_control::callback_type cb)
 {
     {
         auto lock = std::lock_guard{mtx_};
@@ -63,10 +75,22 @@ void debugger::client_control::step()
         }
     }
 
-    control_.step();
+    // Wrap the callback so that we can set the debugger state
+    cb = [this, user_cb = std::move(cb)]() {
+        if (user_cb) {
+            user_cb();
+        }
+
+        // No need to lock mtx_ as it is already locked when called in
+        // check_vcpu_step(..)
+        state_ = execution_state::PAUSED;
+        return;
+    };
+
+    control_.step(std::move(cb));
 }
 
-void debugger::client_control::resume()
+void debugger::client_control::resume(vcpu_control::callback_type cb)
 {
     {
         auto lock = std::lock_guard{mtx_};
@@ -75,7 +99,19 @@ void debugger::client_control::resume()
         }
     }
 
-    control_.resume();
+    // Wrap the callback so that we can set the debugger state
+    cb = [this, user_cb = std::move(cb)]() {
+        if (user_cb) {
+            user_cb();
+        }
+
+        // No need to lock mtx_ as it is already locked when called in
+        // check_vcpu_step(..)
+        state_ = execution_state::RUNNING;
+        return;
+    };
+
+    control_.resume(std::move(cb));
 }
 
 math::ternary
@@ -107,6 +143,19 @@ debugger::client_control::register_value(vcpu_register::id reg) const
 void debugger::client_control::add_breakpoint(breakpoint bp)
 {
     auto lock = std::lock_guard{mtx_};
+
+    // Wrap the breakpoint callback so that we can set the debugger state
+    auto cb = [this, bp_cb = std::move(bp.cb_)](auto addr, auto reg) {
+        const auto stop = bp_cb(addr, reg);
+
+        // No need to lock mtx_ as it is already locked when called in
+        // check_vcpu_step(..)
+        state_ = stop ? execution_state::PAUSED : execution_state::RUNNING;
+        return stop;
+    };
+
+    bp.cb_ = std::move(cb);
+
     breakpoints_.insert_or_assign(bp.address(), std::move(bp));
 }
 
@@ -132,9 +181,9 @@ bool debugger::client_control::check_vcpu_step(math::ternary address,
 void debugger::client_control::validate_vcpu_control()
 {
     // Check that the vcpu has populated all the fields
-    if (!control_.pause ||
-        !control_.step ||
-        !control_.resume ||
+    if (!control_.pause         ||
+        !control_.step          ||
+        !control_.resume        ||
         !control_.address_value ||
         !control_.register_value) {
         throw basic_exception{"vCPU did not populate all of the vcpu_control fields"};

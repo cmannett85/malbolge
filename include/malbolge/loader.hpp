@@ -49,7 +49,7 @@ virtual_memory load_impl(InputIt first, InputIt last, bool normalised = false)
                     ++loc.column;
                 }
 
-                last = remove_from_range(it, last);
+                last = algorithm::remove_from_range(it, last);
                 continue;
             }
 

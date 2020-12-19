@@ -17,7 +17,8 @@ using namespace std::chrono_literals;
 
 virtual_cpu::virtual_cpu(virtual_memory vmem) :
     state_{std::make_shared<decltype(state_)::element_type>(execution_state::READY)},
-    vmem_(std::move(vmem))
+    vmem_(std::move(vmem)),
+    cycle_delay_{std::make_shared<decltype(cycle_delay_)::element_type>(0)}
 {}
 
 virtual_cpu::~virtual_cpu()
@@ -32,10 +33,11 @@ virtual_cpu::~virtual_cpu()
 
 virtual_cpu& virtual_cpu::operator=(virtual_cpu&& other)
 {
-    thread_ = std::move(other.thread_);
-    state_ = std::move(other.state_);
-    vmem_ = std::move(other.vmem_);
-    debugger_ = std::move(other.debugger_);
+    thread_         = std::move(other.thread_);
+    state_          = std::move(other.state_);
+    vmem_           = std::move(other.vmem_);
+    debugger_       = std::move(other.debugger_);
+    cycle_delay_    = std::move(other.cycle_delay_);
 
     return *this;
 }
@@ -57,12 +59,21 @@ std::future<void> virtual_cpu::run(std::istream& istr,
                            &istr,
                            &ostr,
                            mtx = std::move(mtx),
-                           debugger = debugger_]() mutable {
+                           debugger = debugger_,
+                           cycle_delay = cycle_delay_]() mutable {
         log::print(log::VERBOSE_DEBUG, "Program thread started");
+        if (debugger) {
+            debugger->running_cb(true);
+        }
 
         auto exception = false;
         auto stopped_setter = utility::raii{[&]() {
             *state = execution_state::STOPPED;
+
+            if (debugger) {
+                debugger->running_cb(false);
+            }
+
             if (!exception) {
                 p.set_value();
             }
@@ -71,9 +82,6 @@ std::future<void> virtual_cpu::run(std::istream& istr,
             ostr << std::endl;
 #endif
             log::print(log::DEBUG, "Program thread exiting");
-            if (debugger) {
-                debugger->running_cb(client_control::execution_state::NOT_RUNNING);
-            }
         }};
 
         try {
@@ -83,7 +91,8 @@ std::future<void> virtual_cpu::run(std::istream& istr,
                       istr,
                       ostr,
                       std::move(mtx),
-                      debugger);
+                      debugger,
+                      std::move(cycle_delay));
         } catch (std::exception& e) {
             auto e_ptr = std::make_exception_ptr(std::move(e));
             p.set_exception(std::move(e_ptr));
@@ -112,31 +121,38 @@ void virtual_cpu::run(std::function<void (std::exception_ptr)> stopped,
                            &istr,
                            &ostr,
                            mtx = std::move(mtx),
-                           debugger = debugger_]() mutable {
+                           debugger = debugger_,
+                           cycle_delay = cycle_delay_]() mutable {
         log::print(log::VERBOSE_DEBUG, "Program thread started");
+        if (debugger) {
+            debugger->running_cb(true);
+        }
 
         auto exception = std::exception_ptr{};
         auto stopped_setter = utility::raii{[&]() {
             *state = execution_state::STOPPED;
+
+            if (debugger) {
+                debugger->running_cb(false);
+            }
+
             stopped_cb(exception);
 
 #ifdef EMSCRIPTEN
             ostr << std::endl;
 #endif
             log::print(log::DEBUG, "Program thread exiting");
-            if (debugger) {
-                debugger->running_cb(client_control::execution_state::NOT_RUNNING);
-            }
         }};
 
         try {
             vcpu_loop(vmem,
                       *state,
-                      waiting_cb,
+                      std::move(waiting_cb),
                       istr,
                       ostr,
                       std::move(mtx),
-                      debugger);
+                      debugger,
+                      std::move(cycle_delay));
         } catch (std::exception& e) {
             exception = std::current_exception();
             return;
@@ -173,18 +189,29 @@ virtual_cpu::configure_debugger(running_callback_type running,
     debugger_ = std::make_shared<debugger_data>();
     debugger_->running_cb = std::move(running);
     debugger_->step_data_cb = std::move(step_data);
-    debugger_->gate = utility::gate{[this](bool closed) {
-        debugger_->running_cb(closed ?
-            client_control::execution_state::PAUSED :
-            client_control::execution_state::RUNNING);
-    }};
 
     auto controller = vcpu_control{};
-    controller.pause  = [this]() {
+    controller.pause = [this](auto cb) {
+        {
+            auto lock = std::lock_guard{debugger_->mtx};
+            debugger_->stop_cb = std::move(cb);
+        }
         debugger_->gate.close();
     };
-    controller.step   = [this]() { debugger_->gate.open(1); };
-    controller.resume = [this]() { debugger_->gate.open(); };
+    controller.step = [this](auto cb) {
+        {
+            auto lock = std::lock_guard{debugger_->mtx};
+            debugger_->stop_cb = std::move(cb);
+        }
+        debugger_->gate.open(1);
+    };
+    controller.resume = [this](auto cb) {
+        {
+            auto lock = std::lock_guard{debugger_->mtx};
+            debugger_->resume_cb = std::move(cb);
+        }
+        debugger_->gate.open();
+    };
 
     controller.address_value = [this](auto address) {
         return debugger_->address_value(address);
@@ -221,7 +248,8 @@ void virtual_cpu::vcpu_loop(virtual_memory& vmem,
                             std::istream& istr,
                             std::ostream& ostr,
                             utility::mutex_wrapper mtx,
-                            std::shared_ptr<debugger_data> debugger)
+                            std::shared_ptr<debugger_data> debugger,
+                            std::shared_ptr<std::atomic_uint> cycle_delay)
 {
     auto a = math::ternary{};   // Accumulator register
     auto c = vmem.begin();      // Code pointer
@@ -235,10 +263,18 @@ void virtual_cpu::vcpu_loop(virtual_memory& vmem,
     auto step_check = std::function<void (virtual_memory::iterator,
                                           vcpu_register::id)>{[](auto, auto) {}};
     if (debugger) {
-        pause_check = [&]() {
-            debugger->gate();
+        auto gate_cb = [&](bool closed) {
+            auto lock = std::lock_guard{debugger->mtx};
+            if (closed && debugger->stop_cb) {
+                debugger->stop_cb();
+            } else if (!closed && debugger->resume_cb) {
+                debugger->resume_cb();
+            }
         };
-        step_check = [&](virtual_memory::iterator reg_it,
+        pause_check = [&, gate_cb]() {
+            debugger->gate(gate_cb);
+        };
+        step_check = [&, gate_cb](virtual_memory::iterator reg_it,
                          vcpu_register::id reg) {
             const auto index = static_cast<math::ternary::underlying_type>(
                 std::distance(vmem.begin(), reg_it)
@@ -246,7 +282,7 @@ void virtual_cpu::vcpu_loop(virtual_memory& vmem,
             const auto stop = debugger->step_data_cb(index, reg);
             if (stop) {
                 debugger->gate.close();
-                debugger->gate();
+                debugger->gate(gate_cb);
             }
         };
 
@@ -402,6 +438,12 @@ void virtual_cpu::vcpu_loop(virtual_memory& vmem,
                    "\tPost-op regs - a: ", a,
                    ", c[", std::distance(vmem.begin(), c), "]: ", *c,
                    ", d[", std::distance(vmem.begin(), d), "]: ", *d);
+
+        // If a cycle delay has been set, then delay the next iteration
+        const auto delay = cycle_delay->load();
+        if (delay) {
+            std::this_thread::sleep_for(std::chrono::milliseconds{delay});
+        }
     }
 }
 

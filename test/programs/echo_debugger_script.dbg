@@ -1,0 +1,3 @@
+on_input(data="Hello!");
+on_input(data="Goodbye!");
+run(max_runtime_ms=100);

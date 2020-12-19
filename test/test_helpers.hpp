@@ -1,3 +1,4 @@
+
 /* Cam Mannett 2020
  *
  * See LICENSE file
@@ -6,8 +7,9 @@
 #ifndef TEST_HELPERS_MALBOLGE_HPP
 #define TEST_HELPERS_MALBOLGE_HPP
 
+#include "malbolge/utility/tuple_iterator.hpp"
+
 #include <boost/test/unit_test.hpp>
-#include <boost/mp11.hpp>
 
 namespace malbolge
 {
@@ -76,7 +78,23 @@ void data_set(F&& f, std::initializer_list<std::tuple<Args...>>&& args)
  *
  * test::data_set(f, data_set{});
  * @endcode
+ * Or for using test data sets with different types in each test, for example:
+ * @code
+ * auto f = [](auto input, auto expected) {
+ *     using T = std::decay_t<decltype(expected)>;
+ *     const auto result = utility::from_chars<T>(input);
+ *     BOOST_CHECK_EQUAL(result, expected);
+ * };
  *
+ * test::data_set(
+ *     f,
+ *     std::tuple{
+ *         std::tuple{"0"sv, std::uint8_t{0}},
+ *         std::tuple{"+42"sv, std::uint32_t{42}},
+ *         std::tuple{"-42"sv, std::int32_t{-42}},
+ *     }
+ * );
+ * @endcode
  * @tparam F The test function object type
  * @tparam Args The argument types
  * @param f The test function object
@@ -85,13 +103,12 @@ void data_set(F&& f, std::initializer_list<std::tuple<Args...>>&& args)
 template <typename F, typename... Args>
 void data_set(F&& f, std::tuple<Args...>&& tuple)
 {
-    auto count = 0u;
-    boost::mp11::mp_for_each<std::decay_t<decltype(tuple)>>([&](auto&& args) {
-        BOOST_TEST_MESSAGE("Performing test " << ++count);
-        std::apply(f, args);
-    });
+    utility::tuple_iterator([&](auto i, auto&& t) {
+        BOOST_TEST_MESSAGE("Performing test " << (i+1));
+        std::apply(f, t);
+    }, std::forward<std::decay_t<decltype(tuple)>>(tuple));
 }
-} // namespace test
-} // namespace malbolge
+}
+}
 
 #endif // TEST_HELPERS_MALBOLGE_HPP

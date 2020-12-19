@@ -85,9 +85,15 @@ BOOST_AUTO_TEST_CASE(echo)
         ostr.clear();
         ostr.str("");
 
-        istr << input << std::endl;
+        {
+            auto lock = std::lock_guard{mtx};
+            istr << input << std::endl;
+        }
         std::this_thread::sleep_for(100ms);
-        ostr >> buf;
+        {
+            auto lock = std::lock_guard{mtx};
+            ostr >> buf;
+        }
 
         BOOST_CHECK_EQUAL(buf, input);
     };
@@ -136,7 +142,7 @@ BOOST_AUTO_TEST_CASE(hello_world_debugger)
         return true;
     };
     dbg.add_breakpoint({expected_address, bp_cb});
-    dbg.add_breakpoint({expected_address + 10, std::move(bp_cb)});
+    dbg.add_breakpoint({expected_address + 10, bp_cb});
     dbg.add_breakpoint({expected_address + 11, std::move(bp_cb)});
 
     auto ostr = std::stringstream{};
@@ -160,8 +166,18 @@ BOOST_AUTO_TEST_CASE(hello_world_debugger)
         BOOST_CHECK_EQUAL(dbg.register_value(vcpu_register::D),
                           (vcpu_register::data{62, 37}));
 
-        dbg.step();
-        std::this_thread::sleep_for(100ms);
+        auto step_reached = false;
+        dbg.step([&]() {
+            {
+                auto lock = std::lock_guard{dbg_mtx};
+                step_reached = true;
+            }
+            dbg_cv.notify_one();
+        });
+        {
+            auto lock = std::unique_lock{dbg_mtx};
+            dbg_cv.wait(lock, [&]() { return step_reached; });
+        }
         BOOST_CHECK_EQUAL(dbg.state(), client_control::execution_state::PAUSED);
         BOOST_CHECK_EQUAL(dbg.address_value(expected_address+1),
                           math::ternary{124});
@@ -172,10 +188,29 @@ BOOST_AUTO_TEST_CASE(hello_world_debugger)
         BOOST_CHECK_EQUAL(dbg.register_value(vcpu_register::D),
                           (vcpu_register::data{38, 61}));
 
+        // Set a delay interval, otherwise the next breakpoint can hit before
+        // the resume callback unblocks this thread, resulting in an unexpected
+        // debugger state.  This is fine for real world usage because the end
+        // result is valid, but not so good for testing
+        vcpu.set_cycle_delay(100ms);
+
+        auto resume_reached = false;
+        dbg.resume([&]() {
+            {
+                auto lock = std::lock_guard{dbg_mtx};
+                resume_reached = true;
+            }
+            dbg_cv.notify_one();
+        });
+        {
+            auto lock = std::unique_lock{dbg_mtx};
+            dbg_cv.wait(lock, [&]() { return resume_reached; });
+        }
+        BOOST_CHECK_EQUAL(dbg.state(), client_control::execution_state::RUNNING);
+
         // BP2
         callback_reached = false;
         expected_address += 10;
-        dbg.resume();
         {
             auto lock = std::unique_lock{dbg_mtx};
             dbg_cv.wait(lock, [&]() { return callback_reached; });
@@ -192,12 +227,36 @@ BOOST_AUTO_TEST_CASE(hello_world_debugger)
 
         callback_reached = false;
         dbg.remove_breakpoint(expected_address + 1);
-        dbg.resume();
 
-        dbg.pause();
-        std::this_thread::sleep_for(100ms);
+        resume_reached = false;
+        dbg.resume([&]() {
+            {
+                auto lock = std::lock_guard{dbg_mtx};
+                resume_reached = true;
+            }
+            dbg_cv.notify_one();
+        });
+        {
+            auto lock = std::unique_lock{dbg_mtx};
+            dbg_cv.wait(lock, [&]() { return resume_reached; });
+        }
+        BOOST_CHECK_EQUAL(dbg.state(), client_control::execution_state::RUNNING);
+
+        auto pause_reached = false;
+        dbg.pause([&]() {
+            {
+                auto lock = std::lock_guard{dbg_mtx};
+                pause_reached = true;
+            }
+            dbg_cv.notify_one();
+        });
+        {
+            auto lock = std::unique_lock{dbg_mtx};
+            dbg_cv.wait(lock, [&]() { return pause_reached; });
+        }
         BOOST_CHECK_EQUAL(dbg.state(), client_control::execution_state::PAUSED);
         dbg.resume();
+        vcpu.set_cycle_delay(0ms);
         BOOST_CHECK(!callback_reached);
     }
 

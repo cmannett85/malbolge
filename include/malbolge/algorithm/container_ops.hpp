@@ -5,12 +5,13 @@
 
 #pragma once
 
-#ifndef EMSCRIPTEN
-#include <ranges>
-#endif
 #include <algorithm>
 
 namespace malbolge
+{
+/** Namespace for generic algorithms (in the STL meaning).
+ */
+namespace algorithm
 {
 /** Returns true if @a c contains @a value.
  *
@@ -23,13 +24,9 @@ namespace malbolge
 template <typename Container, typename Value>
 bool any_of(const Container& c, Value&& value)
 {
-#ifdef EMSCRIPTEN
     using std::begin;
     using std::end;
     return std::any_of(begin(c), end(c), [&](auto&& v) { return v == value; });
-#else
-    return std::ranges::any_of(c, [&](auto&& v) { return v == value; });
-#endif
 }
 
 /** Returns true if @a c contains any value in @a value_container.
@@ -45,14 +42,11 @@ bool any_of(const Container& c, Value&& value)
 template <typename Container, typename ValueContainer>
 bool any_of_container(const Container& c, ValueContainer&& value_container)
 {
-#ifdef EMSCRIPTEN
     using std::begin;
     using std::end;
     return std::any_of(begin(c), end(c), [&](auto&& v) {
-#else
-    return std::ranges::any_of(c, [&](auto&& v) {
-#endif
         return any_of(value_container, v);
     });
+}
 }
 }

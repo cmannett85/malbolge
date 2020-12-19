@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "math/ternary.hpp"
+#include "malbolge/math/ternary.hpp"
 
 #include <functional>
 #include <mutex>
@@ -119,25 +119,37 @@ std::ostream& operator<<(std::ostream& stream, const data& d);
  */
 struct vcpu_control
 {
+    /** Callback function signature.
+     *
+     * This used to notify the caller that the vCPU has been stopped after a
+     * step or pause instruction, or resumed.
+     *
+     * @note This called from the vCPU's worker thread
+     */
+    using callback_type = std::function<void ()>;
+
     /** Pause the program.
      *
      * This is a no-op if the program is already paused.
-     * @note This is asynchronous as the vCPU will be stopped on the next cycle
+     * @param cb Callback to called when the vCPU has stopped.  This is
+     * asynchronous as the vCPU will be stopped on the next cycle
      */
-    std::function<void ()> pause;
+    std::function<void (callback_type cb)> pause;
 
     /** Execution one more instruction.
      *
-     * If the program is running when this is called, it will execute one more
-     * instruction from its current instruction and then pause.
+     * @param cb Callback to called when the vCPU has stopped.  This is
+     * asynchronous as the vCPU will be stopped on the next cycle
      */
-    std::function<void ()> step;
+    std::function<void (callback_type cb)> step;
 
     /** Resume program execution from a paused state.
      *
      * No-op if the program is not in a paused state.
+     * @param cb Callback to called when the vCPU has resumed.  This is
+     * asynchronous
      */
-    std::function<void ()> resume;
+    std::function<void (callback_type cb)> resume;
 
     /** Returns the value at a given vmem address.
      *
@@ -185,12 +197,17 @@ public:
      */
     class breakpoint
     {
+        friend class client_control;
+
     public:
         /** Callback function signature.
          *
          * This can be used to selectively pause the program.  When the
          * breakpoint is hit, this Callable is called with the address of the
          * breakpoint and register that is pointing to it (can only be C or D).
+         *
+         * @note The provided callback <b>must not</b> call the owning
+         * client_control instance, otherwise it will deadlock
          * @param address Breakpoint vmem address
          * @param reg Register that triggered the breakpoint, C or D
          * @return True to stop execution, false to continue
@@ -282,9 +299,10 @@ public:
         state_{execution_state::NOT_RUNNING}
     {
         control_ = vcpu.configure_debugger(
-            [this](execution_state state) {
-                    auto lock = std::lock_guard{mtx_};
-                    state_ = state;
+            [this](auto started) {
+                auto lock = std::lock_guard{mtx_};
+                state_ = started ? execution_state::RUNNING :
+                                   execution_state::NOT_RUNNING;
             },
             [this](math::ternary address, vcpu_register::id reg) {
                     return check_vcpu_step(address, reg);
@@ -300,31 +318,43 @@ public:
      */
     execution_state state() const
     {
+        auto lock = std::lock_guard{mtx_};
         return state_;
     }
 
     /** Pause the program.
      *
+     * @note @a cb is called from the internal vCPU thread
+     * @param cb Callback to called when the vCPU has stopped.  This is
+     * asynchronous as the vCPU will be stopped on the next cycle.  The default
+     * argument is a no-op
      * @exception basic_exception Thrown if the program has stopped or not been
      * started
      */
-    void pause();
+    void pause(vcpu_control::callback_type cb = {});
 
     /** Execute one more instruction.
      *
      * If the program is running when this is called, it will execute one more
      * instruction from its current instruction and then pause.
+     * @note @a cb is called from the internal vCPU thread
+     * @param cb Callback to called when the vCPU has stopped.  This is
+     * asynchronous as the vCPU will be stopped on the next cycle.  The default
+     * argument is a no-op
      * @exception basic_exception Thrown if not in a paused state
      */
-    void step();
+    void step(vcpu_control::callback_type cb = {});
 
     /** Resume program execution from a paused state.
      *
-     * @note This will not start a stopped program.
+     * @note This will not start a stopped program
+     * @note @a cb is called from the internal vCPU thread
+     * @param cb Callback to called when the vCPU has resumed.  This is
+     * asynchronous.  The default argument is a no-op
      * @exception basic_exception Thrown if the program has stopped or not been
      * started
      */
-    void resume();
+    void resume(vcpu_control::callback_type cb = {});
 
     /** Returns the value at a given vmem address.
      *

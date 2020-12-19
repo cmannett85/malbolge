@@ -28,7 +28,8 @@ namespace utility
 class gate
 {
 public:
-    /** A callback used to notify when a gate is closed and re-opened.
+    /** A callback type that can be used to notify when a gate is closed and
+     * opened.
      *
      * This is called just before the controlled thread blocks, and again when
      * unblocked.  It is not called if the gate is open.
@@ -45,19 +46,15 @@ public:
      *
      * The gate starts open with an unlimited number of operator()() calls
      * i.e. open().
-     * @param notifier Called to notify when the gate is closed and re-opened
      */
-    explicit gate(notifier_type notifier = {}) :
+    explicit gate() :
         sync_{std::make_unique<sync>()},
-        allow_{always_allow},
-        notifier_{std::move(notifier)}
+        allow_{always_allow}
     {}
 
     /** Destructor.
      *
-     * Always opens the gate before returning.  If the notifier callback is set
-     * and the gate was closed when destroyed, it will fire with the re-opened
-     * argument.
+     * Always opens the gate before returning.
      */
     ~gate()
     {
@@ -70,12 +67,12 @@ public:
 
     /** Called by the controlled thread to allow flow of execution or block it.
      *
-     * If a notifier callback was passed into the constructor, and the gate will
-     * be closed, it is called.  It is called again once unlocked.
      * @note The gate's mutex is locked when the notifier is called, so do not
      * call any gate methods from the notifier
+     * @param notifier If set, and the gate will be closed, it is called.  It
+     * is called again once unlocked
      */
-    void operator()()
+    void operator()(const notifier_type& notifier = {})
     {
         auto lock = std::unique_lock{sync_->mtx_};
         if (allow_ == always_allow) {
@@ -86,16 +83,16 @@ public:
              --allow_;
         }
 
-        const auto notify = !allow_;
-        if (notify && notifier_) {
-            notifier_(true);
+        const auto notify = !allow_ && notifier;
+        if (notify) {
+            notifier(true);
         }
 
         // Block if allowed count reaches zero
         sync_->cv_.wait(lock, [this]() { return allow_; });
 
-        if (notify && notifier_) {
-            notifier_(false);
+        if (notify) {
+            notifier(false);
         }
     }
 
@@ -139,7 +136,6 @@ private:
 
     std::unique_ptr<sync> sync_;
     std::int64_t allow_;
-    notifier_type notifier_;
 };
 }
 }

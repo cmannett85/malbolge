@@ -40,9 +40,12 @@ endif()
 set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/algorithm/remove_from_range.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/algorithm/container_ops.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/algorithm/trim.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/c_interface.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/cpu_instruction.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/debugger.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/debugger/client_control.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/debugger/script_parser.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/debugger/script_runner.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/exception.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/loader.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/log.hpp
@@ -52,10 +55,16 @@ set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/normalise.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/traits.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/utility/argument_parser.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/utility/from_chars.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/utility/gate.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/utility/mutex_wrapper.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/utility/raii.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/utility/stream_lock_guard.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/utility/string_constant.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/utility/string_view_ops.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/utility/tuple_iterator.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/utility/unescaper.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/utility/visit.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/virtual_cpu.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/virtual_memory.hpp
 )
@@ -63,12 +72,15 @@ set(HEADERS
 set(SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/src/c_interface.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/cpu_instruction.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/debugger.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/debugger/client_control.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/debugger/script_parser.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/debugger/script_runner.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/exception.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/loader.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/log.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/math/ternary.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/utility/argument_parser.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/utility/from_chars.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/virtual_cpu.cpp
 )
 

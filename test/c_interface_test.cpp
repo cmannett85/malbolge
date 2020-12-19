@@ -7,6 +7,7 @@
 #include "malbolge/version.hpp"
 #include "malbolge/exception.hpp"
 #include "malbolge/virtual_memory.hpp"
+#include "malbolge/log.hpp"
 
 #include "test_helpers.hpp"
 
@@ -119,6 +120,9 @@ BOOST_AUTO_TEST_CASE(log_level)
             std::tuple{4, MALBOLGE_ERR_INVALID_LOG_LEVEL},
         }
     );
+
+    // Set it back to the default
+    log::set_log_level(log::ERROR);
 }
 
 BOOST_AUTO_TEST_CASE(version)
