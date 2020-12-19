@@ -199,10 +199,10 @@ run(max_runtime_ms=100);
 API documentation for Malbolge is available [here](https://cmannett85.github.io/malbolge).
 
 ## Dependencies
-* C++ toolchain supporting C++20 (only tested using g++ v10.0.1)
+* C++ toolchain supporting C++20 (only tested using g++ v10.2)
 * Boost v1.67
 * CMake v3.12
-* Emscripten v2.0.6 (only needed for WASM build)
+* Emscripten v2.0.10 (only needed for WASM build)
 * Doxygen (only needed for Documentation build)
 
 ---

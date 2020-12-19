@@ -62,3 +62,32 @@ void log::set_log_level(level lvl)
 {
     filter_level = lvl;
 }
+
+std::string_view log::detail::colour_to_ansi(colour c)
+{
+    static_assert(static_cast<int>(colour::NUM_COLOURS) == 5,
+                  "Colours have changed, update this");
+
+    switch (c) {
+    case colour::RED:
+        return "\x1B[31m";
+    case colour::GREEN:
+        return "\x1B[32m";
+    case colour::YELLOW:
+        return "\x1B[33m";
+    case colour::BLUE:
+        return "\x1B[34m";
+    default:
+        return "\x1B[0m";   // colour::DEFAULT
+    }
+}
+
+log::colour log::detail::log_level_to_colour(level lvl)
+{
+    switch (lvl) {
+    case ERROR:
+        return colour::RED;
+    default:
+        return colour::GREEN;
+    }
+}
