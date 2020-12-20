@@ -5,6 +5,24 @@
 # malbolge
 A virtual machine to execute Malbolge programs, written in C++20.
 
+## Contents
+* [Usage](#usage)
+* [Debugging](#debugging)
+  * [Syntax](#syntax)
+    *  [Argument Types](#argument-types)
+    *  [Functions](#functions)
+  * [Examples](#examples)
+* [API Documentation](#api-documentation)
+* [Dependencies](#dependencies)
+* [Playground](#playground)
+* [What is Malbolge?](#what-is-malbolge)
+  * [Program Load](#program-load)
+  * [Program Execution](#program-execution)
+* [Malbolge Reference](#malbolge-reference)
+* [CI System](#ci-system)
+* [Contributing](#contributing)
+
+<a name="usage"></a>
 ## Usage
 You can load from a file like this:
 ```
@@ -36,6 +54,7 @@ $ malbolge -lll ./test/programs/hello_world.mal  2> logging.txt
 Hello World!
 ```
 
+<a name="debugging"></a>
 ## Debugging
 Primitive debugging is supported through the use of a debugging script specified by the `--debugger-script` flag, for example:
 ```
@@ -43,6 +62,7 @@ malbolge -ll --debugger-script my_prog.dbg my_prog.mal
 ```
 The file extension is not relevant, it can be anything (or nothing).  The script is essentially a list of commands for the debugger, it's syntax and supported functions are listed below.
 
+<a name="syntax"></a>
 ### Syntax
 * Whitespace is ignored, commands are ended by a `;`
 * Arguments are held within brackets and are named, bound by `=`
@@ -50,6 +70,7 @@ The file extension is not relevant, it can be anything (or nothing).  The script
 * Arguments are separated by `,`
 * Return values are printed to the error stream (same as logging), but prefixed with `<Timestamp>[DBGR]: `
 
+<a name="argument-types"></a>
 #### Argument types
 * `uint`
 Unsigned integer.  Base-10 unless prefixed with `0x` which means base-16, or `0` which means octal
@@ -60,6 +81,7 @@ vCPU register, `A`, `C`, or `D` (case-sensitive)
 * `string`
 ACSII string, must be surrounded by `""` and standard escaping rules apply.  Hex and octal escaping supported too
 
+<a name="functions"></a>
 #### Functions
 ##### add_breakpoint
 Adds a breakpoint at the given address.  If one already exists at `address` then the previous one is replaced.  If there are any breakpoints listed in a script, then at least one must appear before the ` run` command.
@@ -160,6 +182,7 @@ on_input(data="Hello world!");
 ```
 ---
 
+<a name="examples"></a>
 ### Examples
 This script is used inside the unit tests on the `hello_world` program.
 ```
@@ -195,9 +218,13 @@ on_input(data="Goodbye!");
 run(max_runtime_ms=100);
 ```
 
+<a name="api-documentation"></a>
 ## API Documentation
 API documentation for Malbolge is available [here](https://cmannett85.github.io/malbolge).
 
+**Note** API stability/backwards compatibility not guaranteed until v1.0 reached.
+
+<a name="dependencies"></a>
 ## Dependencies
 * C++ toolchain supporting C++20 (only tested using g++ v10.2)
 * Boost v1.67
@@ -207,6 +234,7 @@ API documentation for Malbolge is available [here](https://cmannett85.github.io/
 
 ---
 
+<a name="playground"></a>
 ## Playground
 You can try out Malbolge programs in your browser using the [Playground](https://cmannett85.github.io/malbolge/playground).  There are a couple of built in presets to get you started.
 
@@ -214,6 +242,7 @@ It also has features that allow you to convert between normalised and denormalis
 
 ---
 
+<a name="what-is-malbolge"></a>
 ## What is Malbolge?
 Malbolge is the name of the eighth circle of Hell in Dante's Inferno.  This sets the scene.
 
@@ -318,6 +347,7 @@ b = 0120120120
 |      v      |     118     | Stops execution and exits the program                                                                                           |
 |      o      |     111     | No-op.  This is only useful during program load, as all graphical ASCII non-instruction characters are ignored during execution |
 
+<a name="program-load"></a>
 ### Program Load
 On start the program data is processed:
  1. If a character is whitespace, it is discarded
@@ -326,6 +356,7 @@ On start the program data is processed:
  4. The program data, without whitespace and using the original instructions (not the pre-ciphered output), is then loaded into the start of the memory
  5. The remaining memory cells are then transformed using the result of the ternary op on the previous two cells i.e. `m[i] = op(m[i-1], m[i-2])`
 
+<a name="program-execution"></a>
 ### Program Execution
 At program start, all the [registers](#vcpu-registers) are set to zero. Then the program follows this loop:
  1. Take the value at `*c` and [pre-cipher](#pre-ciphering) it.  If the input is not in the graphical ASCII range then the program is malformed and must abort
@@ -333,6 +364,7 @@ At program start, all the [registers](#vcpu-registers) are set to zero. Then the
  3. [Post-cipher](#post-ciphering) the result, and write it back to `*c`
  4. Increment `c` and `d`, they will wrap upon overflow
 
+<a name="malbolge-reference"></a>
 ## Malbolge Reference
 It should be noted that the specification and implementation differ (of course!), most notably in that the input and output instructions are reversed.  As most of the existing implementations are based on the original C code, and therefore most of the existing Malbolge programs are written for that, I too have followed the reference implementation.
 
@@ -344,6 +376,7 @@ http://www.lscheffer.com/malbolge_interp.html
 
 ---
 
+<a name="ci-system"></a>
 ## CI System
 The Malbolge project uses Github Actions to enfore strict code quality checks during a pull request:
 - Unit tests are ran
@@ -361,6 +394,7 @@ I dabbled in `clang-format`, but it only seemed to make the formatting worse, so
 
 Once the PR is merged, the API documentation is generated and pushed to the [public documentation](https://cmannett85.github.io/malbolge) site.
 
+<a name="contributing"></a>
 ## Contributing
 Issues and PRs are always welcome, but seriously - why are you using it?
 
