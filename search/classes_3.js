@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['data_278',['data',['../structmalbolge_1_1debugger_1_1vcpu__register_1_1data.html',1,'malbolge::debugger::vcpu_register']]]
+  ['function_287',['function',['../classmalbolge_1_1debugger_1_1script_1_1function.html',1,'malbolge::debugger::script']]],
+  ['function_5fargument_288',['function_argument',['../classmalbolge_1_1debugger_1_1script_1_1function__argument.html',1,'malbolge::debugger::script']]]
 ];

@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['parse_5fexception_288',['parse_exception',['../classmalbolge_1_1parse__exception.html',1,'malbolge']]],
-  ['program_5fdata_289',['program_data',['../structmalbolge_1_1argument__parser_1_1program__data.html',1,'malbolge::argument_parser']]]
+  ['ternary_304',['ternary',['../classmalbolge_1_1math_1_1ternary.html',1,'malbolge::math']]],
+  ['tritset_305',['tritset',['../classmalbolge_1_1math_1_1tritset.html',1,'malbolge::math']]]
 ];

@@ -107,7 +107,8 @@ $(function() {
 <div class="line">Hello World!</div>
 </div><!-- fragment --><p>You can increase logging up to 3 levels. As it is output into the error stream, you can split the logging output into a separate file to preserve the program output: </p><div class="fragment"><div class="line">$ malbolge -lll ./test/programs/hello_world.mal  2&gt; logging.txt</div>
 <div class="line">Hello World!</div>
-</div><!-- fragment --><p><a class="anchor" id="debugging"></a> </p><h2>Debugging</h2>
+</div><!-- fragment --><p>The application will automatically detect if the program is normalised, and denormalise it accordingly. Normalisation is the whitespace and <a href="#pre-ciphering">initial mapping</a> removed leaving only the initial <a href="#vcpu-instructions">vCPU instructions</a>, denormalisation is the reverse.</p>
+<p><a class="anchor" id="debugging"></a> </p><h2>Debugging</h2>
 <p>Primitive debugging is supported through the use of a debugging script specified by the <code>--debugger-script</code> flag, for example: </p><div class="fragment"><div class="line">malbolge -ll --debugger-script my_prog.dbg my_prog.mal</div>
 </div><!-- fragment --><p>The file extension is not relevant, it can be anything (or nothing). The script is essentially a list of commands for the debugger, it's syntax and supported functions are listed below.</p>
 <p><a class="anchor" id="syntax"></a> </p><h3>Syntax</h3>
@@ -159,10 +160,6 @@ $(function() {
 <p>In a paused state, this will resume program execution. Script parsing will fail if this function is before a <code>run</code>.</p>
 <div class="fragment"><div class="line">resume()</div>
 </div><!-- fragment --><hr  />
-<h5>stop</h5>
-<p>In a paused state, this will stop program execution. If present in a script, it must be last.</p>
-<div class="fragment"><div class="line">stop()</div>
-</div><!-- fragment --><hr  />
 <h5>on_input</h5>
 <p>Adds a string onto the input data queue. When the program requests input data (i.e. from <code>cin</code>), then the next string in this queue is passed to it or the program will block waiting for input. This allows you to 'pre-load' input data before starting program execution. </p><h6>Arguments:</h6>
 <p><code>data = string [Required]</code> Program input. </p><div class="fragment"><div class="line">on_input(data=&quot;Hello world!&quot;)</div>
@@ -201,7 +198,7 @@ $(function() {
 <p><a class="anchor" id="dependencies"></a> </p><h2>Dependencies</h2>
 <ul>
 <li>C++ toolchain supporting C++20 (only tested using g++ v10.2)</li>
-<li>Boost v1.67</li>
+<li>Boost v1.71</li>
 <li>CMake v3.12</li>
 <li>Emscripten v2.0.10 (only needed for WASM build)</li>
 <li>Doxygen (only needed for Documentation build)</li>
@@ -209,7 +206,7 @@ $(function() {
 <hr  />
 <p><a class="anchor" id="playground"></a> </p><h2>Playground</h2>
 <p>You can try out Malbolge programs in your browser using the <a href="https://cmannett85.github.io/malbolge/playground">Playground</a>. There are a couple of built in presets to get you started.</p>
-<p>It also has features that allow you to convert between normalised and denormalised Malbolge. Normalisation is Malbolge but with the whitespace and <a href="#pre-ciphering">initial mapping</a> removed leaving only the initial <a href="#vcpu-instructions">vCPU instructions</a>, denormalisation is the reverse.</p>
+<p>It also has features that allow you to convert between normalised and denormalised Malbolge.</p>
 <hr  />
 <p><a class="anchor" id="what-is-malbolge"></a> </p><h2>What is Malbolge?</h2>
 <p>Malbolge is the name of the eighth circle of Hell in Dante's Inferno. This sets the scene.</p>

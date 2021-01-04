@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['register_5fvalue_482',['register_value',['../structmalbolge_1_1debugger_1_1vcpu__control.html#a4535836a498f4800dd7a77efe65fb287',1,'malbolge::debugger::vcpu_control']]],
-  ['resume_483',['resume',['../structmalbolge_1_1debugger_1_1vcpu__control.html#adc7e232f6eaa45f5029364c3f5326d43',1,'malbolge::debugger::vcpu_control']]]
+  ['size_471',['size',['../namespacemalbolge_1_1cipher.html#a1c78f045cf7cd799bc0cca5510a54372',1,'malbolge::cipher']]],
+  ['source_472',['source',['../structmalbolge_1_1argument__parser_1_1program__data.html#abc069d4b5e3837f5f66d97421e3370e5',1,'malbolge::argument_parser::program_data']]]
 ];

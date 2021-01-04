@@ -67,13 +67,13 @@ $(function() {
 
 <h3><a id="index_a"></a>- a -</h3><ul>
 <li>add_breakpoint()
-: <a class="el" href="classmalbolge_1_1debugger_1_1client__control.html#a72aa9d332156a09868252da377bedc21">malbolge::debugger::client_control</a>
+: <a class="el" href="classmalbolge_1_1virtual__cpu.html#a082e739a8a84de14625028c6dcb14e23">malbolge::virtual_cpu</a>
 </li>
-<li>address()
-: <a class="el" href="classmalbolge_1_1debugger_1_1client__control_1_1breakpoint.html#a99e4113533fe1c8b69bfd0dada39cde1">malbolge::debugger::client_control::breakpoint</a>
+<li>add_input()
+: <a class="el" href="classmalbolge_1_1virtual__cpu.html#af7fa4a793e35d3dcc15171231e6be125">malbolge::virtual_cpu</a>
 </li>
 <li>address_value()
-: <a class="el" href="classmalbolge_1_1debugger_1_1client__control.html#a692eb2e46d22fc584e5d24c0f003473a">malbolge::debugger::client_control</a>
+: <a class="el" href="classmalbolge_1_1virtual__cpu.html#a311b50278e4dcb14b448dca5c03a567f">malbolge::virtual_cpu</a>
 </li>
 <li>arg()
 : <a class="el" href="classmalbolge_1_1debugger_1_1script_1_1function.html#a154d6bc20f9708e06b1765f29666c566">malbolge::debugger::script::function&lt; Name, Args &gt;</a>
@@ -92,9 +92,6 @@ $(function() {
 <li>begin()
 : <a class="el" href="classmalbolge_1_1virtual__memory.html#a33ac9d42ec65406caee6edc3553b520e">malbolge::virtual_memory</a>
 </li>
-<li>breakpoint()
-: <a class="el" href="classmalbolge_1_1debugger_1_1client__control_1_1breakpoint.html#a8a77d467139d80c8f23befb621a6f281">malbolge::debugger::client_control::breakpoint</a>
-</li>
 </ul>
 
 
@@ -105,17 +102,14 @@ $(function() {
 <li>cend()
 : <a class="el" href="classmalbolge_1_1virtual__memory.html#ad0c728a2119618fd05a56147392963c3">malbolge::virtual_memory</a>
 </li>
-<li>client_control()
-: <a class="el" href="classmalbolge_1_1debugger_1_1client__control.html#a864db07837a43a8e142993faedfdb5a9">malbolge::debugger::client_control</a>
-</li>
-<li>close()
-: <a class="el" href="classmalbolge_1_1utility_1_1gate.html#acf2f4e2235cba438afe463475e9f2332">malbolge::utility::gate</a>
-</li>
 <li>code()
 : <a class="el" href="classmalbolge_1_1system__exception.html#a56bcdc6490ebaf46812156b9882d1134">malbolge::system_exception</a>
 </li>
-<li>configure_debugger()
-: <a class="el" href="classmalbolge_1_1virtual__cpu.html#a888f7b95626ca40cb7e78dd6fdc1853a">malbolge::virtual_cpu</a>
+<li>connect()
+: <a class="el" href="classmalbolge_1_1utility_1_1signal.html#ab9c3f33256dc597ec5af9e613b0610a3">malbolge::utility::signal&lt; Args &gt;</a>
+</li>
+<li>connection()
+: <a class="el" href="classmalbolge_1_1utility_1_1signal_1_1connection.html#ad6782e44edc6710a9be699e9c79a88c3">malbolge::utility::signal&lt; Args &gt;::connection</a>
 </li>
 <li>crbegin()
 : <a class="el" href="classmalbolge_1_1virtual__memory.html#acef9e104a9002876a1ca922f548cda94">malbolge::virtual_memory</a>
@@ -127,11 +121,11 @@ $(function() {
 
 
 <h3><a id="index_d"></a>- d -</h3><ul>
-<li>data()
-: <a class="el" href="structmalbolge_1_1debugger_1_1vcpu__register_1_1data.html#a6b1f84f14cda0142cade91c92e047f7b">malbolge::debugger::vcpu_register::data</a>
-</li>
 <li>debugger_script()
 : <a class="el" href="classmalbolge_1_1argument__parser.html#a055a1a61bf70314fc4f4493fbd8d5cdf">malbolge::argument_parser</a>
+</li>
+<li>disconnect()
+: <a class="el" href="classmalbolge_1_1utility_1_1signal_1_1connection.html#a6adf50eb107815bb31292ec3315129a2">malbolge::utility::signal&lt; Args &gt;::connection</a>
 </li>
 </ul>
 
@@ -150,18 +144,14 @@ $(function() {
 
 
 <h3><a id="index_f"></a>- f -</h3><ul>
+<li>force_non_normalised()
+: <a class="el" href="classmalbolge_1_1argument__parser.html#afcabd1fb4fd9963bec1907ef5c822e9c">malbolge::argument_parser</a>
+</li>
 <li>function()
 : <a class="el" href="classmalbolge_1_1debugger_1_1script_1_1function.html#af0e6fc080053ccff092e379c3489ab55">malbolge::debugger::script::function&lt; Name, Args &gt;</a>
 </li>
 <li>function_argument()
 : <a class="el" href="classmalbolge_1_1debugger_1_1script_1_1function__argument.html#a1e2440b13aede53e0ac9a3885b356b5b">malbolge::debugger::script::function_argument&lt; T, Name, DefaultValue &gt;</a>
-</li>
-</ul>
-
-
-<h3><a id="index_g"></a>- g -</h3><ul>
-<li>gate()
-: <a class="el" href="classmalbolge_1_1utility_1_1gate.html#ab4245921bc47c9f917d5e41b3883644e">malbolge::utility::gate</a>
 </li>
 </ul>
 
@@ -177,12 +167,6 @@ $(function() {
 
 
 <h3><a id="index_i"></a>- i -</h3><ul>
-<li>ignore_count()
-: <a class="el" href="classmalbolge_1_1debugger_1_1client__control_1_1breakpoint.html#a3ea8929b68f7982d2e55b1967fa739ee">malbolge::debugger::client_control::breakpoint</a>
-</li>
-<li>is_valid()
-: <a class="el" href="classmalbolge_1_1utility_1_1mutex__wrapper.html#a50ccabd33f69ff94b350eb060b81a87a">malbolge::utility::mutex_wrapper</a>
-</li>
 <li>iterator_generic()
 : <a class="el" href="classmalbolge_1_1virtual__memory_1_1iterator__generic.html#ae54fad58aab4cfada8faedcafb3ed15b">malbolge::virtual_memory::iterator_generic&lt; IsConstant &gt;</a>
 </li>
@@ -193,9 +177,6 @@ $(function() {
 <li>location()
 : <a class="el" href="classmalbolge_1_1parse__exception.html#acbbe1e3764a789a71ef02baa50b892d3">malbolge::parse_exception</a>
 </li>
-<li>lock()
-: <a class="el" href="classmalbolge_1_1utility_1_1mutex__wrapper.html#ac55840c0b966b442881fd8535ab965f7">malbolge::utility::mutex_wrapper</a>
-</li>
 <li>log_level()
 : <a class="el" href="classmalbolge_1_1argument__parser.html#a53fce88cb6f04f25daef029aa80798a4">malbolge::argument_parser</a>
 </li>
@@ -205,9 +186,6 @@ $(function() {
 <h3><a id="index_m"></a>- m -</h3><ul>
 <li>max_size()
 : <a class="el" href="classmalbolge_1_1virtual__memory.html#a1c728114449a835d5e00cdb27f739c9a">malbolge::virtual_memory</a>
-</li>
-<li>mutex_wrapper()
-: <a class="el" href="classmalbolge_1_1utility_1_1mutex__wrapper.html#a4b8b6a95bae4cb8dfb26073b3d3c0511">malbolge::utility::mutex_wrapper</a>
 </li>
 </ul>
 
@@ -224,26 +202,16 @@ $(function() {
 <li>op()
 : <a class="el" href="classmalbolge_1_1math_1_1ternary.html#a17f72d865389a193def12b2ffa7afea5">malbolge::math::ternary</a>
 </li>
-<li>open()
-: <a class="el" href="classmalbolge_1_1utility_1_1gate.html#ac4c1439af0886e321d95189251b86724">malbolge::utility::gate</a>
-</li>
 <li>operator()
 : <a class="el" href="classmalbolge_1_1debugger_1_1script_1_1function.html#a2fb05573526878aeb5bfb416a225cafa">malbolge::debugger::script::function&lt; Name, Args &gt;</a>
 , <a class="el" href="classmalbolge_1_1debugger_1_1script_1_1function__argument.html#ac1a94704131bfd7a01cd5e65231b926b">malbolge::debugger::script::function_argument&lt; T, Name, DefaultValue &gt;</a>
-, <a class="el" href="structmalbolge_1_1debugger_1_1vcpu__register_1_1data.html#a065e2d3d1002457eafa03fb679009c6d">malbolge::debugger::vcpu_register::data</a>
 , <a class="el" href="classmalbolge_1_1math_1_1ternary.html#a18fbe507b0d273525422ca39b73ac420">malbolge::math::ternary</a>
 , <a class="el" href="classmalbolge_1_1math_1_1tritset.html#a84d0dc5f27ea2f434b00187913741301">malbolge::math::tritset&lt; N, T &gt;</a>
 , <a class="el" href="structmalbolge_1_1source__location.html#ae2941a587205da7e1a2c8c08b562e72a">malbolge::source_location</a>
 , <a class="el" href="classmalbolge_1_1virtual__memory_1_1iterator__generic.html#aaa781fa65cb097efccdde55763416b16">malbolge::virtual_memory::iterator_generic&lt; IsConstant &gt;</a>
 </li>
-<li>operator bool()
-: <a class="el" href="classmalbolge_1_1utility_1_1mutex__wrapper.html#a69ee3349b97a0754664ebc4f13d6b025">malbolge::utility::mutex_wrapper</a>
-</li>
 <li>operator T()
 : <a class="el" href="classmalbolge_1_1math_1_1ternary.html#a44e7d5503a3d1c8b17c9a0df28bfb794">malbolge::math::ternary</a>
-</li>
-<li>operator!()
-: <a class="el" href="classmalbolge_1_1utility_1_1mutex__wrapper.html#a5421b86f36f37258a8e3d4f6d6c4003a">malbolge::utility::mutex_wrapper</a>
 </li>
 <li>operator%()
 : <a class="el" href="classmalbolge_1_1math_1_1ternary.html#ac681c623419bae8bf5d3be6db838fff6">malbolge::math::ternary</a>
@@ -252,8 +220,7 @@ $(function() {
 : <a class="el" href="classmalbolge_1_1math_1_1ternary.html#a711a1a8797c2956d950c7b17fdef7141">malbolge::math::ternary</a>
 </li>
 <li>operator()()
-: <a class="el" href="classmalbolge_1_1debugger_1_1client__control_1_1breakpoint.html#ab6d99e59dcd76c69a1ed392d5bd5abac">malbolge::debugger::client_control::breakpoint</a>
-, <a class="el" href="classmalbolge_1_1utility_1_1gate.html#a981de8e8ed671d1f3ddf75a8a60979d2">malbolge::utility::gate</a>
+: <a class="el" href="classmalbolge_1_1utility_1_1signal.html#ad86a06a5cf8ef8330e850d35d18b978e">malbolge::utility::signal&lt; Args &gt;</a>
 </li>
 <li>operator*()
 : <a class="el" href="classmalbolge_1_1virtual__memory_1_1iterator__generic.html#ad3fdfdb9811ad9aa8a3d8d1aeacf21b9">malbolge::virtual_memory::iterator_generic&lt; IsConstant &gt;</a>
@@ -286,7 +253,7 @@ $(function() {
 <li>operator=()
 : <a class="el" href="classmalbolge_1_1math_1_1ternary.html#a0771b1021d31a140df71d5f275530810">malbolge::math::ternary</a>
 , <a class="el" href="classmalbolge_1_1math_1_1tritset.html#a807e7604ad112a64d783e9cc1149a9fd">malbolge::math::tritset&lt; N, T &gt;</a>
-, <a class="el" href="classmalbolge_1_1virtual__cpu.html#a3f6edef9d7bf6792cbc5b5f83f24d3ab">malbolge::virtual_cpu</a>
+, <a class="el" href="classmalbolge_1_1virtual__cpu.html#a7a7c79cff01df38316ed60c0ce270601">malbolge::virtual_cpu</a>
 , <a class="el" href="classmalbolge_1_1virtual__memory_1_1iterator__generic.html#a75773a25936aac70b2aada7e88ccb733">malbolge::virtual_memory::iterator_generic&lt; IsConstant &gt;</a>
 , <a class="el" href="classmalbolge_1_1virtual__memory.html#ac6a36ad0140db33b8080d25d4b4eb051">malbolge::virtual_memory</a>
 </li>
@@ -294,7 +261,7 @@ $(function() {
 : <a class="el" href="classmalbolge_1_1math_1_1tritset.html#a9dcdcbc1f3e1aa65386a777ea45d5039">malbolge::math::tritset&lt; N, T &gt;</a>
 , <a class="el" href="classmalbolge_1_1utility_1_1string__constant.html#abd82f22906bcbafcb25ee1c51cb7abaf">malbolge::utility::string_constant&lt; Cs &gt;</a>
 , <a class="el" href="classmalbolge_1_1virtual__memory_1_1iterator__generic.html#a1495085dfeff59355c415761bda5a6c6">malbolge::virtual_memory::iterator_generic&lt; IsConstant &gt;</a>
-, <a class="el" href="classmalbolge_1_1virtual__memory.html#a554d8a85aefacd1da27082ac3d19e155">malbolge::virtual_memory</a>
+, <a class="el" href="classmalbolge_1_1virtual__memory.html#a72e790ce67cf4580df859f47ea98f75d">malbolge::virtual_memory</a>
 </li>
 </ul>
 
@@ -304,7 +271,7 @@ $(function() {
 : <a class="el" href="classmalbolge_1_1parse__exception.html#a5df55f1fdb55b6e289033ee517c4e0a6">malbolge::parse_exception</a>
 </li>
 <li>pause()
-: <a class="el" href="classmalbolge_1_1debugger_1_1client__control.html#ada25c34866bc6b2b9cec66ddadce5771">malbolge::debugger::client_control</a>
+: <a class="el" href="classmalbolge_1_1virtual__cpu.html#a1b855e913100af946e7040a79c9db6ab">malbolge::virtual_cpu</a>
 </li>
 <li>program()
 : <a class="el" href="classmalbolge_1_1argument__parser.html#a84b0a4b6ebdac630b4203db2195cb786">malbolge::argument_parser</a>
@@ -319,34 +286,51 @@ $(function() {
 <li>rbegin()
 : <a class="el" href="classmalbolge_1_1virtual__memory.html#aeb655a1da88d8db0ab6fd1fe4c395ffc">malbolge::virtual_memory</a>
 </li>
+<li>register_for_address_value_signal()
+: <a class="el" href="classmalbolge_1_1debugger_1_1script_1_1script__runner.html#a4fbb5cea793f429a17c3c85c128e10dd">malbolge::debugger::script::script_runner</a>
+</li>
+<li>register_for_breakpoint_hit_signal()
+: <a class="el" href="classmalbolge_1_1virtual__cpu.html#a23c5b37ea7ee95084f627c07a5b1a328">malbolge::virtual_cpu</a>
+</li>
+<li>register_for_output_signal()
+: <a class="el" href="classmalbolge_1_1debugger_1_1script_1_1script__runner.html#a3b6040b3c8ef299168538e9a9e9b5601">malbolge::debugger::script::script_runner</a>
+, <a class="el" href="classmalbolge_1_1virtual__cpu.html#a7b5082f29a0764808d13535d6b4833ac">malbolge::virtual_cpu</a>
+</li>
+<li>register_for_register_value_signal()
+: <a class="el" href="classmalbolge_1_1debugger_1_1script_1_1script__runner.html#af0806cc297db782cc1d0324f382fb366">malbolge::debugger::script::script_runner</a>
+</li>
+<li>register_for_state_signal()
+: <a class="el" href="classmalbolge_1_1virtual__cpu.html#ac3a519a88db8e42d8ffd4c6af0960269">malbolge::virtual_cpu</a>
+</li>
 <li>register_value()
-: <a class="el" href="classmalbolge_1_1debugger_1_1client__control.html#ad109589ee18024167facc8ec4bc96a22">malbolge::debugger::client_control</a>
+: <a class="el" href="classmalbolge_1_1virtual__cpu.html#a6832ba2490f52ba03fe202684baf582d">malbolge::virtual_cpu</a>
 </li>
 <li>remove_breakpoint()
-: <a class="el" href="classmalbolge_1_1debugger_1_1client__control.html#a915d66a8d60f0eb2f020ee91de0eda9d">malbolge::debugger::client_control</a>
+: <a class="el" href="classmalbolge_1_1virtual__cpu.html#ab9225c245fd2122ec1bd8015190a8c36">malbolge::virtual_cpu</a>
 </li>
 <li>rend()
 : <a class="el" href="classmalbolge_1_1virtual__memory.html#a7c0f1f7f770d5a6cbe39a0afbccf5007">malbolge::virtual_memory</a>
-</li>
-<li>resume()
-: <a class="el" href="classmalbolge_1_1debugger_1_1client__control.html#a6fd6993660a3e701c80712bf42c732b9">malbolge::debugger::client_control</a>
 </li>
 <li>rotate()
 : <a class="el" href="classmalbolge_1_1math_1_1ternary.html#ad3d61057f9d57bd13c1f7be9a6ff0515">malbolge::math::ternary</a>
 , <a class="el" href="classmalbolge_1_1math_1_1tritset.html#a407eb6a3940ed7c9039316757d8c71ba">malbolge::math::tritset&lt; N, T &gt;</a>
 </li>
 <li>run()
-: <a class="el" href="classmalbolge_1_1virtual__cpu.html#aeb6a9039adc52fd6e5f0fabc5e29cc74">malbolge::virtual_cpu</a>
+: <a class="el" href="classmalbolge_1_1debugger_1_1script_1_1script__runner.html#a7560319fe7b667b9eb0108674cb676b5">malbolge::debugger::script::script_runner</a>
+, <a class="el" href="classmalbolge_1_1virtual__cpu.html#a81d6f0731681fdf68556dd69b2b419db">malbolge::virtual_cpu</a>
 </li>
 </ul>
 
 
 <h3><a id="index_s"></a>- s -</h3><ul>
+<li>script_runner()
+: <a class="el" href="classmalbolge_1_1debugger_1_1script_1_1script__runner.html#a51b59003a0e89e066be9d12879e8da0c">malbolge::debugger::script::script_runner</a>
+</li>
 <li>set()
 : <a class="el" href="classmalbolge_1_1math_1_1tritset.html#af6a0e54c8c6c9ea0f6eeb0b62bfc2f9f">malbolge::math::tritset&lt; N, T &gt;</a>
 </li>
-<li>set_cycle_delay()
-: <a class="el" href="classmalbolge_1_1virtual__cpu.html#ae8dc35b6c09ee9cf741ba283b039bda4">malbolge::virtual_cpu</a>
+<li>signal()
+: <a class="el" href="classmalbolge_1_1utility_1_1signal.html#a840e27f330e71ea33499f7de26ac2f00">malbolge::utility::signal&lt; Args &gt;</a>
 </li>
 <li>size()
 : <a class="el" href="classmalbolge_1_1utility_1_1string__constant.html#a56019f4adc2897bd806785d03b062bca">malbolge::utility::string_constant&lt; Cs &gt;</a>
@@ -355,19 +339,9 @@ $(function() {
 <li>source_location()
 : <a class="el" href="structmalbolge_1_1source__location.html#a3b01a344f32ec27697ad3611e4233068">malbolge::source_location</a>
 </li>
-<li>state()
-: <a class="el" href="classmalbolge_1_1debugger_1_1client__control.html#a37b4a624a5e83c59616cda85464b3c2c">malbolge::debugger::client_control</a>
-, <a class="el" href="classmalbolge_1_1virtual__cpu.html#a64bc3341ed665c611a9467491a520a3b">malbolge::virtual_cpu</a>
-</li>
 <li>step()
-: <a class="el" href="classmalbolge_1_1debugger_1_1client__control.html#a7590192fa087bd04e528c5e4d9ad9fe4">malbolge::debugger::client_control</a>
-, <a class="el" href="classmalbolge_1_1execution__exception.html#a98c3aff945848e343c883ffc43cc12e4">malbolge::execution_exception</a>
-</li>
-<li>stop()
-: <a class="el" href="classmalbolge_1_1virtual__cpu.html#ae728d1a4d88a889dc2f71a09502a95b4">malbolge::virtual_cpu</a>
-</li>
-<li>stream_lock_guard()
-: <a class="el" href="classstream__lock__guard.html#a3652bc373d8fd22be314c2147b516b70">stream_lock_guard&lt; Mutex &gt;</a>
+: <a class="el" href="classmalbolge_1_1execution__exception.html#a98c3aff945848e343c883ffc43cc12e4">malbolge::execution_exception</a>
+, <a class="el" href="classmalbolge_1_1virtual__cpu.html#a0e3a48bfd53fbeac738e9786a9cfb73c">malbolge::virtual_cpu</a>
 </li>
 <li>system_exception()
 : <a class="el" href="classmalbolge_1_1system__exception.html#acee340d85b937e905f194992895143be">malbolge::system_exception</a>
@@ -386,17 +360,7 @@ $(function() {
 : <a class="el" href="classmalbolge_1_1math_1_1ternary.html#a6197117216a0cd91da19525d49354082">malbolge::math::ternary</a>
 </li>
 <li>tritset()
-: <a class="el" href="classmalbolge_1_1math_1_1tritset.html#a1d15e4e843f39c9ef30a9b9c70a1cbd6">malbolge::math::tritset&lt; N, T &gt;</a>
-</li>
-<li>try_lock()
-: <a class="el" href="classmalbolge_1_1utility_1_1mutex__wrapper.html#a3bd32bcdc37a3b52a57fb424f46eeed5">malbolge::utility::mutex_wrapper</a>
-</li>
-</ul>
-
-
-<h3><a id="index_u"></a>- u -</h3><ul>
-<li>unlock()
-: <a class="el" href="classmalbolge_1_1utility_1_1mutex__wrapper.html#a75849c97e91d86240ed01283d1e4170b">malbolge::utility::mutex_wrapper</a>
+: <a class="el" href="classmalbolge_1_1math_1_1tritset.html#a1abf92a1fc64bc72cea4513d86b7721f">malbolge::math::tritset&lt; N, T &gt;</a>
 </li>
 </ul>
 
@@ -425,17 +389,11 @@ $(function() {
 <li>~execution_exception()
 : <a class="el" href="classmalbolge_1_1execution__exception.html#a81708086483324692788e6026d63f2dc">malbolge::execution_exception</a>
 </li>
-<li>~gate()
-: <a class="el" href="classmalbolge_1_1utility_1_1gate.html#a582b9a45858d83975214a86662671937">malbolge::utility::gate</a>
-</li>
 <li>~parse_exception()
 : <a class="el" href="classmalbolge_1_1parse__exception.html#a92f16191d00d39c5fbea34c971379af0">malbolge::parse_exception</a>
 </li>
 <li>~raii()
 : <a class="el" href="classmalbolge_1_1utility_1_1raii.html#a96dd5c95d637fb3ed7e2679c9086c6b4">malbolge::utility::raii</a>
-</li>
-<li>~stream_lock_guard()
-: <a class="el" href="classstream__lock__guard.html#aff0b364df6f8db96c22ad5f12b4486d7">stream_lock_guard&lt; Mutex &gt;</a>
 </li>
 <li>~system_exception()
 : <a class="el" href="classmalbolge_1_1system__exception.html#adb228a2f2a77e3bc34e06f8868e83f95">malbolge::system_exception</a>

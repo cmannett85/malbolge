@@ -63,7 +63,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="namespacemalbolge.html">malbolge</a></li><li class="navelem"><a class="el" href="namespacemalbolge_1_1debugger.html">debugger</a></li><li class="navelem"><a class="el" href="namespacemalbolge_1_1debugger_1_1script.html">script</a></li>  </ul>
+<li class="navelem"><a class="el" href="namespacemalbolge.html">malbolge</a></li><li class="navelem"><b>debugger</b></li><li class="navelem"><a class="el" href="namespacemalbolge_1_1debugger_1_1script.html">script</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -89,6 +89,8 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1debugger_1_1script_1_1function__argument.html">function_argument</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1debugger_1_1script_1_1script__runner.html">script_runner</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -102,12 +104,10 @@ Functions</h2></td></tr>
 <tr class="memitem:a57d49ee87e918b587671dfdfd9558c13"><td class="memTemplParams" colspan="2">template&lt;typename Name , typename... Args&gt; </td></tr>
 <tr class="memitem:a57d49ee87e918b587671dfdfd9558c13"><td class="memTemplItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacemalbolge_1_1debugger_1_1script.html#a57d49ee87e918b587671dfdfd9558c13">operator&lt;&lt;</a> (std::ostream &amp;stream, const <a class="el" href="classmalbolge_1_1debugger_1_1script_1_1function.html">function</a>&lt; Name, Args... &gt; &amp;fn)</td></tr>
 <tr class="separator:a57d49ee87e918b587671dfdfd9558c13"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a20f1862b28fe73c87097fbb7639e5fc9"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemalbolge_1_1debugger_1_1script.html#a20f1862b28fe73c87097fbb7639e5fc9">operator&lt;&lt;</a> (std::ostream &amp;stream, const <a class="el" href="namespacemalbolge_1_1debugger_1_1script_1_1functions.html#ad5321735ae40243ae3fbe4c64193bcd7">functions::function_variant</a> &amp;fn)</td></tr>
+<tr class="memitem:a20f1862b28fe73c87097fbb7639e5fc9"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemalbolge_1_1debugger_1_1script.html#a20f1862b28fe73c87097fbb7639e5fc9">operator&lt;&lt;</a> (std::ostream &amp;stream, const <a class="el" href="namespacemalbolge_1_1debugger_1_1script_1_1functions.html#a773701d5cb8769238e33570c17a76b0a">functions::function_variant</a> &amp;fn)</td></tr>
 <tr class="separator:a20f1862b28fe73c87097fbb7639e5fc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a26f6ee80c41fcc944ab6978f044b7b2a"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemalbolge_1_1debugger_1_1script.html#a26f6ee80c41fcc944ab6978f044b7b2a">operator&lt;&lt;</a> (std::ostream &amp;stream, const <a class="el" href="namespacemalbolge_1_1debugger_1_1script_1_1functions.html#a8dc912e83ed15088fda36b01f08ba5d7">functions::sequence</a> &amp;seq)</td></tr>
 <tr class="separator:a26f6ee80c41fcc944ab6978f044b7b2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a837af9b734a16668aa01cca6ccb6d1d3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemalbolge_1_1debugger_1_1script.html#a837af9b734a16668aa01cca6ccb6d1d3">run</a> (const <a class="el" href="namespacemalbolge_1_1debugger_1_1script_1_1functions.html#a8dc912e83ed15088fda36b01f08ba5d7">functions::sequence</a> &amp;fn_seq, <a class="el" href="classmalbolge_1_1virtual__cpu.html">virtual_cpu</a> &amp;vcpu, std::ostream &amp;dstr=std::clog, std::ostream &amp;ostr=std::cout)</td></tr>
-<tr class="separator:a837af9b734a16668aa01cca6ccb6d1d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Namespace for debugger scripting functions and types. </p>
@@ -156,7 +156,7 @@ template&lt;typename Name , typename... Args&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><em>stream</em> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="script__runner_8hpp_source.html#l00253">253</a> of file <a class="el" href="script__runner_8hpp_source.html">script_runner.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="script__runner_8hpp_source.html#l00251">251</a> of file <a class="el" href="script__runner_8hpp_source.html">script_runner.hpp</a>.</p>
 
 </div>
 </div>
@@ -205,7 +205,7 @@ template&lt;typename T , typename Name , typename DefaultValue &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><em>stream</em> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="script__runner_8hpp_source.html#l00113">113</a> of file <a class="el" href="script__runner_8hpp_source.html">script_runner.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="script__runner_8hpp_source.html#l00111">111</a> of file <a class="el" href="script__runner_8hpp_source.html">script_runner.hpp</a>.</p>
 
 </div>
 </div>
@@ -224,7 +224,7 @@ template&lt;typename T , typename Name , typename DefaultValue &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="namespacemalbolge_1_1debugger_1_1script_1_1functions.html#ad5321735ae40243ae3fbe4c64193bcd7">functions::function_variant</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="namespacemalbolge_1_1debugger_1_1script_1_1functions.html#a773701d5cb8769238e33570c17a76b0a">functions::function_variant</a> &amp;&#160;</td>
           <td class="paramname"><em>fn</em>&#160;</td>
         </tr>
         <tr>
@@ -344,63 +344,6 @@ template&lt;typename T , typename Name , typename DefaultValue &gt; </div>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname"><a class="el" href="classmalbolge_1_1parse__exception.html">parse_exception</a></td><td>Thrown if the parsing failed </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a837af9b734a16668aa01cca6ccb6d1d3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a837af9b734a16668aa01cca6ccb6d1d3">&#9670;&nbsp;</a></span>run()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void malbolge::debugger::script::run </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="namespacemalbolge_1_1debugger_1_1script_1_1functions.html#a8dc912e83ed15088fda36b01f08ba5d7">functions::sequence</a> &amp;&#160;</td>
-          <td class="paramname"><em>fn_seq</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classmalbolge_1_1virtual__cpu.html">virtual_cpu</a> &amp;&#160;</td>
-          <td class="paramname"><em>vcpu</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::ostream &amp;&#160;</td>
-          <td class="paramname"><em>dstr</em> = <code>std::clog</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::ostream &amp;&#160;</td>
-          <td class="paramname"><em>ostr</em> = <code>std::cout</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Runs <em>fn_seq</em> on <em>vcpu</em>.</p>
-<dl class="section note"><dt>Note</dt><dd>This function attaches a debugger to <em>vcpu</em>, the operation will fail if one is already attached </dd></dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">fn_seq</td><td>Parsed debugger script function sequence to run </td></tr>
-    <tr><td class="paramname">vcpu</td><td>vCPU to execute the script on </td></tr>
-    <tr><td class="paramname">dstr</td><td>Debugger output stream </td></tr>
-    <tr><td class="paramname">ostr</td><td>Porgram output stream </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname">base_exception</td><td>Thrown if <em>vcpu</em> if attaching the debugger fails, <em>fn_seq</em> is malformed, or the program execution fails </td></tr>
   </table>
   </dd>
 </dl>

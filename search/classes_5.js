@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['function_280',['function',['../classmalbolge_1_1debugger_1_1script_1_1function.html',1,'malbolge::debugger::script']]],
-  ['function_5fargument_281',['function_argument',['../classmalbolge_1_1debugger_1_1script_1_1function__argument.html',1,'malbolge::debugger::script']]]
+  ['min_5fwidth_5ftype_292',['min_width_type',['../structmalbolge_1_1math_1_1trit_1_1min__width__type.html',1,'malbolge::math::trit']]]
 ];

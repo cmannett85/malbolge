@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['client_5fcontrol_277',['client_control',['../classmalbolge_1_1debugger_1_1client__control.html',1,'malbolge::debugger']]]
+  ['execution_5fexception_286',['execution_exception',['../classmalbolge_1_1execution__exception.html',1,'malbolge']]]
 ];

@@ -109,22 +109,27 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Run the program loading in <em>vcpu</em>.</p>
-<p>This is equivalent to <a class="el" href="c__interface_8hpp.html#a76be76750774680ea8bd8c287e95a437">malbolge_vcpu_run(malbolge_virtual_cpu, malbolge_program_stopped, malbolge_program_waiting_for_input, int)</a>, except the that <code>use_cin</code> argument is implicitly false and the callbacks are implemented as <code>EM_JS</code> function calls. The callbacks use the JS Worker API to post messages back to the main thread where they can be acted upon.</p>
-<p>For the program stopped message schema is: </p><div class="fragment"><div class="line">{</div>
+<p>This is equivalent to <a class="el" href="c__interface_8hpp.html#a4578cb9813f925080abe895618a3df5a">malbolge_vcpu_run(malbolge_virtual_cpu)</a>, except that it sets up the callbacks internally as they are implemented as <code>EM_JS</code> function calls. The callbacks use the JS Worker API to post messages back to the main thread where they can be acted upon.</p>
+<p>The JSON schema for the vCPU state message: </p><div class="fragment"><div class="line">{</div>
 <div class="line">    <span class="stringliteral">&quot;$schema&quot;</span>: <span class="stringliteral">&quot;http://json-schema.org/draft-04/schema#&quot;</span>,</div>
-<div class="line">    <span class="stringliteral">&quot;title&quot;</span>: <span class="stringliteral">&quot;Malbolge program stopped message&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;title&quot;</span>: <span class="stringliteral">&quot;Malbolge vCPU state message&quot;</span>,</div>
 <div class="line">    <span class="stringliteral">&quot;type&quot;</span>: <span class="stringliteral">&quot;object&quot;</span>,</div>
-<div class="line">    <span class="stringliteral">&quot;required&quot;</span>: [<span class="stringliteral">&quot;cmd&quot;</span>, <span class="stringliteral">&quot;errorCode&quot;</span>, <span class="stringliteral">&quot;vcpu&quot;</span>],</div>
+<div class="line">    <span class="stringliteral">&quot;required&quot;</span>: [<span class="stringliteral">&quot;cmd&quot;</span>, <span class="stringliteral">&quot;state&quot;</span>, <span class="stringliteral">&quot;errorCode&quot;</span>, <span class="stringliteral">&quot;vcpu&quot;</span>],</div>
 <div class="line">    <span class="stringliteral">&quot;properties&quot;</span>: {</div>
 <div class="line">        <span class="stringliteral">&quot;cmd&quot;</span>: {</div>
 <div class="line">            <span class="stringliteral">&quot;type&quot;</span>: <span class="stringliteral">&quot;string&quot;</span>,</div>
-<div class="line">            <span class="stringliteral">&quot;enum&quot;</span>: [<span class="stringliteral">&quot;malbolgeStopped&quot;</span>],</div>
+<div class="line">            <span class="stringliteral">&quot;enum&quot;</span>: [<span class="stringliteral">&quot;malbolgevCPUState&quot;</span>],</div>
 <div class="line">            <span class="stringliteral">&quot;description&quot;</span>: <span class="stringliteral">&quot;Command type&quot;</span></div>
+<div class="line">        },</div>
+<div class="line">        <span class="stringliteral">&quot;state&quot;</span>: {</div>
+<div class="line">            <span class="stringliteral">&quot;type&quot;</span>: <span class="stringliteral">&quot;integer&quot;</span>,</div>
+<div class="line">            <span class="stringliteral">&quot;minimum&quot;</span>: 0,</div>
+<div class="line">            <span class="stringliteral">&quot;description&quot;</span>: <span class="stringliteral">&quot;Equivalent to malbolge_vcpu_execution_state&quot;</span></div>
 <div class="line">        },</div>
 <div class="line">        <span class="stringliteral">&quot;errorCode&quot;</span>: {</div>
 <div class="line">            <span class="stringliteral">&quot;type&quot;</span>: <span class="stringliteral">&quot;integer&quot;</span>,</div>
 <div class="line">            <span class="stringliteral">&quot;maximum&quot;</span>: 0,</div>
-<div class="line">            <span class="stringliteral">&quot;description&quot;</span>: <span class="stringliteral">&quot;Negative error code that triggered the stop, or 0 if execution ended successfully&quot;</span>,</div>
+<div class="line">            <span class="stringliteral">&quot;description&quot;</span>: <span class="stringliteral">&quot;Negative error code that triggered the stop, or 0 if execution ended successfully&quot;</span></div>
 <div class="line">        },</div>
 <div class="line">        <span class="stringliteral">&quot;vcpu&quot;</span>: {</div>
 <div class="line">            <span class="stringliteral">&quot;type&quot;</span>: <span class="stringliteral">&quot;integer&quot;</span>,</div>
@@ -133,16 +138,22 @@ Functions</h2></td></tr>
 <div class="line">        }</div>
 <div class="line">    }</div>
 <div class="line">}</div>
-</div><!-- fragment --><p>The equivalent for the waiting-for-input message: </p><div class="fragment"><div class="line">{</div>
+</div><!-- fragment --><p>The breakpoint hit message: </p><div class="fragment"><div class="line">{</div>
 <div class="line">    <span class="stringliteral">&quot;$schema&quot;</span>: <span class="stringliteral">&quot;http://json-schema.org/draft-04/schema#&quot;</span>,</div>
-<div class="line">    <span class="stringliteral">&quot;title&quot;</span>: <span class="stringliteral">&quot;Malbolge waiting-for-input message&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;title&quot;</span>: <span class="stringliteral">&quot;Malbolge breakpoint hit message&quot;</span>,</div>
 <div class="line">    <span class="stringliteral">&quot;type&quot;</span>: <span class="stringliteral">&quot;object&quot;</span>,</div>
-<div class="line">    <span class="stringliteral">&quot;required&quot;</span>: [<span class="stringliteral">&quot;cmd&quot;</span>, <span class="stringliteral">&quot;vcpu&quot;</span>],</div>
+<div class="line">    <span class="stringliteral">&quot;required&quot;</span>: [<span class="stringliteral">&quot;cmd&quot;</span>, <span class="stringliteral">&quot;address&quot;</span>, <span class="stringliteral">&quot;vcpu&quot;</span>],</div>
 <div class="line">    <span class="stringliteral">&quot;properties&quot;</span>: {</div>
 <div class="line">        <span class="stringliteral">&quot;cmd&quot;</span>: {</div>
 <div class="line">            <span class="stringliteral">&quot;type&quot;</span>: <span class="stringliteral">&quot;string&quot;</span>,</div>
-<div class="line">            <span class="stringliteral">&quot;enum&quot;</span>: [<span class="stringliteral">&quot;malbolgeWaitingForInput&quot;</span>],</div>
+<div class="line">            <span class="stringliteral">&quot;enum&quot;</span>: [<span class="stringliteral">&quot;malbolgeBreakpoint&quot;</span>],</div>
 <div class="line">            <span class="stringliteral">&quot;description&quot;</span>: <span class="stringliteral">&quot;Command type&quot;</span></div>
+<div class="line">        },</div>
+<div class="line">        <span class="stringliteral">&quot;address&quot;</span>: {</div>
+<div class="line">            <span class="stringliteral">&quot;type&quot;</span>: <span class="stringliteral">&quot;integer&quot;</span>,</div>
+<div class="line">            <span class="stringliteral">&quot;maximum&quot;</span>: 0,</div>
+<div class="line">            <span class="stringliteral">&quot;maximum&quot;</span>: 59048,</div>
+<div class="line">            <span class="stringliteral">&quot;description&quot;</span>: <span class="stringliteral">&quot;Virtual memory address that triggered the breakpoint&quot;</span></div>
 <div class="line">        },</div>
 <div class="line">        <span class="stringliteral">&quot;vcpu&quot;</span>: {</div>
 <div class="line">            <span class="stringliteral">&quot;type&quot;</span>: <span class="stringliteral">&quot;integer&quot;</span>,</div>
@@ -151,7 +162,31 @@ Functions</h2></td></tr>
 <div class="line">        }</div>
 <div class="line">    }</div>
 <div class="line">}</div>
-</div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
+</div><!-- fragment --><p>The program output message seems like it shouldn't be necessary as we could just write to cout and the user-specified JS stdOut handler can process it, but because Emscripten sees cout as a way of adding logging to the browser's console it does weird things with newlines related to flushing. This is fine for logging, but does not work well with program output.</p>
+<p>As sending this message for every character is extremely inefficient, it is sent on every 10 characters and vCPU state change (if any characters are waiting in the internal buffer). </p><div class="fragment"><div class="line">{</div>
+<div class="line">    <span class="stringliteral">&quot;$schema&quot;</span>: <span class="stringliteral">&quot;http://json-schema.org/draft-04/schema#&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;title&quot;</span>: <span class="stringliteral">&quot;Malbolge program output message&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;type&quot;</span>: <span class="stringliteral">&quot;object&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;required&quot;</span>: [<span class="stringliteral">&quot;cmd&quot;</span>, <span class="stringliteral">&quot;data&quot;</span>, <span class="stringliteral">&quot;vcpu&quot;</span>],</div>
+<div class="line">    <span class="stringliteral">&quot;properties&quot;</span>: {</div>
+<div class="line">        <span class="stringliteral">&quot;cmd&quot;</span>: {</div>
+<div class="line">            <span class="stringliteral">&quot;type&quot;</span>: <span class="stringliteral">&quot;string&quot;</span>,</div>
+<div class="line">            <span class="stringliteral">&quot;enum&quot;</span>: [<span class="stringliteral">&quot;malbolgeOutput&quot;</span>],</div>
+<div class="line">            <span class="stringliteral">&quot;description&quot;</span>: <span class="stringliteral">&quot;Command type&quot;</span></div>
+<div class="line">        },</div>
+<div class="line">        <span class="stringliteral">&quot;data&quot;</span>: {</div>
+<div class="line">            <span class="stringliteral">&quot;type&quot;</span>: <span class="stringliteral">&quot;string&quot;</span>,</div>
+<div class="line">            <span class="stringliteral">&quot;maxLength&quot;</span>: 10,</div>
+<div class="line">            <span class="stringliteral">&quot;description&quot;</span>: <span class="stringliteral">&quot;Program output, up to 10 chars max&quot;</span></div>
+<div class="line">        },</div>
+<div class="line">        <span class="stringliteral">&quot;vcpu&quot;</span>: {</div>
+<div class="line">            <span class="stringliteral">&quot;type&quot;</span>: <span class="stringliteral">&quot;integer&quot;</span>,</div>
+<div class="line">            <span class="stringliteral">&quot;minimum&quot;</span>: 0,</div>
+<div class="line">            <span class="stringliteral">&quot;description&quot;</span>: <span class="stringliteral">&quot;malbolge_virtual_cpu pointer as provided by Emscripten&quot;</span></div>
+<div class="line">        }</div>
+<div class="line">    }</div>
+<div class="line">}</div>
+</div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">vcpu</td><td>vCPU handle </td></tr>
   </table>

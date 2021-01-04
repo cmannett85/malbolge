@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['gate_349',['gate',['../classmalbolge_1_1utility_1_1gate.html#ab4245921bc47c9f917d5e41b3883644e',1,'malbolge::utility::gate']]]
+  ['has_5flocation_355',['has_location',['../classmalbolge_1_1parse__exception.html#a63683ad3998ecd1d702fe0032742b4ad',1,'malbolge::parse_exception']]],
+  ['help_356',['help',['../classmalbolge_1_1argument__parser.html#abf9933a1f37270468808384d9350c44b',1,'malbolge::argument_parser']]]
 ];

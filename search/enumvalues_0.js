@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['a_545',['A',['../namespacemalbolge_1_1debugger_1_1vcpu__register.html#a4e8367bf978b0da112a69306e4a1d2d4a44803c8ea743aa22d34df3ecfdb75ae4',1,'malbolge::debugger::vcpu_register']]]
+  ['a_538',['A',['../classmalbolge_1_1virtual__cpu.html#a6cbf9c23468c0d0392b4eccd8937b929a7fc56270e7a70fa81a5935b72eacbe29',1,'malbolge::virtual_cpu']]],
+  ['auto_539',['AUTO',['../namespacemalbolge.html#a03d458669b6f1ee236177dbb2e9bb9d8ae1f2d5134ed2543d38a0de9751cf75d9',1,'malbolge']]]
 ];

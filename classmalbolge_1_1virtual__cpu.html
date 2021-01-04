@@ -80,83 +80,189 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a6e6d243fefb70b081550b4ed4a4b9088"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1virtual__cpu.html#a6e6d243fefb70b081550b4ed4a4b9088">execution_state</a> { <a class="el" href="classmalbolge_1_1virtual__cpu.html#a6e6d243fefb70b081550b4ed4a4b9088a2baa69eafc7204f3bd8648eba580c489">execution_state::READY</a>, 
+<tr class="memitem:a6e6d243fefb70b081550b4ed4a4b9088"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1virtual__cpu.html#a6e6d243fefb70b081550b4ed4a4b9088">execution_state</a> { <br />
+&#160;&#160;<a class="el" href="classmalbolge_1_1virtual__cpu.html#a6e6d243fefb70b081550b4ed4a4b9088a2baa69eafc7204f3bd8648eba580c489">execution_state::READY</a>, 
 <a class="el" href="classmalbolge_1_1virtual__cpu.html#a6e6d243fefb70b081550b4ed4a4b9088a43491564ebcfd38568918efbd6e840fd">execution_state::RUNNING</a>, 
-<a class="el" href="classmalbolge_1_1virtual__cpu.html#a6e6d243fefb70b081550b4ed4a4b9088a09d4d696b4e935115b9313e3c412509a">execution_state::STOPPED</a>, 
+<a class="el" href="classmalbolge_1_1virtual__cpu.html#a6e6d243fefb70b081550b4ed4a4b9088a99b2439e63f73ad515f7ab2447a80673">execution_state::PAUSED</a>, 
+<a class="el" href="classmalbolge_1_1virtual__cpu.html#a6e6d243fefb70b081550b4ed4a4b9088aaf93f814f444f8703671f48b0fccc246">execution_state::WAITING_FOR_INPUT</a>, 
+<br />
+&#160;&#160;<a class="el" href="classmalbolge_1_1virtual__cpu.html#a6e6d243fefb70b081550b4ed4a4b9088a09d4d696b4e935115b9313e3c412509a">execution_state::STOPPED</a>, 
 <a class="el" href="classmalbolge_1_1virtual__cpu.html#a6e6d243fefb70b081550b4ed4a4b9088ac3b0252c73b7ed744bf142be820cfedd">execution_state::NUM_STATES</a>
+<br />
  }</td></tr>
 <tr class="separator:a6e6d243fefb70b081550b4ed4a4b9088"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7fd822265304f96155b837ab10336491"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1virtual__cpu.html#a7fd822265304f96155b837ab10336491">running_callback_type</a> = std::function&lt; void(bool started)&gt;</td></tr>
-<tr class="separator:a7fd822265304f96155b837ab10336491"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a999489db3b74efdc13f875d1ff23043b"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1virtual__cpu.html#a999489db3b74efdc13f875d1ff23043b">step_data_callback_type</a> = <a class="el" href="classmalbolge_1_1debugger_1_1client__control_1_1breakpoint.html#a2041cc577f895fc8cf3dd738720c6147">debugger::client_control::breakpoint::callback_type</a></td></tr>
-<tr class="separator:a999489db3b74efdc13f875d1ff23043b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6cbf9c23468c0d0392b4eccd8937b929"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1virtual__cpu.html#a6cbf9c23468c0d0392b4eccd8937b929">vcpu_register</a> { <a class="el" href="classmalbolge_1_1virtual__cpu.html#a6cbf9c23468c0d0392b4eccd8937b929a7fc56270e7a70fa81a5935b72eacbe29">vcpu_register::A</a>, 
+<a class="el" href="classmalbolge_1_1virtual__cpu.html#a6cbf9c23468c0d0392b4eccd8937b929a0d61f8370cad1d412f80b84d143e1257">vcpu_register::C</a>, 
+<a class="el" href="classmalbolge_1_1virtual__cpu.html#a6cbf9c23468c0d0392b4eccd8937b929af623e75af30e62bbd73d6df5b50bb7b5">vcpu_register::D</a>, 
+<a class="el" href="classmalbolge_1_1virtual__cpu.html#a6cbf9c23468c0d0392b4eccd8937b929a98bace05bdc322c0ed3a2afa92376118">vcpu_register::NUM_REGISTERS</a>
+ }</td></tr>
+<tr class="separator:a6cbf9c23468c0d0392b4eccd8937b929"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a74d1e459337a4a3bdcae725a9e4b1678"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1virtual__cpu.html#a74d1e459337a4a3bdcae725a9e4b1678">state_signal_type</a> = <a class="el" href="classmalbolge_1_1utility_1_1signal.html">utility::signal</a>&lt; <a class="el" href="classmalbolge_1_1virtual__cpu.html#a6e6d243fefb70b081550b4ed4a4b9088">execution_state</a>, std::exception_ptr &gt;</td></tr>
+<tr class="separator:a74d1e459337a4a3bdcae725a9e4b1678"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a08ff9d754c042ab2fad96ea793c49969"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1virtual__cpu.html#a08ff9d754c042ab2fad96ea793c49969">output_signal_type</a> = <a class="el" href="classmalbolge_1_1utility_1_1signal.html">utility::signal</a>&lt; char &gt;</td></tr>
+<tr class="separator:a08ff9d754c042ab2fad96ea793c49969"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae16e87a2c34d8b44e2cb70f084330fc0"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1virtual__cpu.html#ae16e87a2c34d8b44e2cb70f084330fc0">breakpoint_hit_signal_type</a> = <a class="el" href="classmalbolge_1_1utility_1_1signal.html">utility::signal</a>&lt; <a class="el" href="classmalbolge_1_1math_1_1ternary.html">math::ternary</a> &gt;</td></tr>
+<tr class="separator:ae16e87a2c34d8b44e2cb70f084330fc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a18f6da220c9e584ebc7f9dd1946caf65"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1virtual__cpu.html#a18f6da220c9e584ebc7f9dd1946caf65">address_value_callback_type</a> = std::function&lt; void(<a class="el" href="classmalbolge_1_1math_1_1ternary.html">math::ternary</a> address, <a class="el" href="classmalbolge_1_1math_1_1ternary.html">math::ternary</a> value)&gt;</td></tr>
+<tr class="separator:a18f6da220c9e584ebc7f9dd1946caf65"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5eae5f6d3d414a60c28e9c3f5781733f"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1virtual__cpu.html#a5eae5f6d3d414a60c28e9c3f5781733f">register_value_callback_type</a> = std::function&lt; void(<a class="el" href="classmalbolge_1_1virtual__cpu.html#a6cbf9c23468c0d0392b4eccd8937b929">vcpu_register</a> reg, std::optional&lt; <a class="el" href="classmalbolge_1_1math_1_1ternary.html">math::ternary</a> &gt; address, <a class="el" href="classmalbolge_1_1math_1_1ternary.html">math::ternary</a> value)&gt;</td></tr>
+<tr class="separator:a5eae5f6d3d414a60c28e9c3f5781733f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ac9940dff2b5299f48e8c023dc4483ebe"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1virtual__cpu.html#ac9940dff2b5299f48e8c023dc4483ebe">virtual_cpu</a> (<a class="el" href="classmalbolge_1_1virtual__memory.html">virtual_memory</a> vmem)</td></tr>
 <tr class="separator:ac9940dff2b5299f48e8c023dc4483ebe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab18b1b7e0c59b718cbd93a7248ef3979"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1virtual__cpu.html#ab18b1b7e0c59b718cbd93a7248ef3979">~virtual_cpu</a> ()</td></tr>
-<tr class="separator:ab18b1b7e0c59b718cbd93a7248ef3979"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af7074cc030e4d05e1c2b1ec6232cd63b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1virtual__cpu.html#af7074cc030e4d05e1c2b1ec6232cd63b">virtual_cpu</a> (<a class="el" href="classmalbolge_1_1virtual__cpu.html">virtual_cpu</a> &amp;&amp;other)=default</td></tr>
 <tr class="separator:af7074cc030e4d05e1c2b1ec6232cd63b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3f6edef9d7bf6792cbc5b5f83f24d3ab"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmalbolge_1_1virtual__cpu.html">virtual_cpu</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1virtual__cpu.html#a3f6edef9d7bf6792cbc5b5f83f24d3ab">operator=</a> (<a class="el" href="classmalbolge_1_1virtual__cpu.html">virtual_cpu</a> &amp;&amp;other)</td></tr>
-<tr class="separator:a3f6edef9d7bf6792cbc5b5f83f24d3ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a64bc3341ed665c611a9467491a520a3b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmalbolge_1_1virtual__cpu.html#a6e6d243fefb70b081550b4ed4a4b9088">execution_state</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1virtual__cpu.html#a64bc3341ed665c611a9467491a520a3b">state</a> () const</td></tr>
-<tr class="separator:a64bc3341ed665c611a9467491a520a3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeb6a9039adc52fd6e5f0fabc5e29cc74"><td class="memItemLeft" align="right" valign="top">std::future&lt; void &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1virtual__cpu.html#aeb6a9039adc52fd6e5f0fabc5e29cc74">run</a> (std::istream &amp;istr=std::cin, std::ostream &amp;ostr=std::cout, <a class="el" href="classmalbolge_1_1utility_1_1mutex__wrapper.html">utility::mutex_wrapper</a> mtx={})</td></tr>
-<tr class="separator:aeb6a9039adc52fd6e5f0fabc5e29cc74"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0dd8c3dd51d3ab03c1281fe114f97b9a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1virtual__cpu.html#a0dd8c3dd51d3ab03c1281fe114f97b9a">run</a> (std::function&lt; void(std::exception_ptr)&gt; stopped, std::function&lt; void()&gt; waiting_for_input, std::istream &amp;istr=std::cin, std::ostream &amp;ostr=std::cout, <a class="el" href="classmalbolge_1_1utility_1_1mutex__wrapper.html">utility::mutex_wrapper</a> mtx={})</td></tr>
-<tr class="separator:a0dd8c3dd51d3ab03c1281fe114f97b9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae728d1a4d88a889dc2f71a09502a95b4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1virtual__cpu.html#ae728d1a4d88a889dc2f71a09502a95b4">stop</a> ()</td></tr>
-<tr class="separator:ae728d1a4d88a889dc2f71a09502a95b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a888f7b95626ca40cb7e78dd6fdc1853a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structmalbolge_1_1debugger_1_1vcpu__control.html">debugger::vcpu_control</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1virtual__cpu.html#a888f7b95626ca40cb7e78dd6fdc1853a">configure_debugger</a> (<a class="el" href="classmalbolge_1_1virtual__cpu.html#a7fd822265304f96155b837ab10336491">running_callback_type</a> running, <a class="el" href="classmalbolge_1_1virtual__cpu.html#a999489db3b74efdc13f875d1ff23043b">step_data_callback_type</a> step_data)</td></tr>
-<tr class="separator:a888f7b95626ca40cb7e78dd6fdc1853a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae8dc35b6c09ee9cf741ba283b039bda4"><td class="memTemplParams" colspan="2">template&lt;class Rep , class Period &gt; </td></tr>
-<tr class="memitem:ae8dc35b6c09ee9cf741ba283b039bda4"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1virtual__cpu.html#ae8dc35b6c09ee9cf741ba283b039bda4">set_cycle_delay</a> (const std::chrono::duration&lt; Rep, Period &gt; &amp;delay)</td></tr>
-<tr class="separator:ae8dc35b6c09ee9cf741ba283b039bda4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a7c79cff01df38316ed60c0ce270601"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmalbolge_1_1virtual__cpu.html">virtual_cpu</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1virtual__cpu.html#a7a7c79cff01df38316ed60c0ce270601">operator=</a> (<a class="el" href="classmalbolge_1_1virtual__cpu.html">virtual_cpu</a> &amp;&amp;other)=default</td></tr>
+<tr class="separator:a7a7c79cff01df38316ed60c0ce270601"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab18b1b7e0c59b718cbd93a7248ef3979"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1virtual__cpu.html#ab18b1b7e0c59b718cbd93a7248ef3979">~virtual_cpu</a> ()</td></tr>
+<tr class="separator:ab18b1b7e0c59b718cbd93a7248ef3979"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81d6f0731681fdf68556dd69b2b419db"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1virtual__cpu.html#a81d6f0731681fdf68556dd69b2b419db">run</a> ()</td></tr>
+<tr class="separator:a81d6f0731681fdf68556dd69b2b419db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b855e913100af946e7040a79c9db6ab"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1virtual__cpu.html#a1b855e913100af946e7040a79c9db6ab">pause</a> ()</td></tr>
+<tr class="separator:a1b855e913100af946e7040a79c9db6ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e3a48bfd53fbeac738e9786a9cfb73c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1virtual__cpu.html#a0e3a48bfd53fbeac738e9786a9cfb73c">step</a> ()</td></tr>
+<tr class="separator:a0e3a48bfd53fbeac738e9786a9cfb73c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af7fa4a793e35d3dcc15171231e6be125"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1virtual__cpu.html#af7fa4a793e35d3dcc15171231e6be125">add_input</a> (std::string data)</td></tr>
+<tr class="separator:af7fa4a793e35d3dcc15171231e6be125"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a082e739a8a84de14625028c6dcb14e23"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1virtual__cpu.html#a082e739a8a84de14625028c6dcb14e23">add_breakpoint</a> (<a class="el" href="classmalbolge_1_1math_1_1ternary.html">math::ternary</a> address, std::size_t ignore_count=0)</td></tr>
+<tr class="separator:a082e739a8a84de14625028c6dcb14e23"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab9225c245fd2122ec1bd8015190a8c36"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1virtual__cpu.html#ab9225c245fd2122ec1bd8015190a8c36">remove_breakpoint</a> (<a class="el" href="classmalbolge_1_1math_1_1ternary.html">math::ternary</a> address)</td></tr>
+<tr class="separator:ab9225c245fd2122ec1bd8015190a8c36"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a311b50278e4dcb14b448dca5c03a567f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1virtual__cpu.html#a311b50278e4dcb14b448dca5c03a567f">address_value</a> (<a class="el" href="classmalbolge_1_1math_1_1ternary.html">math::ternary</a> address, <a class="el" href="classmalbolge_1_1virtual__cpu.html#a18f6da220c9e584ebc7f9dd1946caf65">address_value_callback_type</a> cb) const</td></tr>
+<tr class="separator:a311b50278e4dcb14b448dca5c03a567f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6832ba2490f52ba03fe202684baf582d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1virtual__cpu.html#a6832ba2490f52ba03fe202684baf582d">register_value</a> (<a class="el" href="classmalbolge_1_1virtual__cpu.html#a6cbf9c23468c0d0392b4eccd8937b929">vcpu_register</a> reg, <a class="el" href="classmalbolge_1_1virtual__cpu.html#a5eae5f6d3d414a60c28e9c3f5781733f">register_value_callback_type</a> cb) const</td></tr>
+<tr class="separator:a6832ba2490f52ba03fe202684baf582d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac3a519a88db8e42d8ffd4c6af0960269"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmalbolge_1_1utility_1_1signal_1_1connection.html">state_signal_type::connection</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1virtual__cpu.html#ac3a519a88db8e42d8ffd4c6af0960269">register_for_state_signal</a> (<a class="el" href="classmalbolge_1_1utility_1_1signal.html#a04417ef93185fd976a12b48ba66af53b">state_signal_type::slot_type</a> slot)</td></tr>
+<tr class="separator:ac3a519a88db8e42d8ffd4c6af0960269"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7b5082f29a0764808d13535d6b4833ac"><td class="memItemLeft" align="right" valign="top">output_signal_type::connection&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1virtual__cpu.html#a7b5082f29a0764808d13535d6b4833ac">register_for_output_signal</a> (<a class="el" href="classmalbolge_1_1utility_1_1signal.html#a04417ef93185fd976a12b48ba66af53b">output_signal_type::slot_type</a> slot)</td></tr>
+<tr class="separator:a7b5082f29a0764808d13535d6b4833ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a23c5b37ea7ee95084f627c07a5b1a328"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classmalbolge_1_1utility_1_1signal_1_1connection.html">breakpoint_hit_signal_type::connection</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1virtual__cpu.html#a23c5b37ea7ee95084f627c07a5b1a328">register_for_breakpoint_hit_signal</a> (<a class="el" href="classmalbolge_1_1utility_1_1signal.html#a04417ef93185fd976a12b48ba66af53b">breakpoint_hit_signal_type::slot_type</a> slot)</td></tr>
+<tr class="separator:a23c5b37ea7ee95084f627c07a5b1a328"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Represents a virtual CPU.</p>
 <p>This class can not be copied, but can be moved. </p>
 
-<p class="definition">Definition at line <a class="el" href="virtual__cpu_8hpp_source.html#l00024">24</a> of file <a class="el" href="virtual__cpu_8hpp_source.html">virtual_cpu.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="virtual__cpu_8hpp_source.html#l00017">17</a> of file <a class="el" href="virtual__cpu_8hpp_source.html">virtual_cpu.hpp</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
-<a id="a7fd822265304f96155b837ab10336491"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7fd822265304f96155b837ab10336491">&#9670;&nbsp;</a></span>running_callback_type</h2>
+<a id="a18f6da220c9e584ebc7f9dd1946caf65"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a18f6da220c9e584ebc7f9dd1946caf65">&#9670;&nbsp;</a></span>address_value_callback_type</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="classmalbolge_1_1virtual__cpu.html#a7fd822265304f96155b837ab10336491">malbolge::virtual_cpu::running_callback_type</a> =  std::function&lt;void (bool started)&gt;</td>
+          <td class="memname">using <a class="el" href="classmalbolge_1_1virtual__cpu.html#a18f6da220c9e584ebc7f9dd1946caf65">malbolge::virtual_cpu::address_value_callback_type</a> =  std::function&lt;void (<a class="el" href="classmalbolge_1_1math_1_1ternary.html">math::ternary</a> address, <a class="el" href="classmalbolge_1_1math_1_1ternary.html">math::ternary</a> value)&gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Callback type used to notify the debugger when the program has started and finished. </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Address value result callback type.</p>
+<dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">started</td><td>True if the program has started (i.e. READY), false if it has finished (i.e. STOPPED) </td></tr>
+    <tr><td class="paramname">address</td><td>Address in virtual memory that was requested </td></tr>
+    <tr><td class="paramname">value</td><td>Value at <em>address</em> </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="virtual__cpu_8hpp_source.html#l00032">32</a> of file <a class="el" href="virtual__cpu_8hpp_source.html">virtual_cpu.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="virtual__cpu_8hpp_source.html#l00069">69</a> of file <a class="el" href="virtual__cpu_8hpp_source.html">virtual_cpu.hpp</a>.</p>
 
 </div>
 </div>
-<a id="a999489db3b74efdc13f875d1ff23043b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a999489db3b74efdc13f875d1ff23043b">&#9670;&nbsp;</a></span>step_data_callback_type</h2>
+<a id="ae16e87a2c34d8b44e2cb70f084330fc0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae16e87a2c34d8b44e2cb70f084330fc0">&#9670;&nbsp;</a></span>breakpoint_hit_signal_type</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="classmalbolge_1_1virtual__cpu.html#a999489db3b74efdc13f875d1ff23043b">malbolge::virtual_cpu::step_data_callback_type</a> =  <a class="el" href="classmalbolge_1_1debugger_1_1client__control_1_1breakpoint.html#a2041cc577f895fc8cf3dd738720c6147">debugger::client_control::breakpoint::callback_type</a></td>
+          <td class="memname">using <a class="el" href="classmalbolge_1_1virtual__cpu.html#ae16e87a2c34d8b44e2cb70f084330fc0">malbolge::virtual_cpu::breakpoint_hit_signal_type</a> =  <a class="el" href="classmalbolge_1_1utility_1_1signal.html">utility::signal</a>&lt;<a class="el" href="classmalbolge_1_1math_1_1ternary.html">math::ternary</a>&gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Callback type used to provide the debugger with execution step data. </p>
+<p>Signal type fired when a breakpoint is hit.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname"><a class="el" href="classmalbolge_1_1math_1_1ternary.html">math::ternary</a></td><td>Address the breakpoint resides at </td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p class="definition">Definition at line <a class="el" href="virtual__cpu_8hpp_source.html#l00036">36</a> of file <a class="el" href="virtual__cpu_8hpp_source.html">virtual_cpu.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="virtual__cpu_8hpp_source.html#l00060">60</a> of file <a class="el" href="virtual__cpu_8hpp_source.html">virtual_cpu.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a08ff9d754c042ab2fad96ea793c49969"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a08ff9d754c042ab2fad96ea793c49969">&#9670;&nbsp;</a></span>output_signal_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classmalbolge_1_1virtual__cpu.html#a08ff9d754c042ab2fad96ea793c49969">malbolge::virtual_cpu::output_signal_type</a> =  <a class="el" href="classmalbolge_1_1utility_1_1signal.html">utility::signal</a>&lt;char&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Signal type carrying program output data.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">char</td><td>Character output from program </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="virtual__cpu_8hpp_source.html#l00054">54</a> of file <a class="el" href="virtual__cpu_8hpp_source.html">virtual_cpu.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a5eae5f6d3d414a60c28e9c3f5781733f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5eae5f6d3d414a60c28e9c3f5781733f">&#9670;&nbsp;</a></span>register_value_callback_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classmalbolge_1_1virtual__cpu.html#a5eae5f6d3d414a60c28e9c3f5781733f">malbolge::virtual_cpu::register_value_callback_type</a> =  std::function&lt;void (<a class="el" href="classmalbolge_1_1virtual__cpu.html#a6cbf9c23468c0d0392b4eccd8937b929">vcpu_register</a> reg, std::optional&lt;<a class="el" href="classmalbolge_1_1math_1_1ternary.html">math::ternary</a>&gt; address, <a class="el" href="classmalbolge_1_1math_1_1ternary.html">math::ternary</a> value)&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Register value result callback type.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">reg</td><td>Requested register </td></tr>
+    <tr><td class="paramname">address</td><td>If <em>reg</em> is C or D then it contains an address </td></tr>
+    <tr><td class="paramname">value</td><td>The value of the register if <em>address</em> is empty, otherwise the value at <em>address</em> </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="virtual__cpu_8hpp_source.html#l00081">81</a> of file <a class="el" href="virtual__cpu_8hpp_source.html">virtual_cpu.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a74d1e459337a4a3bdcae725a9e4b1678"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a74d1e459337a4a3bdcae725a9e4b1678">&#9670;&nbsp;</a></span>state_signal_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classmalbolge_1_1virtual__cpu.html#a74d1e459337a4a3bdcae725a9e4b1678">malbolge::virtual_cpu::state_signal_type</a> =  <a class="el" href="classmalbolge_1_1utility_1_1signal.html">utility::signal</a>&lt;<a class="el" href="classmalbolge_1_1virtual__cpu.html#a6e6d243fefb70b081550b4ed4a4b9088">execution_state</a>, std::exception_ptr&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Signal type to indicate the program running state, and any exception in case of error.</p>
+<p>In case of an error the execution state is always STOPPED. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">execution_state</td><td>Execution state </td></tr>
+    <tr><td class="paramname">std::exception_ptr</td><td>Exception pointer, null if no error </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="virtual__cpu_8hpp_source.html#l00048">48</a> of file <a class="el" href="virtual__cpu_8hpp_source.html">virtual_cpu.hpp</a>.</p>
 
 </div>
 </div>
@@ -186,13 +292,52 @@ Public Member Functions</h2></td></tr>
 </td></tr>
 <tr><td class="fieldname"><a id="a6e6d243fefb70b081550b4ed4a4b9088a43491564ebcfd38568918efbd6e840fd"></a>RUNNING&#160;</td><td class="fielddoc"><p>Program running. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="a6e6d243fefb70b081550b4ed4a4b9088a09d4d696b4e935115b9313e3c412509a"></a>STOPPED&#160;</td><td class="fielddoc"><p>Program stopped. </p>
+<tr><td class="fieldname"><a id="a6e6d243fefb70b081550b4ed4a4b9088a99b2439e63f73ad515f7ab2447a80673"></a>PAUSED&#160;</td><td class="fielddoc"><p>Program paused. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a6e6d243fefb70b081550b4ed4a4b9088aaf93f814f444f8703671f48b0fccc246"></a>WAITING_FOR_INPUT&#160;</td><td class="fielddoc"><p>Similar to paused, except the program will resume when input data provided </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a6e6d243fefb70b081550b4ed4a4b9088a09d4d696b4e935115b9313e3c412509a"></a>STOPPED&#160;</td><td class="fielddoc"><p>Program stopped, cannot be resumed or ran again. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="a6e6d243fefb70b081550b4ed4a4b9088ac3b0252c73b7ed744bf142be820cfedd"></a>NUM_STATES&#160;</td><td class="fielddoc"><p>Number of execution states. </p>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="virtual__cpu_8hpp_source.html#l00040">40</a> of file <a class="el" href="virtual__cpu_8hpp_source.html">virtual_cpu.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="virtual__cpu_8hpp_source.html#l00022">22</a> of file <a class="el" href="virtual__cpu_8hpp_source.html">virtual_cpu.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a6cbf9c23468c0d0392b4eccd8937b929"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6cbf9c23468c0d0392b4eccd8937b929">&#9670;&nbsp;</a></span>vcpu_register</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="classmalbolge_1_1virtual__cpu.html#a6cbf9c23468c0d0392b4eccd8937b929">malbolge::virtual_cpu::vcpu_register</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>vCPU register identifiers. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a6cbf9c23468c0d0392b4eccd8937b929a7fc56270e7a70fa81a5935b72eacbe29"></a>A&#160;</td><td class="fielddoc"><p>Accumulator. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a6cbf9c23468c0d0392b4eccd8937b929a0d61f8370cad1d412f80b84d143e1257"></a>C&#160;</td><td class="fielddoc"><p>Code pointer. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a6cbf9c23468c0d0392b4eccd8937b929af623e75af30e62bbd73d6df5b50bb7b5"></a>D&#160;</td><td class="fielddoc"><p>Data pointer. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a6cbf9c23468c0d0392b4eccd8937b929a98bace05bdc322c0ed3a2afa92376118"></a>NUM_REGISTERS&#160;</td><td class="fielddoc"><p>Number of registers. </p>
+</td></tr>
+</table>
+
+<p class="definition">Definition at line <a class="el" href="virtual__cpu_8hpp_source.html#l00034">34</a> of file <a class="el" href="virtual__cpu_8hpp_source.html">virtual_cpu.hpp</a>.</p>
 
 </div>
 </div>
@@ -221,30 +366,12 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p>Constructor.</p>
-<dl class="params"><dt>Parameters</dt><dd>
+<p>Although it is not emitted in the state signal, the instance begins in a <a class="el" href="classmalbolge_1_1virtual__cpu.html#a6e6d243fefb70b081550b4ed4a4b9088a2baa69eafc7204f3bd8648eba580c489" title="Ready to run.">execution_state::READY</a> state. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">vmem</td><td>Virtual memory containing the initialised memory space (including program data) </td></tr>
   </table>
   </dd>
 </dl>
-
-</div>
-</div>
-<a id="ab18b1b7e0c59b718cbd93a7248ef3979"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab18b1b7e0c59b718cbd93a7248ef3979">&#9670;&nbsp;</a></span>~virtual_cpu()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">malbolge::virtual_cpu::~virtual_cpu </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Destructor. </p>
 
 </div>
 </div>
@@ -281,24 +408,42 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<h2 class="groupheader">Member Function Documentation</h2>
-<a id="a888f7b95626ca40cb7e78dd6fdc1853a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a888f7b95626ca40cb7e78dd6fdc1853a">&#9670;&nbsp;</a></span>configure_debugger()</h2>
+<a id="ab18b1b7e0c59b718cbd93a7248ef3979"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab18b1b7e0c59b718cbd93a7248ef3979">&#9670;&nbsp;</a></span>~virtual_cpu()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structmalbolge_1_1debugger_1_1vcpu__control.html">debugger::vcpu_control</a> malbolge::virtual_cpu::configure_debugger </td>
+          <td class="memname">malbolge::virtual_cpu::~virtual_cpu </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classmalbolge_1_1virtual__cpu.html#a7fd822265304f96155b837ab10336491">running_callback_type</a>&#160;</td>
-          <td class="paramname"><em>running</em>, </td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Destructor. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a082e739a8a84de14625028c6dcb14e23"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a082e739a8a84de14625028c6dcb14e23">&#9670;&nbsp;</a></span>add_breakpoint()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void malbolge::virtual_cpu::add_breakpoint </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classmalbolge_1_1math_1_1ternary.html">math::ternary</a>&#160;</td>
+          <td class="paramname"><em>address</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classmalbolge_1_1virtual__cpu.html#a999489db3b74efdc13f875d1ff23043b">step_data_callback_type</a>&#160;</td>
-          <td class="paramname"><em>step_data</em>&#160;</td>
+          <td class="paramtype">std::size_t&#160;</td>
+          <td class="paramname"><em>ignore_count</em> = <code>0</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -307,29 +452,105 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Configure a debugger to gain control of the execution and view memory.</p>
-<dl class="params"><dt>Parameters</dt><dd>
+<p>Adds a breakpoint to the program.</p>
+<p>If another breakpoint is already at the given address, it is replaced. Breakpoints can be added to the program whilst in any non-STOPPED state, but results can be unpredicatable if the program is running.</p>
+<p>The breakpoint-hit signal is fired when a breakpoint is reached. The signal is fired when then code pointer reaches the address i.e. <em>before</em> the instruction is executed, so you need to step to see the result of the instruction execution. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">running</td><td>Callback to notify the debugger that the program has started or finished </td></tr>
-    <tr><td class="paramname">step_data</td><td>Callback to notify the debugger of the current memory access and which register (C or D) initiated the access </td></tr>
+    <tr><td class="paramname">address</td><td>Address to attach a breakpoint </td></tr>
+    <tr><td class="paramname">ignore_count</td><td>Number of times the breakpoint is hit before the breakpoint_hit_signal_type signal is fired </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>A configured vCPU controller </dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname">basic_exception</td><td>Thrown if the program is already running, or a debugger has already been configured </td></tr>
+    <tr><td class="paramname"><a class="el" href="classmalbolge_1_1execution__exception.html">execution_exception</a></td><td>Thrown if backend has been destroyed, usually as a result of use-after-move </td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
-<a id="a3f6edef9d7bf6792cbc5b5f83f24d3ab"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3f6edef9d7bf6792cbc5b5f83f24d3ab">&#9670;&nbsp;</a></span>operator=()</h2>
+<a id="af7fa4a793e35d3dcc15171231e6be125"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af7fa4a793e35d3dcc15171231e6be125">&#9670;&nbsp;</a></span>add_input()</h2>
 
 <div class="memitem">
 <div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void malbolge::virtual_cpu::add_input </td>
+          <td>(</td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>data</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Adds <em>data</em> to the input queue for the program.</p>
+<p>If the program is waiting for input, then calling this will resume program execution. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">data</td><td>Input add to add </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="classmalbolge_1_1execution__exception.html">execution_exception</a></td><td>Thrown if backend has been destroyed, usually as a result of use-after-move </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a311b50278e4dcb14b448dca5c03a567f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a311b50278e4dcb14b448dca5c03a567f">&#9670;&nbsp;</a></span>address_value()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void malbolge::virtual_cpu::address_value </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classmalbolge_1_1math_1_1ternary.html">math::ternary</a>&#160;</td>
+          <td class="paramname"><em>address</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classmalbolge_1_1virtual__cpu.html#a18f6da220c9e584ebc7f9dd1946caf65">address_value_callback_type</a>&#160;</td>
+          <td class="paramname"><em>cb</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Asynchronously returns the value at a given vmem address via <em>cb</em>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">address</td><td>vmem address </td></tr>
+    <tr><td class="paramname">cb</td><td>Called with the result </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="classmalbolge_1_1execution__exception.html">execution_exception</a></td><td>Thrown if backend has been destroyed, usually as a result of use-after-move </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a7a7c79cff01df38316ed60c0ce270601"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7a7c79cff01df38316ed60c0ce270601">&#9670;&nbsp;</a></span>operator=()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classmalbolge_1_1virtual__cpu.html">virtual_cpu</a>&amp; malbolge::virtual_cpu::operator= </td>
@@ -339,6 +560,11 @@ Public Member Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">default</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Move assignment operator.</p>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -351,8 +577,204 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a0dd8c3dd51d3ab03c1281fe114f97b9a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0dd8c3dd51d3ab03c1281fe114f97b9a">&#9670;&nbsp;</a></span>run() <span class="overload">[1/2]</span></h2>
+<a id="a1b855e913100af946e7040a79c9db6ab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1b855e913100af946e7040a79c9db6ab">&#9670;&nbsp;</a></span>pause()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void malbolge::virtual_cpu::pause </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Pauses a running program.</p>
+<p>If the program is already paused or waiting-for-input, then this is a no-op. </p><dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="classmalbolge_1_1execution__exception.html">execution_exception</a></td><td>Thrown if backend has been destroyed, usually as a result of use-after-move </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a23c5b37ea7ee95084f627c07a5b1a328"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a23c5b37ea7ee95084f627c07a5b1a328">&#9670;&nbsp;</a></span>register_for_breakpoint_hit_signal()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmalbolge_1_1utility_1_1signal_1_1connection.html">breakpoint_hit_signal_type::connection</a> malbolge::virtual_cpu::register_for_breakpoint_hit_signal </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classmalbolge_1_1utility_1_1signal.html#a04417ef93185fd976a12b48ba66af53b">breakpoint_hit_signal_type::slot_type</a>&#160;</td>
+          <td class="paramname"><em>slot</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Register <em>slot</em> to be called when the breakpoint hit signal fires.</p>
+<p>You can disconnect from the signal using the returned connection instance. </p><dl class="section note"><dt>Note</dt><dd><em>slot</em> is called from the vCPU's local event loop thread, so you may need to post into the event loop you intend on processing it with </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">slot</td><td>Callable instance called when the signal fires </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Connection data </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="classmalbolge_1_1execution__exception.html">execution_exception</a></td><td>Thrown if backend has been destroyed, usually as a result of use-after-move </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a7b5082f29a0764808d13535d6b4833ac"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7b5082f29a0764808d13535d6b4833ac">&#9670;&nbsp;</a></span>register_for_output_signal()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">output_signal_type::connection malbolge::virtual_cpu::register_for_output_signal </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classmalbolge_1_1utility_1_1signal.html#a04417ef93185fd976a12b48ba66af53b">output_signal_type::slot_type</a>&#160;</td>
+          <td class="paramname"><em>slot</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Register <em>slot</em> to be called when the output signal fires.</p>
+<p>You can disconnect from the signal using the returned connection instance. </p><dl class="section note"><dt>Note</dt><dd><em>slot</em> is called from the vCPU's local event loop thread, so you may need to post into the event loop you intend on processing it with </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">slot</td><td>Callable instance called when the signal fires </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Connection data </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="classmalbolge_1_1execution__exception.html">execution_exception</a></td><td>Thrown if backend has been destroyed, usually as a result of use-after-move </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ac3a519a88db8e42d8ffd4c6af0960269"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac3a519a88db8e42d8ffd4c6af0960269">&#9670;&nbsp;</a></span>register_for_state_signal()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classmalbolge_1_1utility_1_1signal_1_1connection.html">state_signal_type::connection</a> malbolge::virtual_cpu::register_for_state_signal </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classmalbolge_1_1utility_1_1signal.html#a04417ef93185fd976a12b48ba66af53b">state_signal_type::slot_type</a>&#160;</td>
+          <td class="paramname"><em>slot</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Register <em>slot</em> to be called when the state signal fires.</p>
+<p>You can disconnect from the signal using the returned connection instance. </p><dl class="section note"><dt>Note</dt><dd><em>slot</em> is called from the vCPU's local event loop thread, so you may need to post into the event loop you intend on processing it with </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">slot</td><td>Callable instance called when the signal fires </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Connection data </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="classmalbolge_1_1execution__exception.html">execution_exception</a></td><td>Thrown if backend has been destroyed, usually as a result of use-after-move </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a6832ba2490f52ba03fe202684baf582d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6832ba2490f52ba03fe202684baf582d">&#9670;&nbsp;</a></span>register_value()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void malbolge::virtual_cpu::register_value </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classmalbolge_1_1virtual__cpu.html#a6cbf9c23468c0d0392b4eccd8937b929">vcpu_register</a>&#160;</td>
+          <td class="paramname"><em>reg</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classmalbolge_1_1virtual__cpu.html#a5eae5f6d3d414a60c28e9c3f5781733f">register_value_callback_type</a>&#160;</td>
+          <td class="paramname"><em>cb</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Asynchronously returns the address and/or value of a given register.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">reg</td><td>Register to query </td></tr>
+    <tr><td class="paramname">cb</td><td>For C and D registers returns the address held in the register and the value it points at, for the A register it only returns the value </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="classmalbolge_1_1execution__exception.html">execution_exception</a></td><td>Thrown if backend has been destroyed, usually as a result of use-after-move </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ab9225c245fd2122ec1bd8015190a8c36"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab9225c245fd2122ec1bd8015190a8c36">&#9670;&nbsp;</a></span>remove_breakpoint()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void malbolge::virtual_cpu::remove_breakpoint </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classmalbolge_1_1math_1_1ternary.html">math::ternary</a>&#160;</td>
+          <td class="paramname"><em>address</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Removes a breakpoint at the given address.</p>
+<p>This is a no-op if there is no breakpoint at <em>address</em>. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">address</td><td>vmem address to remove a breakpoint from </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="classmalbolge_1_1execution__exception.html">execution_exception</a></td><td>Thrown if backend has been destroyed, usually as a result of use-after-move </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a81d6f0731681fdf68556dd69b2b419db"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a81d6f0731681fdf68556dd69b2b419db">&#9670;&nbsp;</a></span>run()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -360,202 +782,42 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">void malbolge::virtual_cpu::run </td>
           <td>(</td>
-          <td class="paramtype">std::function&lt; void(std::exception_ptr)&gt;&#160;</td>
-          <td class="paramname"><em>stopped</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::function&lt; void()&gt;&#160;</td>
-          <td class="paramname"><em>waiting_for_input</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::istream &amp;&#160;</td>
-          <td class="paramname"><em>istr</em> = <code>std::cin</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::ostream &amp;&#160;</td>
-          <td class="paramname"><em>ostr</em> = <code>std::cout</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classmalbolge_1_1utility_1_1mutex__wrapper.html">utility::mutex_wrapper</a>&#160;</td>
-          <td class="paramname"><em>mtx</em> = <code>{}</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Overload.</p>
-<p>Execute the program asynchronously, but uses callbacks instead of a future. </p><dl class="section note"><dt>Note</dt><dd>The callbacks are called from the execution thread </dd></dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">stopped</td><td>Callback called when execution has stopped. Its argument will be nullptr if the program executed successfully </td></tr>
-    <tr><td class="paramname">waiting_for_input</td><td>Callback called when execution is paused waiting for user input </td></tr>
-    <tr><td class="paramname">istr</td><td>Input stream </td></tr>
-    <tr><td class="paramname">ostr</td><td>Output stream </td></tr>
-    <tr><td class="paramname">mtx</td><td>Mutex for accessing the streams. Only required if at least one stream is not cin/cout </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname"><a class="el" href="classmalbolge_1_1execution__exception.html">execution_exception</a></td><td>Thrown if the program has already ran, or cin/cout is used as a stream but mtx is not valid </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="aeb6a9039adc52fd6e5f0fabc5e29cc74"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aeb6a9039adc52fd6e5f0fabc5e29cc74">&#9670;&nbsp;</a></span>run() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::future&lt;void&gt; malbolge::virtual_cpu::run </td>
-          <td>(</td>
-          <td class="paramtype">std::istream &amp;&#160;</td>
-          <td class="paramname"><em>istr</em> = <code>std::cin</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::ostream &amp;&#160;</td>
-          <td class="paramname"><em>ostr</em> = <code>std::cout</code>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classmalbolge_1_1utility_1_1mutex__wrapper.html">utility::mutex_wrapper</a>&#160;</td>
-          <td class="paramname"><em>mtx</em> = <code>{}</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Execute the program asynchronously.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">istr</td><td>Input stream </td></tr>
-    <tr><td class="paramname">ostr</td><td>Output stream </td></tr>
-    <tr><td class="paramname">mtx</td><td>Mutex for accessing the streams. Only required if at least one stream is not cin/cout </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Future holding nothing, or an exception </dd></dl>
-<dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname"><a class="el" href="classmalbolge_1_1execution__exception.html">execution_exception</a></td><td>Thrown if the program has already ran, or cin/cout is used as a stream but mtx is not valid </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="ae8dc35b6c09ee9cf741ba283b039bda4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae8dc35b6c09ee9cf741ba283b039bda4">&#9670;&nbsp;</a></span>set_cycle_delay()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class Rep , class Period &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void malbolge::virtual_cpu::set_cycle_delay </td>
-          <td>(</td>
-          <td class="paramtype">const std::chrono::duration&lt; Rep, Period &gt; &amp;&#160;</td>
-          <td class="paramname"><em>delay</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Applies a delay between instruction cycles, useful for debugging/tracing.</p>
-<p>As expected, a zero value duration disables the delay.</p>
-<p>Despite the template params, this method is usually called with the Chrono literals, e.g.: </p><div class="fragment"><div class="line">vcpu.set_cycle_delay(100ms);</div>
-</div><!-- fragment --> <dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">Rep</td><td>Number of ticks </td></tr>
-    <tr><td class="paramname">Period</td><td>Tick period ratio (i.e. the number of seconds per tick) </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">delay</td><td>Delay duration </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p class="definition">Definition at line <a class="el" href="virtual__cpu_8hpp_source.html#l00154">154</a> of file <a class="el" href="virtual__cpu_8hpp_source.html">virtual_cpu.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a64bc3341ed665c611a9467491a520a3b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a64bc3341ed665c611a9467491a520a3b">&#9670;&nbsp;</a></span>state()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classmalbolge_1_1virtual__cpu.html#a6e6d243fefb70b081550b4ed4a4b9088">execution_state</a> malbolge::virtual_cpu::state </td>
-          <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td> const</td>
+          <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
-<p>Returns the vCPU execution state.</p>
-<dl class="section return"><dt>Returns</dt><dd>Execution state </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="virtual__cpu_8hpp_source.html#l00078">78</a> of file <a class="el" href="virtual__cpu_8hpp_source.html">virtual_cpu.hpp</a>.</p>
+<p>Runs or resumes program execution.</p>
+<p>If the program is already running or waiting-for-input, then this is a no-op. </p><dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="classmalbolge_1_1execution__exception.html">execution_exception</a></td><td>Thrown if backend has been destroyed, usually as a result of use-after-move </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
-<a id="ae728d1a4d88a889dc2f71a09502a95b4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae728d1a4d88a889dc2f71a09502a95b4">&#9670;&nbsp;</a></span>stop()</h2>
+<a id="a0e3a48bfd53fbeac738e9786a9cfb73c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0e3a48bfd53fbeac738e9786a9cfb73c">&#9670;&nbsp;</a></span>step()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void malbolge::virtual_cpu::stop </td>
+          <td class="memname">void malbolge::virtual_cpu::step </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Asynchronously stops execution.</p>
-<p>This is ignored if a program is not running. </p>
+<p>Advances the program by a single execution.</p>
+<p>If the program is running, this will pause it and then advance by a single execution. If the program is waiting-for-input, then this is a no-op. </p><dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="classmalbolge_1_1execution__exception.html">execution_exception</a></td><td>Thrown if backend has been destroyed, usually as a result of use-after-move </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

@@ -107,6 +107,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a19617d7f1584b74e7f96293742088aed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a53fce88cb6f04f25daef029aa80798a4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacemalbolge_1_1log.html#a237f237f9c3fda0478e4dba3aaffc3f0">log::level</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1argument__parser.html#a53fce88cb6f04f25daef029aa80798a4">log_level</a> () const</td></tr>
 <tr class="separator:a53fce88cb6f04f25daef029aa80798a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afcabd1fb4fd9963bec1907ef5c822e9c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1argument__parser.html#afcabd1fb4fd9963bec1907ef5c822e9c">force_non_normalised</a> () const</td></tr>
+<tr class="separator:afcabd1fb4fd9963bec1907ef5c822e9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a055a1a61bf70314fc4f4493fbd8d5cdf"><td class="memItemLeft" align="right" valign="top">const std::optional&lt; std::filesystem::path &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1argument__parser.html#a055a1a61bf70314fc4f4493fbd8d5cdf">debugger_script</a> () const</td></tr>
 <tr class="separator:a055a1a61bf70314fc4f4493fbd8d5cdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -227,7 +229,36 @@ Public Member Functions</h2></td></tr>
 <p>Returns the debugger script path, or an empty optional if not specified.</p>
 <dl class="section return"><dt>Returns</dt><dd>Debugger script path, if specified </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00099">99</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00109">109</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
+
+</div>
+</div>
+<a id="afcabd1fb4fd9963bec1907ef5c822e9c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afcabd1fb4fd9963bec1907ef5c822e9c">&#9670;&nbsp;</a></span>force_non_normalised()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool malbolge::argument_parser::force_non_normalised </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Overrides the normalised input detection to load the program data as non-normalised.</p>
+<dl class="section return"><dt>Returns</dt><dd>True to force non-normalised </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="argument__parser_8hpp_source.html#l00100">100</a> of file <a class="el" href="argument__parser_8hpp_source.html">argument_parser.hpp</a>.</p>
 
 </div>
 </div>

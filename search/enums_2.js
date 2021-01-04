@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['id_539',['id',['../namespacemalbolge_1_1debugger_1_1vcpu__register.html#a4e8367bf978b0da112a69306e4a1d2d4',1,'malbolge::debugger::vcpu_register']]]
+  ['level_529',['level',['../namespacemalbolge_1_1log.html#a237f237f9c3fda0478e4dba3aaffc3f0',1,'malbolge::log']]],
+  ['load_5fnormalised_5fmode_530',['load_normalised_mode',['../namespacemalbolge.html#a03d458669b6f1ee236177dbb2e9bb9d8',1,'malbolge']]]
 ];
