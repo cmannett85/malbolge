@@ -6,6 +6,7 @@
 #pragma once
 
 #include <iostream>
+#include <mutex>
 
 namespace malbolge
 {
@@ -16,6 +17,7 @@ namespace log
 namespace detail
 {
 std::ostream& timestamp(std::ostream& stream);
+std::mutex& log_lock();
 }
 
 /** Log level.
@@ -85,6 +87,8 @@ colour log_level_to_colour(level lvl);
  * log::basic_print(std::cout, " - Hello ", 42, "!");
  * // Prints "2020-12-19 09:57:15.486571467 - Hello 42!"
  * @endcode
+ *
+ * This function is threadsafe.
  * @tparam Args Message argument types
  * @param stream Output stream
  * @param c Text colour
@@ -94,6 +98,7 @@ colour log_level_to_colour(level lvl);
 template <typename... Args>
 void basic_print(std::ostream& stream, colour c, Args&&... args)
 {
+    auto lock = std::lock_guard{detail::log_lock()};
     ((stream << detail::colour_to_ansi(c) << detail::timestamp)
         << ... << std::forward<Args>(args))
     << detail::colour_to_ansi() << std::endl;

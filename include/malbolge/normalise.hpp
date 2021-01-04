@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include "malbolge/algorithm/trim.hpp"
 #include "malbolge/cpu_instruction.hpp"
 #include "malbolge/exception.hpp"
 
@@ -120,14 +121,18 @@ void normalise_source_resize(InputRange& source)
  * invalid characters are found, however be aware that this function changes the
  * source in-place so any errors found will @em not undo the existing changes.
  *
- * Denormalisation will result in a program the same size as the input source.
+ * Due to the prevalence of adding a newline as the last character of a file,
+ * this function will ignore any contiguous quantity of whitespace characters
+ * at the end of a file. As such denormalisation can result in output smaller
+ * than the input.
  * @tparam InputIt Input iterator type
  * @param first Source input begin iterator
  * @param last Source input one-past-the-end iterator
+ * @return One-past-the-end result iterator
  * @exception parse_exception Thrown if the program contains errors
  */
 template <typename InputIt>
-void denormalise_source(InputIt first, InputIt last)
+InputIt denormalise_source(InputIt first, InputIt last)
 {
 #ifdef EMSCRIPTEN
     static_assert(!std::is_const_v<typename std::iterator_traits<InputIt>::value_type>,
@@ -135,6 +140,8 @@ void denormalise_source(InputIt first, InputIt last)
     static_assert(!std::is_const_v<std::iter_value_t<InputIt>>,
 #endif
                   "InputIt must not be a const iterator");
+
+    algorithm::trim_right(first, last, [](auto c) { return std::isspace(c); });
 
     constexpr auto map = std::array{
         std::array<char, 2>{cpu_instruction::rotate,         '\''},
@@ -168,21 +175,42 @@ void denormalise_source(InputIt first, InputIt last)
             *first = static_cast<char>(sub);
         }
     }
+
+    return first;
 }
 
 /** Range-based overload.
  *
  * @tparam InputRange Input range type
  * @param source Source input range
+ * @return One-past-the-end result iterator
  * @exception parse_exception Thrown if the program contains errors
  */
 template <typename InputRange>
-void denormalise_source(InputRange&& source)
+typename InputRange::iterator denormalise_source(InputRange& source)
 {
     using std::begin;
     using std::end;
 
-    denormalise_source(begin(source), end(source));
+    return denormalise_source(begin(source), end(source));
+}
+
+/** Same as denormalise_source(InputRange&& source) but resizes @a source.
+ *
+ * @note This function requires @a source to conform to
+ * <TT>SequenceContainer</TT> to support an <TT>erase(q1, q2)</TT> method
+ * @tparam InputRange Input range type
+ * @param source Source input range
+ * @return One-past-the-end result iterator
+ * @exception parse_exception Thrown if the program contains errors
+ */
+template <typename InputRange>
+void denormalise_source_resize(InputRange& source)
+{
+    using std::end;
+
+    auto it = denormalise_source(source);
+    source.erase(it, end(source));
 }
 
 /** Returns true if the input source is likely to be normalised.
@@ -190,7 +218,11 @@ void denormalise_source(InputRange&& source)
  * This function reads the input source and returns true if it only contains
  * Malbolge vCPU instructions.  There is a @em very small chance that a
  * non-normalised program contains only vCPU instructions so do not use this
- * function as critical check.
+ * function as a critical check.
+ *
+ * Due to the prevalence of adding a newline as the last character of a file,
+ * this function will ignore any contiguous quantity of whitespace characters
+ * at the end of a file.
  * @note Will return true on an empty input
  * @tparam InputIt Input iterator type
  * @param first Source input begin iterator
@@ -200,6 +232,7 @@ void denormalise_source(InputRange&& source)
 template <typename InputIt>
 bool is_likely_normalised_source(InputIt first, InputIt last)
 {
+    algorithm::trim_right(first, last, [](auto c) { return std::isspace(c); });
     for (; first != last; ++first) {
         if (!is_cpu_instruction(*first)) {
             return false;

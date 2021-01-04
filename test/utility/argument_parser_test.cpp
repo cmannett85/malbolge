@@ -39,6 +39,8 @@ BOOST_AUTO_TEST_CASE(no_args)
     BOOST_CHECK_EQUAL(ap.program().source, argument_parser::program_source::STDIN);
     BOOST_CHECK_EQUAL(ap.program().data, ""s);
     BOOST_CHECK_EQUAL(ap.log_level(), log::ERROR);
+    BOOST_CHECK(!ap.force_non_normalised());
+    BOOST_CHECK(!ap.debugger_script());
 }
 
 BOOST_AUTO_TEST_CASE(unknown)
@@ -59,6 +61,8 @@ BOOST_AUTO_TEST_CASE(help)
         BOOST_CHECK_EQUAL(ap.program().source, argument_parser::program_source::STDIN);
         BOOST_CHECK_EQUAL(ap.program().data, ""s);
         BOOST_CHECK_EQUAL(ap.log_level(), log::ERROR);
+        BOOST_CHECK(!ap.force_non_normalised());
+        BOOST_CHECK(!ap.debugger_script());
     }
 }
 
@@ -72,6 +76,8 @@ BOOST_AUTO_TEST_CASE(version)
         BOOST_CHECK_EQUAL(ap.program().source, argument_parser::program_source::STDIN);
         BOOST_CHECK_EQUAL(ap.program().data, ""s);
         BOOST_CHECK_EQUAL(ap.log_level(), log::ERROR);
+        BOOST_CHECK(!ap.force_non_normalised());
+        BOOST_CHECK(!ap.debugger_script());
     }
 
     try {
@@ -96,6 +102,8 @@ BOOST_AUTO_TEST_CASE(log_levels)
         BOOST_CHECK_EQUAL(ap.program().source, argument_parser::program_source::STDIN);
         BOOST_CHECK_EQUAL(ap.program().data, ""s);
         BOOST_CHECK_EQUAL(ap.log_level(), static_cast<log::level>(log::ERROR-l));
+        BOOST_CHECK(!ap.force_non_normalised());
+        BOOST_CHECK(!ap.debugger_script());
 
         ++l;
     }
@@ -116,6 +124,18 @@ BOOST_AUTO_TEST_CASE(log_levels)
     } catch (system_exception&) {}
 }
 
+BOOST_AUTO_TEST_CASE(force_nn)
+{
+    auto ap = arg_dispatcher({"--force-non-normalised"});
+    BOOST_CHECK_EQUAL(ap.help(), false);
+    BOOST_CHECK_EQUAL(ap.version(), false);
+    BOOST_CHECK_EQUAL(ap.program().source, argument_parser::program_source::STDIN);
+    BOOST_CHECK_EQUAL(ap.program().data, ""s);
+    BOOST_CHECK_EQUAL(ap.log_level(), log::ERROR);
+    BOOST_CHECK(ap.force_non_normalised());
+    BOOST_CHECK(!ap.debugger_script());
+}
+
 BOOST_AUTO_TEST_CASE(file)
 {
     const auto path = "/home/user/anon/prog.mal"s;
@@ -126,6 +146,8 @@ BOOST_AUTO_TEST_CASE(file)
     BOOST_CHECK_EQUAL(ap.program().source, argument_parser::program_source::DISK);
     BOOST_CHECK_EQUAL(ap.program().data, path);
     BOOST_CHECK_EQUAL(ap.log_level(), log::ERROR);
+    BOOST_CHECK(!ap.force_non_normalised());
+    BOOST_CHECK(!ap.debugger_script());
 
     try {
         auto ap = arg_dispatcher({path, "-l"});
@@ -153,6 +175,8 @@ BOOST_AUTO_TEST_CASE(string)
     BOOST_CHECK_EQUAL(ap.program().source, argument_parser::program_source::STRING);
     BOOST_CHECK_EQUAL(ap.program().data, source);
     BOOST_CHECK_EQUAL(ap.log_level(), log::ERROR);
+    BOOST_CHECK(!ap.force_non_normalised());
+    BOOST_CHECK(!ap.debugger_script());
 
     try {
         auto ap = arg_dispatcher({"--string"});
@@ -170,6 +194,8 @@ BOOST_AUTO_TEST_CASE(logging_and_file)
     BOOST_CHECK_EQUAL(ap.program().source, argument_parser::program_source::DISK);
     BOOST_CHECK_EQUAL(ap.program().data, path);
     BOOST_CHECK_EQUAL(ap.log_level(), log::DEBUG);
+    BOOST_CHECK(!ap.force_non_normalised());
+    BOOST_CHECK(!ap.debugger_script());
 }
 
 BOOST_AUTO_TEST_CASE(logging_and_string)
@@ -182,6 +208,37 @@ BOOST_AUTO_TEST_CASE(logging_and_string)
     BOOST_CHECK_EQUAL(ap.program().source, argument_parser::program_source::STRING);
     BOOST_CHECK_EQUAL(ap.program().data, source);
     BOOST_CHECK_EQUAL(ap.log_level(), log::DEBUG);
+    BOOST_CHECK(!ap.force_non_normalised());
+    BOOST_CHECK(!ap.debugger_script());
+}
+
+BOOST_AUTO_TEST_CASE(debugger_script)
+{
+    const auto script = "/path/to/script"s;
+    auto ap = arg_dispatcher({"--debugger-script", script});
+    BOOST_CHECK_EQUAL(ap.help(), false);
+    BOOST_CHECK_EQUAL(ap.version(), false);
+    BOOST_CHECK_EQUAL(ap.program().source, argument_parser::program_source::STDIN);
+    BOOST_CHECK_EQUAL(ap.program().data, ""s);
+    BOOST_CHECK_EQUAL(ap.log_level(), log::ERROR);
+    BOOST_CHECK(!ap.force_non_normalised());
+    BOOST_REQUIRE(ap.debugger_script());
+    BOOST_CHECK_EQUAL(*(ap.debugger_script()), script);
+}
+
+BOOST_AUTO_TEST_CASE(debugger_script_and_file)
+{
+    const auto file_path = "/home/user/anon/prog.mal";
+    const auto script = "/path/to/script"s;
+    auto ap = arg_dispatcher({"--debugger-script", script, file_path});
+    BOOST_CHECK_EQUAL(ap.help(), false);
+    BOOST_CHECK_EQUAL(ap.version(), false);
+    BOOST_CHECK_EQUAL(ap.program().source, argument_parser::program_source::DISK);
+    BOOST_CHECK_EQUAL(ap.program().data, file_path);
+    BOOST_CHECK_EQUAL(ap.log_level(), log::ERROR);
+    BOOST_CHECK(!ap.force_non_normalised());
+    BOOST_REQUIRE(ap.debugger_script());
+    BOOST_CHECK_EQUAL(*(ap.debugger_script()), script);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

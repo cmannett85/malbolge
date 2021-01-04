@@ -69,12 +69,38 @@ class CString {
     }
 }
 
-/** Log levels.
+/** Logging sources.
  */
-const LogLevel = {
-    "info": 1,       ///< Informational messages
-    "emscripten": 2, ///< Messages from the Emscripten runtime
-    "error": 3       ///< Error messages
+const LogSource = {
+    "malbolgeWasm": 0,  ///< Logging from the C++/WASM code
+    "malbolgeJS":   1,  ///< Logging from Malbolge's JS code
+    "emscripten":   2   ///< Logging from Emscripten's runtime
+};
+
+/** Log levels from Malbolge's JS code.
+ */
+const JSLogLevel = {
+    "info":     0,  ///< Informational messages
+    "error":    1   ///< Error messages
+}
+
+/** vCPU execution states.
+ */
+const vCPUExecutionState = {
+    "ready":            0,  ///< Ready to run
+    "running":          1,  ///< Program running
+    "paused":           2,  ///< Program paused
+    "waitingForInput":  3,  ///< Similar to paused, except the program will
+                            ///< resume when input data provided
+    "stopped":          4   ///< Program stopped, cannot be resumed or ran again
+};
+
+/** Program load normalised modes.
+ */
+const loadNormalisedMode = {
+    "auto": 0,  ///< Automatically detect if normalised, uses malbolge_is_likely_normalised_source
+    "on":   1,  ///< Force load as normalised
+    "off":  2   ///< Force load as non-normalised
 };
 
 /** Sets a running state.
@@ -92,6 +118,7 @@ function programRunning(isRunning) {
         } else {
             document.getElementById("programButton").innerText = "Run";
         }
+        document.getElementById("inputButton").disabled = true;
     }
 
     document.getElementById("programButton").value = isRunning ? "stop" : "run";
@@ -100,7 +127,7 @@ function programRunning(isRunning) {
     
     document.getElementById("runTooltip").innerText = isRunning ?
         "Stop the executing program" :
-        "Execute the program "
+        "Execute the program"
 }
 
 /** Returns true if the program is running.
@@ -121,13 +148,19 @@ function wrapWorkerHandler() {
 
     let standardHandlers = worker.onmessage;
     worker.onmessage = function (e) {
-        if (e.data.cmd === "malbolgeStopped") {
-            programRunning(false);
-            _malbolge_free_vcpu(Module.malbolgeVcpu);
-            Module.malbolgeVcpu = undefined;
-        } else if (e.data.cmd === "malbolgeWaitingForInput") {
-            document.getElementById("inputButton").disabled = false;
-            console.log("Waiting for input");
+        if (e.data.cmd === "malbolgevCPUState") {
+            if (e.data.state == vCPUExecutionState.stopped) {
+                programRunning(false);
+                if (Module.malbolgeVcpu) {
+                    _malbolge_free_vcpu(Module.malbolgeVcpu);
+                    Module.malbolgeVcpu = undefined;
+                }
+            } else if (e.data.state == vCPUExecutionState.waitingForInput) {
+                document.getElementById("inputButton").disabled = false;
+                console.log("Waiting for input");
+            }
+        } else if (e.data.cmd === "malbolgeOutput") {
+            document.getElementById("output").value += e.data.data;
         } else {
             standardHandlers(e);
         }
@@ -162,7 +195,7 @@ function programTextInput() {
     document.getElementById("programButton").innerText = normalised ? "Run Normalised" : "Run";
 }
 
-/** Normalies or denormalises the program source depending on the corresponding
+/** Normalises or denormalises the program source depending on the corresponding
  * dropdown box selection.
  */
 function normaliseProgram() {
@@ -218,24 +251,20 @@ function runStopMalbolge() {
     const programText = new CString(document.getElementById("program").value);
     if (programText.pointer == null) {
         consoleWrite("Failed to allocate program source heap",
-            LogLevel.error);
+            LogSource.malbolgeJS,
+            JSLogLevel.error);
         programRunning(false);
         return;
     }
 
     // Load and validate the program
-    let vmem = null;
-    if (Module.malbolgeProgramNormalised) {
-        vmem = _malbolge_load_normalised_program(programText.pointer,
-            programText.size,
-            0,
-            0);
-    } else {
-        vmem = _malbolge_load_program(programText.pointer,
-            programText.size,
-            0,
-            0);
-    }
+    vmem = _malbolge_load_program(programText.pointer,
+        programText.size,
+        Module.malbolgeProgramNormalised ?
+            loadNormalisedMode.on :
+            loadNormalisedMode.off,
+        0,
+        0);
     programText.destroy();
 
     if (!vmem) {
@@ -266,8 +295,10 @@ function runStopMalbolge() {
  */
 function stopMalbolge() {
     programRunning(false);
-    document.getElementById("inputButton").disabled = true;
-    _malbolge_vcpu_stop(Module.malbolgeVcpu);
+    if (Module.malbolgeVcpu) {
+        _malbolge_free_vcpu(Module.malbolgeVcpu);
+        Module.malbolgeVcpu = undefined;
+    }
 }
 
 /** Passes the input text provided by the "input" element to the currently
@@ -279,11 +310,12 @@ function setInputText() {
         const ctext = new CString(text + "\n");
         if (ctext.pointer == null) {
             consoleWrite("Failed to allocate input text heap",
-                LogLevel.error);
+                LogSource.malbolgeJS,
+                JSLogLevel.error);
             return;
         }
 
-        _malbolge_vcpu_input(Module.malbolgeVcpu, ctext.pointer, ctext.size);
+        _malbolge_vcpu_add_input(Module.malbolgeVcpu, ctext.pointer, ctext.size);
         ctext.destroy();
 
         document.getElementById("input").value = "";
@@ -296,22 +328,14 @@ function setInputText() {
  */
 function finishedLoading() {
     // Print the version once the WASM initialisation has finished
-    stdOut("Malbolge Virtual Machine v" +
+    document.getElementById("output").value = "Malbolge Virtual Machine v" +
         UTF8ToString(_malbolge_version()) +
-        "\nCopyright Cam Mannett 2020");
+        "\nCopyright Cam Mannett 2020";
 
     // Increase the log level
     _malbolge_set_log_level(2);
 
     programRunning(false);
-}
-
-/** Emscripten callback for Malbolge for handling std::cout.
- * 
- * @param {string} msg Program output
- */
-function stdOut(msg) {
-    document.getElementById("output").value += msg + "\n";
 }
 
 /** Emscripten callback for Malbolge for handling std::clog.
@@ -322,42 +346,74 @@ function stdClog(msg) {
     // Use regex to determine if this is Malbolge logging or Emscripten
     const res = msg.match(/\.\d{3}\[[A-Z ]+\]: /g);
     if (res) {
-        // It is Malbolge logging, so check if it is an error
-        if (msg.includes("[ERROR]: ")) {
-            consoleWrite(msg, LogLevel.error);
-        } else {
-            consoleWrite(msg, LogLevel.info);
-        }
+        consoleWrite(msg, LogSource.malbolgeWasm);
     } else {
         // Emscripten output, always bad
-        consoleWrite(msg, LogLevel.emscripten);
+        consoleWrite(msg, LogSource.emscripten);
     }
 }
 
-/** Write to the console.
+/** Write log messages to their appropriate places.
  * 
- * Output is written to the browser's console as well the "console" element.
+ * @a logSrc determines where the log messages are written to.  All logging
+ * sources write to the browser's console, but only Malbolge logging appears in
+ * the Console pane in the page.
  * @param {string} msg Console output string
- * @param {logLevel} logLevel Logging level
+ * @param {LogSource} logSrc Logging source
+ * @param {logLevel} logLevel Logging level, only used when logSrc is
+ * LogSource.malbolgeJS
  */
-function consoleWrite(msg, logLevel) {
+function consoleWrite(msg, logSrc, logLevel) {
     let consoleDiv = document.getElementById("console");
 
-    switch (logLevel) {
-        case LogLevel.info:
+    switch (logSrc) {
+        case LogSource.malbolgeWasm:
+            let origMsg = msg;
+            if (msg.endsWith("\x1B[0m")) {
+                msg = msg.substr(0, msg.length - 4);
+            }
+
+            // Logging data from the WASM side uses terminal colour hints to
+            // colour the text, we will use the same
+            let isError = false;
+            if (msg.startsWith("\x1B[31m")) {
+                msg = "<span style=\"color:darkred\">" + msg.substr(5) + "</span>";
+                isError = true;
+            } else if (msg.startsWith("\x1B[32m")) {
+                msg = "<span style=\"color:limegreen\">" + msg.substr(5) + "</span>";
+            } else if (msg.startsWith("\x1B[33m")) {
+                msg = "<span style=\"color:darkgoldenrod\">" + msg.substr(5) + "</span>";
+            } else if (msg.startsWith("\x1B[34m")) {
+                msg = "<span style=\"color:darkblue\">" + msg.substr(5) + "</span>";
+            } else if (msg.startsWith("\x1B[0m")) {
+                msg = msg.substr(4);
+            }
+
             consoleDiv.innerHTML += "<p>" + msg + "\n</p>";
-            console.log(msg);
+            if (isError) {
+                console.error(origMsg);
+            } else {
+                console.log(origMsg);
+            }
             break;
-        case LogLevel.emscripten:
+        case LogSource.malbolgeJS:
+            switch (logLevel) {
+                case JSLogLevel.info:
+                    consoleDiv.innerHTML += "<p>" + msg + "\n</p>";
+                    console.log(msg);
+                    break;
+                case JSLogLevel.error:
+                    consoleDiv.innerHTML += "<p><span style=\"color:red\">" + msg +
+                        "\n</span></p>";
+                    console.error(msg);
+                break;
+            }
+            consoleDiv.scrollTop = consoleDiv.scrollHeight - consoleDiv.clientHeight;
+            break;
+        case LogSource.emscripten:
             console.warn(msg);
             break;
-        case LogLevel.error:
-            consoleDiv.innerHTML += "<p><span style=\"color:red\">" + msg +
-                "\n</span></p>";
-            console.error(msg);
     }
-
-    consoleDiv.scrollTop = consoleDiv.scrollHeight - consoleDiv.clientHeight;
 }
 
 /** Clears the "console" element.
@@ -398,10 +454,7 @@ gJ%`;
 var Module = {
     thisProgram: "malbolge.wasm",
     onRuntimeInitialized: finishedLoading,
-    print: stdOut,
     printErr: stdClog,
     malbolgeVcpu: undefined,
-    malbolgeStoppedCb: undefined,
-    malbolgeWaitingCb: undefined,
     malbolgeProgramNormalised: false
 };

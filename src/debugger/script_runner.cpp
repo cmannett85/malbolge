@@ -4,31 +4,26 @@
  */
 
 #include "malbolge/debugger/script_runner.hpp"
-#include "malbolge/utility/visit.hpp"
-#include "malbolge/virtual_cpu.hpp"
+#include "malbolge/exception.hpp"
 #include "malbolge/log.hpp"
 
-#include <sstream>
-#include <deque>
-#include <algorithm>
-#include <vector>
+#include <boost/asio/io_context.hpp>
+#include <boost/asio/executor_work_guard.hpp>
+#include <boost/asio/steady_timer.hpp>
+#include <boost/asio/post.hpp>
 
 using namespace malbolge;
 using namespace debugger;
-using namespace std::string_view_literals;
 
 namespace
 {
-constexpr auto dbgr_colour = log::colour::BLUE;
-
 void validate_sequence(const script::functions::sequence& fn_seq)
 {
     // Check that:
     //  - There is one, and only one, run function
     //  - A step or resume function do not appear before a run
     //  - If there are any, then at least one add_breakpoint appears before a
-    //    run
-    //  - Nothing appears after a stop
+    //    rund
 
     // Convert to a string_view list first as it's easier to use 'normal'
     // algorithms with
@@ -48,6 +43,10 @@ void validate_sequence(const script::functions::sequence& fn_seq)
     if (run_it == name_seq.end()) {
         throw basic_exception{"There must be at least one run function"};
     }
+    if (std::any_of(run_it+1, name_seq.end(),
+                    [](auto name) { return name == "run"; })) {
+        throw basic_exception{"There can only be one run function"};
+    }
 
     for (auto it = name_seq.begin(); it != run_it; ++it) {
         if (*it == "step" || *it == "resume") {
@@ -62,17 +61,11 @@ void validate_sequence(const script::functions::sequence& fn_seq)
         throw basic_exception{"If there are any add_breakpoint functions, at "
                               "least one must appear before a run"};
     }
-
-    auto stop_it = std::find(name_seq.begin(), name_seq.end(), "stop");
-    if (stop_it != name_seq.end() && stop_it != (name_seq.end()-1)) {
-        throw basic_exception{"If a stop is present, it must be last"};
-    }
 }
 }
 
-std::ostream&
-debugger::script::operator<<(std::ostream& stream,
-                             const functions::function_variant& fn)
+std::ostream& script::operator<<(std::ostream& stream,
+                                 const functions::function_variant& fn)
 {
     utility::visit(
         fn,
@@ -83,9 +76,8 @@ debugger::script::operator<<(std::ostream& stream,
     return stream;
 }
 
-std::ostream&
-debugger::script::operator<<(std::ostream& stream,
-                             const functions::sequence& seq)
+std::ostream& script::operator<<(std::ostream& stream,
+                                 const functions::sequence& seq)
 {
     for (const auto& fn_var : seq) {
         stream << fn_var << std::endl;
@@ -93,190 +85,106 @@ debugger::script::operator<<(std::ostream& stream,
     return stream;
 }
 
-void debugger::script::run(const functions::sequence& fn_seq,
-                           virtual_cpu& vcpu,
-                           std::ostream& dstr,
-                           std::ostream& ostr)
+void script::script_runner::run(virtual_memory vmem,
+                                const functions::sequence& fn_seq)
 {
     validate_sequence(fn_seq);
 
-    auto cc = client_control{vcpu};
-    auto gate = utility::gate{};
+    auto ctx = boost::asio::io_context{};
+    auto work_guard = boost::asio::executor_work_guard{ctx.get_executor()};
+    auto run_timer = boost::asio::steady_timer{ctx};
 
-    // For blocking until program has exited
-    auto exit = std::atomic_bool{false};
-    auto exit_gate = utility::gate{};
-    exit_gate.close();
+    // Instantiate the vCPU and hook up the signals
+    auto vcpu = std::make_unique<virtual_cpu>(std::move(vmem));
 
-    // Input stream.  We have to delegate the input stream writing into a
-    // separate thread (instead of doing it in waiting_input_cb) because
-    // otherwise input_mtx will deadlock.  This should be solved with the
-    // outcome of Issue #145.
-    auto input_mtx = std::mutex{};
-    auto input_queue = std::deque<std::string_view>{};
-    auto input_str = std::stringstream{};
-    auto input_gate = utility::gate{};
-    auto input_thread = std::thread{[&]() {
-        input_gate.close();
-        while (!exit) {
-            input_gate();
+    auto seq_it = fn_seq.begin();
+    auto run_seq = [&]() {
+        auto exit = false;
+        for (; seq_it != fn_seq.end(); ++seq_it) {
             if (exit) {
                 return;
             }
 
-            auto lock = std::lock_guard{input_mtx};
-            if (input_queue.empty()) {
-                gate.close();
-                continue;
-            }
-
-            input_str << input_queue.front() << std::endl;
-            input_queue.pop_front();
-        }
-    }};
-
-    // Run timer
-    auto run_timer_mtx = std::mutex{};
-    auto run_timer_cv = std::condition_variable{};
-    auto run_timer_bp_hit = false;
-    auto run_timer_thread = std::thread{};
-
-    // Stop and wait handlers for the vCPU
-    auto ex_ptr = std::exception_ptr{};
-    auto stopped_cb = [&](std::exception_ptr e) {
-        ex_ptr = std::move(e);
-        exit = true;
-
-        {
-            auto lock = std::lock_guard{run_timer_mtx};
-            run_timer_cv.notify_one();
-        }
-
-        gate.open();
-        input_gate.open();
-        exit_gate.open();
-    };
-    auto waiting_input_cb = [&]() {
-        input_gate.open();
-    };
-    auto gate_check = [&]() {
-        gate();
-        return exit.load();
-    };
-
-    for (const auto& var_fn : fn_seq) {
-        if (exit) {
-            break;
-        }
-
-        utility::visit(
-            var_fn,
-            [&](const functions::add_breakpoint& fn) {
-                if (gate_check()) {
-                    return;
-                }
-
-                auto cb = [&](auto, auto) {
-                    {
-                        auto lock = std::lock_guard{run_timer_mtx};
-                        run_timer_bp_hit = true;
-                        run_timer_cv.notify_one();
+            utility::visit(
+                *seq_it,
+                [&](const functions::add_breakpoint& fn) {
+                    vcpu->add_breakpoint(fn.value<MAL_STR(address)>(),
+                                         fn.value<MAL_STR(ignore_count)>());
+                },
+                [&](const functions::remove_breakpoint& fn) {
+                    vcpu->remove_breakpoint(fn.value<MAL_STR(address)>());
+                },
+                [&](const functions::run& fn) {
+                    const auto runtime = fn.value<MAL_STR(max_runtime_ms)>();
+                    if (runtime) {
+                        run_timer.expires_after(std::chrono::milliseconds{runtime});
+                        run_timer.async_wait([&](auto ec) {
+                            if (!ec) {
+                                log::print(log::DEBUG, "Script runtime timeout reached");
+                                vcpu.reset();
+                            }
+                        });
                     }
-                    gate.open();
-                    return true;
-                };
 
-                cc.add_breakpoint(client_control::breakpoint{
-                    fn.value<MAL_STR(address)>(),
-                    std::move(cb),
-                    fn.value<MAL_STR(ignore_count)>()
-                });
-            },
-            [&](const functions::remove_breakpoint& fn) {
-                if (gate_check()) {
-                    return;
+                    vcpu->run();
+                    exit = true;
+                },
+                [&](const functions::address_value& fn) {
+                    const auto address = fn.value<MAL_STR(address)>();
+                    vcpu->address_value(address, [&](auto, auto value) {
+                        address_sig_(fn, value);
+                    });
+                },
+                [&](const functions::register_value& fn) {
+                    vcpu->register_value(fn.value<MAL_STR(reg)>(),
+                                         [&](auto, auto addr, auto value) {
+                        reg_sig_(fn, std::move(addr), value);
+                    });
+                },
+                [&](const functions::step&) {
+                    vcpu->step();
+                },
+                [&](const functions::resume&) {
+                    vcpu->run();
+                    exit = true;
+                },
+                [&](const functions::on_input& fn) {
+                    vcpu->add_input(fn.value<MAL_STR(data)>());
                 }
+            );
+        }
+    };
 
-                cc.remove_breakpoint(fn.value<MAL_STR(address)>());
-            },
-            [&](const functions::run& fn) {
-                gate.close();
+    vcpu->register_for_output_signal([&](auto c) {
+        output_sig_(c);
+    });
+    vcpu->register_for_breakpoint_hit_signal([&](auto) {
+        // We've hit a breakpoint so cancel the max runtime timer.  This is a
+        // no-op if the timer is not running
+        run_timer.cancel();
 
-                const auto run_ms = fn.value<MAL_STR(max_runtime_ms)>();
-                if (run_ms) {
-                    run_timer_thread = std::thread{[&, run_ms]() {
-                        {
-                            auto lock = std::unique_lock{run_timer_mtx};
-                            run_timer_cv.wait_for(
-                                lock,
-                                std::chrono::milliseconds{run_ms},
-                                [&]() { return run_timer_bp_hit || exit; });
-                        }
-                        if (!run_timer_bp_hit) {
-                            vcpu.stop();
-                        }
-                    }};
-                }
+        // Continue the function sequence.  We post here because this slot is
+        // called from the vCPU's worker thread
+        boost::asio::post(ctx, [&]() { run_seq(); });
+    });
+    vcpu->register_for_state_signal([&](auto state, auto eptr) {
+        if (eptr) {
+            // Rethrow the exception from the caller's thread
+            boost::asio::post(ctx, [eptr]() {
+                std::rethrow_exception(eptr);
+            });
+            return;
+        }
 
-                vcpu.run(std::move(stopped_cb),
-                         std::move(waiting_input_cb),
-                         input_str,
-                         ostr,
-                         input_mtx);
-            },
-            [&](const functions::address_value& fn) {
-                if (gate_check()) {
-                    return;
-                }
+        if (state == virtual_cpu::execution_state::STOPPED) {
+            // If the vCPU has stopped, we need to stop too.  We do not call
+            // ctx.stop() as all queued jobs need processing, specifically
+            // errors
+            run_timer.cancel();
+            work_guard.reset();
+        }
+    });
 
-                const auto address = fn.value<MAL_STR(address)>();
-                const auto value = cc.address_value(address);
-                log::basic_print(dstr, dbgr_colour,
-                                 "[DBGR]: ", fn, " = ", value);
-            },
-            [&](const functions::register_value& fn) {
-                if (gate_check()) {
-                    return;
-                }
-
-                const auto reg = fn.value<MAL_STR(reg)>();
-                const auto value = cc.register_value(reg);
-                log::basic_print(dstr,  dbgr_colour,
-                                 "[DBGR]: ", fn, " = ", value);
-            },
-            [&](const functions::step&) {
-                if (gate_check()) {
-                    return;
-                }
-
-                gate.close();
-                cc.step([&]() {
-                    gate.open();
-                });
-            },
-            [&](const functions::resume&) {
-                gate.close();
-                cc.resume();
-            },
-            [&](const functions::stop&) {
-                vcpu.stop();
-            },
-            [&](const functions::on_input& fn) {
-                auto lock = std::lock_guard{input_mtx};
-                input_queue.push_back(fn.value<MAL_STR(data)>());
-            }
-        );
-    }
-
-    // Do not exit until the program has finished
-    exit_gate();
-    if (run_timer_thread.joinable()) {
-        run_timer_thread.join();
-    }
-    input_thread.join();
-
-    // If the program throws an exception during execution, then rethrow here
-    if (ex_ptr) {
-        std::rethrow_exception(ex_ptr);
-    }
+    boost::asio::post(ctx, [&]() { run_seq(); });
+    ctx.run();
 }

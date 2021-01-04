@@ -9,7 +9,7 @@ endif()
 
 set(WASM_BUILD_OPTIONS
     "-Wno-pthreads-mem-growth"
-    "SHELL:-s EXPORTED_FUNCTIONS=[\"_malbolge_log_level\",\"_malbolge_set_log_level\",\"_malbolge_version\",\"_malbolge_load_program\",\"_malbolge_load_normalised_program\",\"_malbolge_free_virtual_memory\",\"_malbolge_create_vcpu\",\"_malbolge_free_vcpu\",\"_malbolge_vcpu_run_wasm\",\"_malbolge_vcpu_stop\",\"_malbolge_vcpu_input\",\"_malbolge_is_likely_normalised_source\",\"_malbolge_normalise_source\",\"_malbolge_denormalise_source\"]"
+    "SHELL:-s EXPORTED_FUNCTIONS=[\"_malbolge_log_level\",\"_malbolge_set_log_level\",\"_malbolge_version\",\"_malbolge_is_likely_normalised_source\",\"_malbolge_normalise_source\",\"_malbolge_denormalise_source\",\"_malbolge_load_program\",\"_malbolge_free_virtual_memory\",\"_malbolge_create_vcpu\",\"_malbolge_free_vcpu\",\"_malbolge_vcpu_attach_callbacks\",\"_malbolge_vcpu_detach_callbacks\",\"_malbolge_vcpu_pause\",\"_malbolge_vcpu_step\",\"_malbolge_vcpu_add_input\",\"_malbolge_vcpu_add_breakpoint\",\"_malbolge_vcpu_remove_breakpoint\",\"_malbolge_vcpu_address_value\",\"_malbolge_vcpu_register_value\",\"_malbolge_vcpu_run_wasm\"]"
     "SHELL:-s ALLOW_BLOCKING_ON_MAIN_THREAD" # The vCPU worker always exits quickly
     "SHELL:-s ALLOW_MEMORY_GROWTH"
     "SHELL:-s ALLOW_TABLE_GROWTH"
@@ -36,6 +36,8 @@ set(WASM_HEADERS
 
 set(WASM_IDE
     ${CMAKE_CURRENT_SOURCE_DIR}/playground/index.html
+    ${CMAKE_CURRENT_SOURCE_DIR}/playground/index.js
+    ${CMAKE_CURRENT_SOURCE_DIR}/playground/style.css
 )
 
 # Because Emscripten needs em++ to produce a WASM file, we have to 'wrap' the

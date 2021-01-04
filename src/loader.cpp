@@ -6,9 +6,7 @@
 #include "malbolge/loader.hpp"
 
 #include <fstream>
-#include <iostream>
 #include <iterator>
-#include <filesystem>
 #include <vector>
 
 using namespace malbolge;
@@ -19,8 +17,23 @@ namespace
 using stream_iterator = std::istreambuf_iterator<char>;
 }
 
+std::ostream& malbolge::operator<<(std::ostream& stream,
+                                   load_normalised_mode mode)
+{
+    switch (mode) {
+    case load_normalised_mode::AUTO:
+        return stream << "AUTO";
+    case load_normalised_mode::ON:
+        return stream << "ON";
+    case load_normalised_mode::OFF:
+        return stream << "OFF";
+    default:
+        return stream << "Unknown";
+    }
+}
+
 virtual_memory malbolge::load(const std::filesystem::path& path,
-                              bool normalised)
+                              load_normalised_mode mode)
 {
     log::print(log::INFO, "Loading file: ", path);
 
@@ -47,13 +60,13 @@ virtual_memory malbolge::load(const std::filesystem::path& path,
 
         log::print(log::INFO, "File loaded");
 
-        return detail::load_impl(data.begin(), data.end(), normalised);
+        return load(data.begin(), data.end(), mode);
     } catch (std::exception& e) {
         throw parse_exception{"Failed to load program: "s + e.what()};
     }
 }
 
-virtual_memory malbolge::load_from_cin(bool normalised)
+virtual_memory malbolge::load_from_cin(load_normalised_mode mode)
 {
     log::print(log::INFO, "Loading file from stdin");
 
@@ -64,5 +77,5 @@ virtual_memory malbolge::load_from_cin(bool normalised)
 
     log::print(log::INFO, "File loaded");
 
-    return load(std::begin(program_data), std::end(program_data), normalised);
+    return load(std::begin(program_data), std::end(program_data), mode);
 }
