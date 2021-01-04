@@ -12,6 +12,7 @@ on:
 
 env:
   DOWNLOAD_DIR: ${GITHUB_WORKSPACE}/../download
+  SKIP_COVERAGE_UPDATE: 0
 
 jobs:
   # Builds the unit tests and executes them

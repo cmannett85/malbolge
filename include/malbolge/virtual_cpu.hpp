@@ -5,15 +5,8 @@
 
 #pragma once
 
+#include "malbolge/utility/signal.hpp"
 #include "malbolge/virtual_memory.hpp"
-#include "malbolge/utility/gate.hpp"
-#include "malbolge/utility/mutex_wrapper.hpp"
-#include "malbolge/debugger/client_control.hpp"
-
-#include <iostream>
-#include <thread>
-#include <atomic>
-#include <future>
 
 namespace malbolge
 {
@@ -24,36 +17,77 @@ namespace malbolge
 class virtual_cpu
 {
 public:
-    /** Callback type used to notify the debugger when the program has started
-     * and finished.
-     * @param started True if the program has started (i.e. READY), false if it
-     * has finished (i.e. STOPPED)
-     */
-    using running_callback_type = std::function<void (bool started)>;
-
-    /** Callback type used to provide the debugger with execution step data.
-     */
-    using step_data_callback_type = debugger::client_control::breakpoint::callback_type;
-
     /** Execution state.
      */
     enum class execution_state {
-        READY,      ///< Ready to run
-        RUNNING,    ///< Program running
-        STOPPED,    ///< Program stopped
-        NUM_STATES  ///< Number of execution states
+        READY,              ///< Ready to run
+        RUNNING,            ///< Program running
+        PAUSED,             ///< Program paused
+        WAITING_FOR_INPUT,  ///< Similar to paused, except the program will
+                            ///< resume when input data provided
+        STOPPED,            ///< Program stopped, cannot be resumed or ran again
+        NUM_STATES          ///< Number of execution states
     };
+
+    /** vCPU register identifiers.
+     */
+    enum class vcpu_register {
+        A,              ///< Accumulator
+        C,              ///< Code pointer
+        D,              ///< Data pointer
+        NUM_REGISTERS   ///< Number of registers
+    };
+
+    /** Signal type to indicate the program running state, and any exception in
+     *  case of error.
+     *
+     * In case of an error the execution state is always STOPPED.
+     * @tparam execution_state Execution state
+     * @tparam std::exception_ptr Exception pointer, null if no error
+     */
+    using state_signal_type = utility::signal<execution_state, std::exception_ptr>;
+
+    /** Signal type carrying program output data.
+     *
+     * @tparam char Character output from program
+     */
+    using output_signal_type = utility::signal<char>;
+
+    /** Signal type fired when a breakpoint is hit.
+     *
+     * @tparam math::ternary Address the breakpoint resides at
+     */
+    using breakpoint_hit_signal_type = utility::signal<math::ternary>;
+
+    /** Address value result callback type.
+     *
+     * @param address Address in virtual memory that was requested
+     * @param value Value at @a address
+     */
+    using address_value_callback_type =
+        std::function<void (math::ternary address,
+                            math::ternary value)>;
+
+    /** Register value result callback type.
+     *
+     * @param reg Requested register
+     * @param address If @a reg is C or D then it contains an address
+     * @param value The value of the register if @a address is empty, otherwise
+     * the value at @a address
+     */
+    using register_value_callback_type =
+        std::function<void (vcpu_register reg,
+                            std::optional<math::ternary> address,
+                            math::ternary value)>;
 
     /** Constructor.
      *
+     * Although it is not emitted in the state signal, the instance begins in
+     * a execution_state::READY state.
      * @param vmem Virtual memory containing the initialised memory space
      * (including program data)
      */
     explicit virtual_cpu(virtual_memory vmem);
-
-    /** Destructor.
-     */
-    ~virtual_cpu();
 
     /** Move constructor.
      *
@@ -66,140 +100,162 @@ public:
      * @param other Instance to move from
      * @return A reference to this
      */
-    virtual_cpu& operator=(virtual_cpu&& other);
+    virtual_cpu& operator=(virtual_cpu&& other) = default;
 
     virtual_cpu(const virtual_cpu&) = delete;
     virtual_cpu& operator=(const virtual_cpu&) = delete;
 
-    /** Returns the vCPU execution state.
-     *
-     * @return Execution state
+    /** Destructor.
      */
-    execution_state state() const
-    {
-        return *state_;
-    }
+    ~virtual_cpu();
 
-    /** Execute the program asynchronously.
+    /** Runs or resumes program execution.
      *
-     * @param istr Input stream
-     * @param ostr Output stream
-     * @param mtx Mutex for accessing the streams.  Only required if at least
-     * one stream is not cin/cout
-     * @return Future holding nothing, or an exception
-     * @exception execution_exception Thrown if the program has already ran, or
-     * cin/cout is used as a stream but mtx is not valid
+     * If the program is already running or waiting-for-input, then this is a
+     * no-op.
+     * @exception execution_exception Thrown if backend has been destroyed,
+     * usually as a result of use-after-move
      */
-    std::future<void> run(std::istream& istr = std::cin,
-                          std::ostream& ostr = std::cout,
-                          utility::mutex_wrapper mtx = {});
+    void run();
 
-    /** Overload.
+    /** Pauses a running program.
      *
-     * Execute the program asynchronously, but uses callbacks instead of a
-     * future.
-     * @note The callbacks are called from the execution thread
-     * @param stopped Callback called when execution has stopped.  Its
-     * argument will be nullptr if the program executed successfully
-     * @param waiting_for_input Callback called when execution is paused
-     * waiting for user input
-     * @param istr Input stream
-     * @param ostr Output stream
-     * @param mtx Mutex for accessing the streams.  Only required if at least
-     * one stream is not cin/cout
-     * @exception execution_exception Thrown if the program has already ran, or
-     * cin/cout is used as a stream but mtx is not valid
+     * If the program is already paused or waiting-for-input, then this is a
+     * no-op.
+     * @exception execution_exception Thrown if backend has been destroyed,
+     * usually as a result of use-after-move
      */
-    void run(std::function<void (std::exception_ptr)> stopped,
-             std::function<void ()> waiting_for_input,
-             std::istream& istr = std::cin,
-             std::ostream& ostr = std::cout,
-             utility::mutex_wrapper mtx = {});
+    void pause();
 
-    /** Asynchronously stops execution.
+    /** Advances the program by a single execution.
      *
-     * This is ignored if a program is not running.
+     * If the program is running, this will pause it and then advance by a
+     * single execution.  If the program is waiting-for-input, then this is a
+     * no-op.
+     * @exception execution_exception Thrown if backend has been destroyed,
+     * usually as a result of use-after-move
      */
-    void stop();
+    void step();
 
-    /** Configure a debugger to gain control of the execution and view memory.
+    /** Adds @a data to the input queue for the program.
      *
-     * @param running Callback to notify the debugger that the program has
-     * started or finished
-     * @param step_data Callback to notify the debugger of the current memory
-     * access and which register (C or D) initiated the access
-     * @return A configured vCPU controller
-     * @exception basic_exception Thrown if the program is already running,
-     * or a debugger has already been configured
+     * If the program is waiting for input, then calling this will resume
+     * program execution.
+     * @param data Input add to add
+     * @exception execution_exception Thrown if backend has been destroyed,
+     * usually as a result of use-after-move
      */
-    debugger::vcpu_control
-    configure_debugger(running_callback_type running,
-                       step_data_callback_type step_data);
+    void add_input(std::string data);
 
-    /** Applies a delay between instruction cycles, useful for
-     * debugging/tracing.
+    /** Adds a breakpoint to the program.
      *
-     * As expected, a zero value duration disables the delay.
+     * If another breakpoint is already at the given address, it is replaced.
+     * Breakpoints can be added to the program whilst in any non-STOPPED state,
+     * but results can be unpredicatable if the program is running.
      *
-     * Despite the template params, this method is usually called with the
-     * Chrono literals, e.g.:
-     * @code
-     * vcpu.set_cycle_delay(100ms);
-     * @endcode
-     * @tparam Rep Number of ticks
-     * @tparam Period Tick period ratio (i.e. the number of seconds per tick)
-     * @param delay Delay duration
+     * The breakpoint-hit signal is fired when a breakpoint is reached.  The
+     * signal is fired when then code pointer reaches the address i.e.
+     * @em before the instruction is executed, so you need to step to see the
+     * result of the instruction execution.
+     * @param address Address to attach a breakpoint
+     * @param ignore_count Number of times the breakpoint is hit before the
+     * breakpoint_hit_signal_type signal is fired
+     * @exception execution_exception Thrown if backend has been destroyed,
+     * usually as a result of use-after-move
      */
-    template <class Rep, class Period>
-    void set_cycle_delay(const std::chrono::duration<Rep, Period>& delay)
-    {
-        *cycle_delay_ = std::chrono::duration_cast<std::chrono::milliseconds>(delay).count();
-    }
+    void add_breakpoint(math::ternary address, std::size_t ignore_count = 0);
+
+    /** Removes a breakpoint at the given address.
+     *
+     * This is a no-op if there is no breakpoint at @a address.
+     * @param address vmem address to remove a breakpoint from
+     * @exception execution_exception Thrown if backend has been destroyed,
+     * usually as a result of use-after-move
+     */
+    void remove_breakpoint(math::ternary address);
+
+    /** Asynchronously returns the value at a given vmem address via @a cb.
+     *
+     * @param address vmem address
+     * @param cb Called with the result
+     * @exception execution_exception Thrown if backend has been destroyed,
+     * usually as a result of use-after-move
+     */
+    void address_value(math::ternary address,
+                       address_value_callback_type cb) const;
+
+    /** Asynchronously returns the address and/or value of a given register.
+     *
+     * @param reg Register to query
+     * @param cb For C and D registers returns the address held in the register
+     * and the value it points at, for the A register it only returns the value
+     * @exception execution_exception Thrown if backend has been destroyed,
+     * usually as a result of use-after-move
+     */
+    void register_value(vcpu_register reg, register_value_callback_type cb) const;
+
+    /** Register @a slot to be called when the state signal fires.
+     *
+     * You can disconnect from the signal using the returned connection
+     * instance.
+     * @note @a slot is called from the vCPU's local event loop thread, so you
+     * may need to post into the event loop you intend on processing it with
+     * @param slot Callable instance called when the signal fires
+     * @return Connection data
+     * @exception execution_exception Thrown if backend has been destroyed,
+     * usually as a result of use-after-move
+     */
+    state_signal_type::connection
+    register_for_state_signal(state_signal_type::slot_type slot);
+
+    /** Register @a slot to be called when the output signal fires.
+     *
+     * You can disconnect from the signal using the returned connection
+     * instance.
+     * @note @a slot is called from the vCPU's local event loop thread, so you
+     * may need to post into the event loop you intend on processing it with
+     * @param slot Callable instance called when the signal fires
+     * @return Connection data
+     * @exception execution_exception Thrown if backend has been destroyed,
+     * usually as a result of use-after-move
+     */
+    output_signal_type::connection
+    register_for_output_signal(output_signal_type::slot_type slot);
+
+    /** Register @a slot to be called when the breakpoint hit signal fires.
+     *
+     * You can disconnect from the signal using the returned connection
+     * instance.
+     * @note @a slot is called from the vCPU's local event loop thread, so you
+     * may need to post into the event loop you intend on processing it with
+     * @param slot Callable instance called when the signal fires
+     * @return Connection data
+     * @exception execution_exception Thrown if backend has been destroyed,
+     * usually as a result of use-after-move
+     */
+    breakpoint_hit_signal_type::connection
+    register_for_breakpoint_hit_signal(breakpoint_hit_signal_type::slot_type slot);
 
 private:
-    struct debugger_data
-    {
-        running_callback_type running_cb;
-        step_data_callback_type step_data_cb;
+    void impl_check() const;
 
-        std::mutex mtx;
-        debugger::vcpu_control::callback_type stop_cb;
-        debugger::vcpu_control::callback_type resume_cb;
-
-        // Populated once the worker thread starts
-        decltype(debugger::vcpu_control::address_value) address_value;
-        decltype(debugger::vcpu_control::register_value) register_value;
-
-        utility::gate gate;
-    };
-
-    void basic_run_check(std::istream& istr,
-                         std::ostream& ostr,
-                         utility::mutex_wrapper mtx);
-
-    static void vcpu_loop(virtual_memory& vmem,
-                          std::atomic<virtual_cpu::execution_state>& state,
-                          std::function<void ()> waiting_for_input,
-                          std::istream& istr,
-                          std::ostream& ostr,
-                          utility::mutex_wrapper mtx,
-                          std::shared_ptr<debugger_data> debugger,
-                          std::shared_ptr<std::atomic_uint> cycle_delay);
-
-    std::thread thread_;
-    std::shared_ptr<std::atomic<execution_state>> state_;
-    virtual_memory vmem_;
-
-    std::shared_ptr<std::atomic_uint> cycle_delay_;
-    std::shared_ptr<debugger_data> debugger_;
+    class impl_t;
+    std::shared_ptr<impl_t> impl_;
 };
 
-/** Textual streaming operator.
+/** Textual streaming operator for virtual_cpu::vcpu_register.
  *
- * @param stream Textual output stream
- * @param state vCPU execution state
+ * @param stream Output stream
+ * @param register_id Instance to stream
  * @return @a stream
  */
-std::ostream& operator<<(std::ostream& stream,
-                         virtual_cpu::execution_state state);
+std::ostream& operator<<(std::ostream& stream, virtual_cpu::vcpu_register register_id);
+
+/** Textual streaming operator for virtual_cpu::execution_state.
+ *
+ * @param stream Output stream
+ * @param state Instance to stream
+ * @return @a stream
+ */
+std::ostream& operator<<(std::ostream& stream, virtual_cpu::execution_state state);
 }

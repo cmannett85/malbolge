@@ -8,12 +8,43 @@
 
 #include "test_helpers.hpp"
 
-#include <thread>
+#include <bitset>
+#include <condition_variable>
 
 using namespace malbolge;
-using namespace debugger;
 using namespace std::string_literals;
 using namespace std::chrono_literals;
+
+namespace
+{
+template <std::size_t N>
+void fire_bit(std::mutex& mtx,
+              std::condition_variable& cv,
+              std::bitset<N>& bitset,
+              std::size_t idx)
+{
+    {
+        auto lk = std::lock_guard{mtx};
+        bitset[idx] = true;
+    }
+    cv.notify_one();
+}
+
+void check_state(virtual_cpu::execution_state state,
+                 virtual_cpu::execution_state test_state,
+                 std::mutex& mtx,
+                 std::condition_variable& cv,
+                 bool& flag)
+{
+    if (state == test_state) {
+        {
+            auto lk = std::lock_guard{mtx};
+            flag = true;
+        }
+        cv.notify_one();
+    }
+}
+}
 
 BOOST_AUTO_TEST_SUITE(virtual_cpu_suite)
 
@@ -21,250 +52,519 @@ BOOST_AUTO_TEST_CASE(hello_world)
 {
     auto vmem = load(std::filesystem::path{"programs/hello_world.mal"});
     auto vcpu = virtual_cpu{std::move(vmem)};
-    BOOST_CHECK_EQUAL(vcpu.state(), virtual_cpu::execution_state::READY);
-
-    auto ostr = std::stringstream{};
     auto mtx = std::mutex{};
-    auto fut = vcpu.run(std::cin, ostr, mtx);
-    BOOST_CHECK_EQUAL(vcpu.state(), virtual_cpu::execution_state::RUNNING);
+    auto cv = std::condition_variable{};
+    auto stopped = false;
 
-    fut.get();
-    BOOST_CHECK_EQUAL(ostr.str(), "Hello World!");
-    BOOST_CHECK_EQUAL(vcpu.state(), virtual_cpu::execution_state::STOPPED);
+    vcpu.register_for_breakpoint_hit_signal([&](auto) {
+        BOOST_CHECK_MESSAGE(false, "Unexpected breakpoint signal");
+    });
+
+    auto expected_states = std::array{
+        virtual_cpu::execution_state::RUNNING,
+        virtual_cpu::execution_state::STOPPED,
+    };
+    auto state_count = 0u;
+    vcpu.register_for_state_signal([&](auto state, auto eptr) {
+        if (eptr) {
+            try {
+                std::rethrow_exception(eptr);
+            } catch (std::exception& e) {
+                BOOST_TEST_MESSAGE(e.what());
+            }
+            BOOST_CHECK_MESSAGE(false, "Unexpected error signal");
+        }
+
+        BOOST_CHECK_EQUAL(state, expected_states[state_count]);
+        ++state_count;
+        check_state(state, expected_states.back(), mtx, cv, stopped);
+    });
+
+    auto output_str = ""s;
+    vcpu.register_for_output_signal([&](auto c) {
+        output_str += c;
+    });
+
+    vcpu.run();
+    auto lk = std::unique_lock{mtx};
+    BOOST_CHECK(cv.wait_for(lk, 100ms, [&]() { return stopped; }));
+
+    BOOST_CHECK_EQUAL(output_str, "Hello World!");
+    BOOST_CHECK_EQUAL(state_count, 2u);
 }
 
 BOOST_AUTO_TEST_CASE(hello_world_string)
 {
     auto vmem = load(R"(('&%:9]!~}|z2Vxwv-,POqponl$Hjig%eB@@>}=<M:9wv6WsU2T|nm-,jcL(I&%$#"`CB]V?Tx<uVtT`Rpo3NlF.Jh++FdbCBA@?]!~|4XzyTT43Qsqq(Lnmkj"Fhg${z@>)"s);
     auto vcpu = virtual_cpu{std::move(vmem)};
-    BOOST_CHECK_EQUAL(vcpu.state(), virtual_cpu::execution_state::READY);
-
-    auto ostr = std::stringstream{};
     auto mtx = std::mutex{};
-    auto fut = vcpu.run(std::cin, ostr, mtx);
-    BOOST_CHECK_EQUAL(vcpu.state(), virtual_cpu::execution_state::RUNNING);
+    auto cv = std::condition_variable{};
+    auto stopped = false;
 
-    fut.get();
-    BOOST_CHECK_EQUAL(ostr.str(), "Hello World!");
-    BOOST_CHECK_EQUAL(vcpu.state(), virtual_cpu::execution_state::STOPPED);
+    vcpu.register_for_breakpoint_hit_signal([&](auto) {
+        BOOST_CHECK_MESSAGE(false, "Unexpected breakpoint signal");
+    });
+
+    auto expected_states = std::array{
+        virtual_cpu::execution_state::RUNNING,
+        virtual_cpu::execution_state::STOPPED,
+    };
+    auto state_count = 0u;
+    vcpu.register_for_state_signal([&](auto state, auto eptr) {
+        if (eptr) {
+            try {
+                std::rethrow_exception(eptr);
+            } catch (std::exception& e) {
+                BOOST_TEST_MESSAGE(e.what());
+            }
+            BOOST_CHECK_MESSAGE(false, "Unexpected error signal");
+        }
+
+        BOOST_CHECK_EQUAL(state, expected_states[state_count]);
+        ++state_count;
+        check_state(state, expected_states.back(), mtx, cv, stopped);
+    });
+
+    auto output_str = ""s;
+    vcpu.register_for_output_signal([&](auto c) {
+        output_str += c;
+    });
+
+    vcpu.run();
+    auto lk = std::unique_lock{mtx};
+    BOOST_CHECK(cv.wait_for(lk, 100ms, [&]() { return stopped; }));
+
+    BOOST_CHECK_EQUAL(output_str, "Hello World!");
+    BOOST_CHECK_EQUAL(state_count, 2u);
 }
 
 BOOST_AUTO_TEST_CASE(hello_world_string_normalised)
 {
-    auto vmem = load("jjjjpp<jjjj*p<jjjpp<<jjjj*p<jj*o*<i<io<</<<oo<*o*<jvoo<<opj<*<<<<<ojjopjp<jio<ovo<<jo<p*o<*jo<iooooo<jj*p<jji<oo<j*jp<jj**p<jjopp<i"s, true);
+    auto vmem = load("jjjjpp<jjjj*p<jjjpp<<jjjj*p<jj*o*<i<io<</<<oo<*o*<jvoo<<opj<*<<<<<ojjopjp<jio<ovo<<jo<p*o<*jo<iooooo<jj*p<jji<oo<j*jp<jj**p<jjopp<i"s);
     auto vcpu = virtual_cpu{std::move(vmem)};
-    BOOST_CHECK_EQUAL(vcpu.state(), virtual_cpu::execution_state::READY);
-
-    auto ostr = std::stringstream{};
     auto mtx = std::mutex{};
-    auto fut = vcpu.run(std::cin, ostr, mtx);
-    BOOST_CHECK_EQUAL(vcpu.state(), virtual_cpu::execution_state::RUNNING);
+    auto cv = std::condition_variable{};
+    auto stopped = false;
 
-    fut.get();
-    BOOST_CHECK_EQUAL(ostr.str(), "Hello World!");
-    BOOST_CHECK_EQUAL(vcpu.state(), virtual_cpu::execution_state::STOPPED);
+    vcpu.register_for_breakpoint_hit_signal([&](auto) {
+        BOOST_CHECK_MESSAGE(false, "Unexpected breakpoint signal");
+    });
+
+    auto expected_states = std::array{
+        virtual_cpu::execution_state::RUNNING,
+        virtual_cpu::execution_state::STOPPED,
+    };
+    auto state_count = 0u;
+    vcpu.register_for_state_signal([&](auto state, auto eptr) {
+        if (eptr) {
+            try {
+                std::rethrow_exception(eptr);
+            } catch (std::exception& e) {
+                BOOST_TEST_MESSAGE(e.what());
+            }
+            BOOST_CHECK_MESSAGE(false, "Unexpected error signal");
+        }
+
+        BOOST_CHECK_EQUAL(state, expected_states[state_count]);
+        ++state_count;
+        check_state(state, expected_states.back(), mtx, cv, stopped);
+    });
+
+    auto output_str = ""s;
+    vcpu.register_for_output_signal([&](auto c) {
+        output_str += c;
+    });
+
+    vcpu.run();
+    auto lk = std::unique_lock{mtx};
+    BOOST_CHECK(cv.wait_for(lk, 100ms, [&]() { return stopped; }));
+
+    BOOST_CHECK_EQUAL(output_str, "Hello World!");
+    BOOST_CHECK_EQUAL(state_count, 2u);
 }
 
-BOOST_AUTO_TEST_CASE(echo)
+BOOST_AUTO_TEST_CASE(echo_preload)
 {
     auto vmem = load(std::filesystem::path{"programs/echo.mal"});
-    auto vcpu = virtual_cpu{std::move(vmem)};
-    BOOST_CHECK_EQUAL(vcpu.state(), virtual_cpu::execution_state::READY);
-
-    auto istr = std::stringstream{};
-    auto ostr = std::stringstream{};
+    auto vcpu = std::make_unique<virtual_cpu>(std::move(vmem));
     auto mtx = std::mutex{};
-    auto fut = vcpu.run(istr, ostr, mtx);
-    BOOST_CHECK_EQUAL(vcpu.state(), virtual_cpu::execution_state::RUNNING);
+    auto cv = std::condition_variable{};
+    auto waiting = false;
+    auto stopped = false;
 
-    auto f = [&](auto input) {
-        auto buf = ""s;
+    vcpu->register_for_breakpoint_hit_signal([&](auto) {
+        BOOST_CHECK_MESSAGE(false, "Unexpected breakpoint signal");
+    });
 
-        istr.clear();
-        istr.str("");
-        ostr.clear();
-        ostr.str("");
-
-        {
-            auto lock = std::lock_guard{mtx};
-            istr << input << std::endl;
-        }
-        std::this_thread::sleep_for(100ms);
-        {
-            auto lock = std::lock_guard{mtx};
-            ostr >> buf;
-        }
-
-        BOOST_CHECK_EQUAL(buf, input);
+    auto expected_states = std::array{
+        virtual_cpu::execution_state::RUNNING,
+        virtual_cpu::execution_state::WAITING_FOR_INPUT,
+        virtual_cpu::execution_state::STOPPED
     };
-
-    test::data_set(
-        f,
-        {
-            std::tuple{"Hello"s},
-            std::tuple{"Test!"s},
-            std::tuple{"Goodbye..."s},
+    auto state_count = 0u;
+    vcpu->register_for_state_signal([&](auto state, auto eptr) {
+        if (eptr) {
+            try {
+                std::rethrow_exception(eptr);
+            } catch (std::exception& e) {
+                BOOST_TEST_MESSAGE(e.what());
+            }
+            BOOST_CHECK_MESSAGE(false, "Unexpected error signal");
         }
-    );
 
-    // Wait a moment so we are back into waiting for input (to test stopping)
-    // Issue #97
-    std::this_thread::sleep_for(100ms);
+        BOOST_CHECK_EQUAL(state, expected_states[state_count]);
+        ++state_count;
 
-    vcpu.stop();
-    fut.get();
-    BOOST_CHECK_EQUAL(vcpu.state(), virtual_cpu::execution_state::STOPPED);
+        check_state(state, expected_states[1], mtx, cv, waiting);
+        check_state(state, expected_states[2], mtx, cv, stopped);
+    });
+
+    auto output_str = ""s;
+    vcpu->register_for_output_signal([&](auto c) {
+        output_str += c;
+    });
+
+    vcpu->add_input("Hello\n");
+    vcpu->add_input("Test!\n");
+    vcpu->add_input("Goodbye...\n");
+
+    vcpu->run();
+    {
+        auto lk = std::unique_lock{mtx};
+        BOOST_CHECK(cv.wait_for(lk, 100ms, [&]() { return waiting; }));
+    }
+
+    vcpu.reset();
+    auto lk = std::unique_lock{mtx};
+    BOOST_CHECK(cv.wait_for(lk, 100ms, [&]() { return stopped; }));
+
+    BOOST_CHECK_EQUAL(output_str, "Hello\nTest!\nGoodbye...\n");
+    BOOST_CHECK_EQUAL(state_count, 3u);
 }
 
 BOOST_AUTO_TEST_CASE(hello_world_debugger)
 {
-    auto dbg_cv = std::condition_variable{};
-    auto dbg_mtx = std::mutex{};
-
     auto vmem = load(std::filesystem::path{"programs/hello_world.mal"});
     auto vcpu = virtual_cpu{std::move(vmem)};
-    auto dbg = client_control{vcpu};
-    BOOST_CHECK_EQUAL(vcpu.state(), virtual_cpu::execution_state::READY);
-    BOOST_CHECK_EQUAL(dbg.state(), client_control::execution_state::NOT_RUNNING);
+    auto mtx = std::mutex{};
+    auto cv = std::condition_variable{};
+    auto stopped = false;
+    auto paused = false;
 
     auto expected_address = math::ternary{9};
-    auto callback_reached = false;
-    auto bp_cb = [&](auto address, auto reg) {
+    auto bp_reached = false;
+    vcpu.register_for_breakpoint_hit_signal([&](auto address) {
         BOOST_CHECK_EQUAL(address, expected_address);
-        BOOST_CHECK_EQUAL(reg, vcpu_register::C);
-
         {
-            auto lock = std::lock_guard{dbg_mtx};
-            callback_reached = true;
+            auto lock = std::lock_guard{mtx};
+            bp_reached = true;
         }
-        dbg_cv.notify_one();
+        cv.notify_one();
+    });
+    vcpu.add_breakpoint(expected_address);
+    vcpu.add_breakpoint(expected_address + 10);
+    vcpu.add_breakpoint(expected_address + 11);
 
-        return true;
+    auto expected_states = std::array{
+        virtual_cpu::execution_state::RUNNING,
+        virtual_cpu::execution_state::PAUSED,     // BP1, Step
+        virtual_cpu::execution_state::RUNNING,    // Resume
+        virtual_cpu::execution_state::PAUSED,     // BP2
+        virtual_cpu::execution_state::RUNNING,    // Resume
+        virtual_cpu::execution_state::PAUSED,     // Pause
+        virtual_cpu::execution_state::RUNNING,    // Resume
+        virtual_cpu::execution_state::STOPPED,    // Stopped
     };
-    dbg.add_breakpoint({expected_address, bp_cb});
-    dbg.add_breakpoint({expected_address + 10, bp_cb});
-    dbg.add_breakpoint({expected_address + 11, std::move(bp_cb)});
+    auto state_count = 0u;
+    vcpu.register_for_state_signal([&](auto state, auto eptr) {
+        if (eptr) {
+            try {
+                std::rethrow_exception(eptr);
+            } catch (std::exception& e) {
+                BOOST_TEST_MESSAGE(e.what());
+            }
+            BOOST_CHECK_MESSAGE(false, "Unexpected error signal");
+        }
 
-    auto ostr = std::stringstream{};
-    auto mtx = std::mutex{};
-    auto fut = vcpu.run(std::cin, ostr, mtx);
-    BOOST_CHECK_EQUAL(vcpu.state(), virtual_cpu::execution_state::RUNNING);
+        BOOST_CHECK_EQUAL(state, expected_states[state_count]);
+        ++state_count;
 
+        check_state(state, virtual_cpu::execution_state::PAUSED, mtx, cv, paused);
+        check_state(state, virtual_cpu::execution_state::STOPPED, mtx, cv, stopped);
+    });
+
+    auto output_str = ""s;
+    vcpu.register_for_output_signal([&](auto c) {
+        output_str += c;
+    });
+
+    vcpu.run();
     {
         // BP1
         {
-            auto lock = std::unique_lock{dbg_mtx};
-            dbg_cv.wait(lock, [&]() { return callback_reached; });
+            auto lk = std::unique_lock{mtx};
+            BOOST_CHECK(cv.wait_for(lk, 100ms, [&]() { return bp_reached; }));
         }
-        BOOST_CHECK_EQUAL(dbg.state(), client_control::execution_state::PAUSED);
-        BOOST_CHECK_EQUAL(dbg.address_value(expected_address),
-                          math::ternary{125});
-        BOOST_CHECK_EQUAL(dbg.register_value(vcpu_register::A),
-                          vcpu_register::data{72});
-        BOOST_CHECK_EQUAL(dbg.register_value(vcpu_register::C),
-                          (vcpu_register::data{9, 125}));
-        BOOST_CHECK_EQUAL(dbg.register_value(vcpu_register::D),
-                          (vcpu_register::data{62, 37}));
+        bp_reached = false;
+        expected_address += 10;
+        paused = false;
 
-        auto step_reached = false;
-        dbg.step([&]() {
-            {
-                auto lock = std::lock_guard{dbg_mtx};
-                step_reached = true;
-            }
-            dbg_cv.notify_one();
+        auto value_hits = std::bitset<4>{};
+        vcpu.address_value(math::ternary{9},
+                           [&](auto address, auto value) {
+            BOOST_CHECK_EQUAL(address, math::ternary{9});
+            BOOST_CHECK_EQUAL(value, math::ternary{125});
+            fire_bit(mtx, cv, value_hits, 0);
+        });
+        vcpu.register_value(virtual_cpu::vcpu_register::A,
+                            [&](auto reg, auto address, auto value) {
+            BOOST_CHECK_EQUAL(reg, virtual_cpu::vcpu_register::A);
+            BOOST_CHECK(!address);
+            BOOST_CHECK_EQUAL(value, math::ternary{72});
+            fire_bit(mtx, cv, value_hits, 1);
+        });
+        vcpu.register_value(virtual_cpu::vcpu_register::C,
+                            [&](auto reg, auto address, auto value) {
+            BOOST_CHECK_EQUAL(reg, virtual_cpu::vcpu_register::C);
+            BOOST_REQUIRE(address);
+            BOOST_CHECK_EQUAL(*address, math::ternary{9});
+            BOOST_CHECK_EQUAL(value, math::ternary{125});
+            fire_bit(mtx, cv, value_hits, 2);
+        });
+        vcpu.register_value(virtual_cpu::vcpu_register::D,
+                            [&](auto reg, auto address, auto value) {
+            BOOST_CHECK_EQUAL(reg, virtual_cpu::vcpu_register::D);
+            BOOST_REQUIRE(address);
+            BOOST_CHECK_EQUAL(*address, math::ternary{62});
+            BOOST_CHECK_EQUAL(value, math::ternary{37});
+            fire_bit(mtx, cv, value_hits, 3);
         });
         {
-            auto lock = std::unique_lock{dbg_mtx};
-            dbg_cv.wait(lock, [&]() { return step_reached; });
+            auto lk = std::unique_lock{mtx};
+            BOOST_CHECK(cv.wait_for(lk, 100ms, [&]() { return value_hits.all(); }));
         }
-        BOOST_CHECK_EQUAL(dbg.state(), client_control::execution_state::PAUSED);
-        BOOST_CHECK_EQUAL(dbg.address_value(expected_address+1),
-                          math::ternary{124});
-        BOOST_CHECK_EQUAL(dbg.register_value(vcpu_register::A),
-                          vcpu_register::data{72});
-        BOOST_CHECK_EQUAL(dbg.register_value(vcpu_register::C),
-                          (vcpu_register::data{10, 124}));
-        BOOST_CHECK_EQUAL(dbg.register_value(vcpu_register::D),
-                          (vcpu_register::data{38, 61}));
 
-        // Set a delay interval, otherwise the next breakpoint can hit before
-        // the resume callback unblocks this thread, resulting in an unexpected
-        // debugger state.  This is fine for real world usage because the end
-        // result is valid, but not so good for testing
-        vcpu.set_cycle_delay(100ms);
+        // Step
+        value_hits.reset();
+        vcpu.step();
 
-        auto resume_reached = false;
-        dbg.resume([&]() {
-            {
-                auto lock = std::lock_guard{dbg_mtx};
-                resume_reached = true;
-            }
-            dbg_cv.notify_one();
+        vcpu.address_value(math::ternary{10},
+                           [&](auto address, auto value) {
+            BOOST_CHECK_EQUAL(address, math::ternary{10});
+            BOOST_CHECK_EQUAL(value, math::ternary{124});
+            fire_bit(mtx, cv, value_hits, 0);
+        });
+        vcpu.register_value(virtual_cpu::vcpu_register::A,
+                            [&](auto reg, auto address, auto value) {
+            BOOST_CHECK_EQUAL(reg, virtual_cpu::vcpu_register::A);
+            BOOST_CHECK(!address);
+            BOOST_CHECK_EQUAL(value, math::ternary{72});
+            fire_bit(mtx, cv, value_hits, 1);
+        });
+        vcpu.register_value(virtual_cpu::vcpu_register::C,
+                            [&](auto reg, auto address, auto value) {
+            BOOST_CHECK_EQUAL(reg, virtual_cpu::vcpu_register::C);
+            BOOST_REQUIRE(address);
+            BOOST_CHECK_EQUAL(*address, math::ternary{10});
+            BOOST_CHECK_EQUAL(value, math::ternary{124});
+            fire_bit(mtx, cv, value_hits, 2);
+        });
+        vcpu.register_value(virtual_cpu::vcpu_register::D,
+                            [&](auto reg, auto address, auto value) {
+            BOOST_CHECK_EQUAL(reg, virtual_cpu::vcpu_register::D);
+            BOOST_REQUIRE(address);
+            BOOST_CHECK_EQUAL(*address, math::ternary{38});
+            BOOST_CHECK_EQUAL(value, math::ternary{61});
+            fire_bit(mtx, cv, value_hits, 3);
         });
         {
-            auto lock = std::unique_lock{dbg_mtx};
-            dbg_cv.wait(lock, [&]() { return resume_reached; });
+            auto lk = std::unique_lock{mtx};
+            BOOST_CHECK(cv.wait_for(lk, 100ms, [&]() { return value_hits.all(); }));
         }
-        BOOST_CHECK_EQUAL(dbg.state(), client_control::execution_state::RUNNING);
+
+        // Resume
+        vcpu.run();
 
         // BP2
-        callback_reached = false;
-        expected_address += 10;
         {
-            auto lock = std::unique_lock{dbg_mtx};
-            dbg_cv.wait(lock, [&]() { return callback_reached; });
+            auto lk = std::unique_lock{mtx};
+            BOOST_CHECK(cv.wait_for(lk, 100ms, [&]() { return bp_reached; }));
         }
-        BOOST_CHECK_EQUAL(dbg.state(), client_control::execution_state::PAUSED);
-        BOOST_CHECK_EQUAL(dbg.address_value(expected_address),
-                          math::ternary{80});
-        BOOST_CHECK_EQUAL(dbg.register_value(vcpu_register::A),
-                          vcpu_register::data{9836});
-        BOOST_CHECK_EQUAL(dbg.register_value(vcpu_register::C),
-                          (vcpu_register::data{19, 80}));
-        BOOST_CHECK_EQUAL(dbg.register_value(vcpu_register::D),
-                          (vcpu_register::data{37, 125}));
+        bp_reached = false;
+        paused = false;
 
-        callback_reached = false;
-        dbg.remove_breakpoint(expected_address + 1);
-
-        resume_reached = false;
-        dbg.resume([&]() {
-            {
-                auto lock = std::lock_guard{dbg_mtx};
-                resume_reached = true;
-            }
-            dbg_cv.notify_one();
+        value_hits.reset();
+        vcpu.address_value(math::ternary{19},
+                           [&](auto address, auto value) {
+            BOOST_CHECK_EQUAL(address, math::ternary{19});
+            BOOST_CHECK_EQUAL(value, math::ternary{80});
+            fire_bit(mtx, cv, value_hits, 0);
+        });
+        vcpu.register_value(virtual_cpu::vcpu_register::A,
+                            [&](auto reg, auto address, auto value) {
+            BOOST_CHECK_EQUAL(reg, virtual_cpu::vcpu_register::A);
+            BOOST_CHECK(!address);
+            BOOST_CHECK_EQUAL(value, math::ternary{9836});
+            fire_bit(mtx, cv, value_hits, 1);
+        });
+        vcpu.register_value(virtual_cpu::vcpu_register::C,
+                            [&](auto reg, auto address, auto value) {
+            BOOST_CHECK_EQUAL(reg, virtual_cpu::vcpu_register::C);
+            BOOST_REQUIRE(address);
+            BOOST_CHECK_EQUAL(*address, math::ternary{19});
+            BOOST_CHECK_EQUAL(value, math::ternary{80});
+            fire_bit(mtx, cv, value_hits, 2);
+        });
+        vcpu.register_value(virtual_cpu::vcpu_register::D,
+                            [&](auto reg, auto address, auto value) {
+            BOOST_CHECK_EQUAL(reg, virtual_cpu::vcpu_register::D);
+            BOOST_REQUIRE(address);
+            BOOST_CHECK_EQUAL(*address, math::ternary{37});
+            BOOST_CHECK_EQUAL(value, math::ternary{125});
+            fire_bit(mtx, cv, value_hits, 3);
         });
         {
-            auto lock = std::unique_lock{dbg_mtx};
-            dbg_cv.wait(lock, [&]() { return resume_reached; });
+            auto lk = std::unique_lock{mtx};
+            BOOST_CHECK(cv.wait_for(lk, 100ms, [&]() { return value_hits.all(); }));
         }
-        BOOST_CHECK_EQUAL(dbg.state(), client_control::execution_state::RUNNING);
 
-        auto pause_reached = false;
-        dbg.pause([&]() {
-            {
-                auto lock = std::lock_guard{dbg_mtx};
-                pause_reached = true;
-            }
-            dbg_cv.notify_one();
-        });
+        vcpu.remove_breakpoint(math::ternary{20});
+
+        // Resume and then immediately pause.  The now removed BP3 should not
+        // fire
+        vcpu.run();
+        vcpu.pause();
+
         {
-            auto lock = std::unique_lock{dbg_mtx};
-            dbg_cv.wait(lock, [&]() { return pause_reached; });
+            auto lk = std::unique_lock{mtx};
+            BOOST_CHECK(cv.wait_for(lk, 100ms, [&]() { return paused; }));
         }
-        BOOST_CHECK_EQUAL(dbg.state(), client_control::execution_state::PAUSED);
-        dbg.resume();
-        vcpu.set_cycle_delay(0ms);
-        BOOST_CHECK(!callback_reached);
+
+        // Resume to finish
+        vcpu.run();
     }
 
-    fut.get();
-    BOOST_CHECK_EQUAL(ostr.str(), "Hello World!");
-    BOOST_CHECK_EQUAL(vcpu.state(), virtual_cpu::execution_state::STOPPED);
-    BOOST_CHECK_EQUAL(dbg.state(), client_control::execution_state::NOT_RUNNING);
-    BOOST_CHECK(!callback_reached);
+    auto lk = std::unique_lock{mtx};
+    BOOST_CHECK(cv.wait_for(lk, 100ms, [&]() { return stopped; }));
+
+    BOOST_CHECK_EQUAL(output_str, "Hello World!");
+    BOOST_CHECK_EQUAL(state_count, expected_states.size());
+}
+
+BOOST_AUTO_TEST_CASE(debugger_ignore_count)
+{
+    auto vmem = load(std::filesystem::path{"programs/echo.mal"});
+    auto vcpu = std::make_shared<virtual_cpu>(std::move(vmem));
+    auto mtx = std::mutex{};
+    auto cv = std::condition_variable{};
+    auto stopped = false;
+    auto waiting = false;
+
+    const auto expected_address = math::ternary{37};
+    auto bp_reached = false;
+    vcpu->register_for_breakpoint_hit_signal([&](auto address) {
+        BOOST_CHECK_EQUAL(address, expected_address);
+        {
+            auto lock = std::lock_guard{mtx};
+            bp_reached = true;
+        }
+        cv.notify_one();
+    });
+    vcpu->add_breakpoint(expected_address, 17);
+
+    auto expected_states = std::array{
+        virtual_cpu::execution_state::RUNNING,
+        virtual_cpu::execution_state::PAUSED,             // BP
+        virtual_cpu::execution_state::RUNNING,            // Resume
+        virtual_cpu::execution_state::PAUSED,             // BP
+        virtual_cpu::execution_state::RUNNING,            // Resume
+        virtual_cpu::execution_state::WAITING_FOR_INPUT,
+        virtual_cpu::execution_state::STOPPED,            // Stopped
+    };
+    auto state_count = 0u;
+    vcpu->register_for_state_signal([&](auto state, auto eptr) {
+        if (eptr) {
+            try {
+                std::rethrow_exception(eptr);
+            } catch (std::exception& e) {
+                BOOST_TEST_MESSAGE(e.what());
+            }
+            BOOST_CHECK_MESSAGE(false, "Unexpected error signal");
+        }
+
+        BOOST_CHECK_EQUAL(state, expected_states[state_count]);
+        ++state_count;
+
+        check_state(state, virtual_cpu::execution_state::WAITING_FOR_INPUT, mtx, cv, waiting);
+        check_state(state, virtual_cpu::execution_state::STOPPED, mtx, cv, stopped);
+    });
+
+    auto output_str = ""s;
+    vcpu->register_for_output_signal([&](auto c) {
+        output_str += c;
+    });
+
+    vcpu->add_input("a");
+
+    vcpu->run();
+    {
+        // BP
+        {
+            auto lk = std::unique_lock{mtx};
+            BOOST_CHECK(cv.wait_for(lk, 100ms, [&]() { return bp_reached; }));
+        }
+        bp_reached = false;
+
+        auto value_hits = std::bitset<1>{};
+        vcpu->address_value(expected_address,
+                           [&](auto address, auto value) {
+            BOOST_CHECK_EQUAL(address, expected_address);
+            BOOST_CHECK_EQUAL(value, math::ternary{50});
+            fire_bit(mtx, cv, value_hits, 0);
+        });
+        {
+            auto lk = std::unique_lock{mtx};
+            BOOST_CHECK(cv.wait_for(lk, 100ms, [&]() { return value_hits.all(); }));
+        }
+
+        // Resume
+        vcpu->run();
+
+        // BP
+        {
+            auto lk = std::unique_lock{mtx};
+            BOOST_CHECK(cv.wait_for(lk, 100ms, [&]() { return bp_reached; }));
+        }
+        bp_reached = false;
+
+        value_hits.reset();
+        vcpu->address_value(expected_address,
+                           [&](auto address, auto value) {
+            BOOST_CHECK_EQUAL(address, expected_address);
+            BOOST_CHECK_EQUAL(value, math::ternary{80});
+            fire_bit(mtx, cv, value_hits, 0);
+        });
+        {
+            auto lk = std::unique_lock{mtx};
+            BOOST_CHECK(cv.wait_for(lk, 100ms, [&]() { return value_hits.all(); }));
+        }
+
+        // Resume
+        vcpu->run();
+        {
+            auto lk = std::unique_lock{mtx};
+            BOOST_CHECK(cv.wait_for(lk, 100ms, [&]() { return waiting; }));
+        }
+
+        // Stop
+        vcpu.reset();
+    }
+
+    auto lk = std::unique_lock{mtx};
+    BOOST_CHECK(cv.wait_for(lk, 100ms, [&]() { return stopped; }));
+
+    BOOST_CHECK_EQUAL(output_str, "a");
+    BOOST_CHECK_EQUAL(state_count, expected_states.size());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

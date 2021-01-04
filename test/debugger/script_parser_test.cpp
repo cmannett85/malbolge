@@ -42,12 +42,11 @@ const auto all_valid_expected = script::functions::sequence{
     script::functions::address_value{422343},
     script::functions::address_value{12012_trit},
     script::functions::address_value{0x42},
-    script::functions::register_value{vcpu_register::A},
-    script::functions::register_value{vcpu_register::C},
-    script::functions::register_value{vcpu_register::D},
+    script::functions::register_value{virtual_cpu::vcpu_register::A},
+    script::functions::register_value{virtual_cpu::vcpu_register::C},
+    script::functions::register_value{virtual_cpu::vcpu_register::D},
     script::functions::step{},
     script::functions::resume{},
-    script::functions::stop{},
     script::functions::on_input{"hello"},
     script::functions::on_input{"he\"llo"}
 };
@@ -79,7 +78,6 @@ void all_valid_script(std::ostream& stream)
            << "register_value(reg=D);" << std::endl
            << "step();" << std::endl
            << "resume();" << std::endl
-           << "stop();" << std::endl
            << "on_input(data=\"hello\");" << std::endl
            << "on_input(data=\"he\\\"llo\");" << std::endl;
 }

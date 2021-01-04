@@ -22,10 +22,6 @@ typedef void* malbolge_virtual_memory;
  */
 typedef void* malbolge_virtual_cpu;
 
-/** Opaque handle for a debugger.
- */
-typedef void* malbolge_debugger;
-
 /** Enum for Malbolge return codes.
  *
  * Errors start at -0x1000, so standard platform error codes can be used as
@@ -42,52 +38,102 @@ enum malbolge_result
     MALBOLGE_ERR_NULL_ARG               = -0x1002, ///< An input was unexpectedly NULL
     MALBOLGE_ERR_PARSE_FAIL             = -0x1003, ///< Program source parse failure
     MALBOLGE_ERR_EXECUTION_FAIL         = -0x1004, ///< Program execution failure
-    MALBOLGE_ERR_CIN_OR_STOPPED         = -0x1005, ///< vCPU input requested but cin was specified,
-                                                   ///<  or program stopped
+};
 
-    MALBOLGE_ERR_DBG_WRONG_STATE        = -0x1100, ///< Debugger operation whilst program
-                                                   ///< is in wrong state
+/** vCPU execution states.
+ *
+ * C equivalent to virtual_cpu::execution_state.
+ */
+enum malbolge_vcpu_execution_state
+{
+    MALBOLGE_VCPU_READY,                ///< Ready to run
+    MALBOLGE_VCPU_RUNNING,              ///< Program running
+    MALBOLGE_VCPU_PAUSED,               ///< Program paused
+    MALBOLGE_VCPU_WAITING_FOR_INPUT,    ///< Similar to paused, except the program will
+                                        ///< resume when input data provided
+    MALBOLGE_VCPU_STOPPED,              ///< Program stopped, cannot be resumed or ran again
+    MALBOLGE_VCPU_NUM_STATES            ///< Number of execution states
 };
 
 /** vCPU register identifiers for the debugger.
  *
- * C equivalent to malbolge::debugger::vcpu_register::id.
+ * C equivalent to virtual_cpu::vcpu_register.
  */
-enum malbolge_debugger_vcpu_register_id
+enum malbolge_vcpu_register
 {
-    MALBOLGE_DBG_REGISTER_A,    ///< Accumulator
-    MALBOLGE_DBG_REGISTER_C,    ///< Code pointer
-    MALBOLGE_DBG_REGISTER_D,    ///< Data pointer
-    MALBOLGE_DBG_REGISTER_MAX,  ///< Number of registers
+    MALBOLGE_VCPU_REGISTER_A,    ///< Accumulator
+    MALBOLGE_VCPU_REGISTER_C,    ///< Code pointer
+    MALBOLGE_VCPU_REGISTER_D,    ///< Data pointer
+    MALBOLGE_VCPU_REGISTER_MAX,  ///< Number of registers
 };
 
-/** Function pointer signature for the program stopped callback.
+/** Program load normalised modes.
  *
- * @param error_code The negative error code that triggered the stop, or
- * MALBOLGE_ERR_SUCCESS if execution ended successfully
- * @param vcpu vCPU handle that has stopped.  Note that the handle has already
- * freed when this function is called
+ *  C equivalen to malbolge::load_normalised_mode.
  */
-typedef void (*malbolge_program_stopped)(int error_code,
-                                         malbolge_virtual_cpu vcpu);
+enum malbolge_load_normalised_mode
+{
+    MALBOLGE_LOAD_NORMALISED_AUTO,      ///< Automatically detect if normalised, uses
+                                        ///< malbolge_is_likely_normalised_source(const char*, unsigned long)
+    MALBOLGE_LOAD_NORMALISED_ON,        ///< Force load as normalised
+    MALBOLGE_LOAD_NORMALISED_OFF,       ///< Force load as non-normalised
+    MALBOLGE_LOAD_NORMALISED_NUM_MODES  ///< Number of normalisation modes
+};
 
-/** Function pointer signature for the waiting for user input callback.
+/** Function pointer signature for the vCPU execution state callback.
  *
- * @param vcpu vCPU handle that is waiting
+ * This is equivalent to virtual_cpu::state_signal_type and
+ * virtual_cpu::error_signal_type.
+ * @param vcpu vCPU handle
+ * @param state The new program state
+ * @param error_code If an error occured, this will be less than zero
  */
-typedef void (*malbolge_program_waiting_for_input)(malbolge_virtual_cpu vcpu);
+typedef void (*malbolge_vcpu_state_callback)(malbolge_virtual_cpu vcpu,
+                                             enum malbolge_vcpu_execution_state state,
+                                             int error_code);
 
-/** Function pointer signature for a callback fired when a breakpoint is hit.
+/** Function pointer signature for the vCPU output callback.
  *
+ * This is equivalent to virtual_cpu::output_signal_type.
+ * @param vcpu vCPU handle
+ * @param c Character emitted from the program
+ */
+typedef void (*malbolge_vcpu_output_callback)(malbolge_virtual_cpu vcpu,
+                                              char c);
+
+/** Function pointer signature for the vCPU breakpoint hit callback.
+ *
+ * This is equivalent to virtual_cpu::breakpoint_hit_signal_type.
+ * @param vcpu vCPU handle
  * @param address Address the breakpoint resides on
- * @param reg vCPU register that triggered the breakpoint
- * @return
- * - MALBOLGE_ERR_TRUE to stop execution
- * - MALBOLGE_ERR_FALSE to continue execution
  */
-typedef int (*malbolge_debugger_breakpoint_callback)(
-    unsigned int address,
-    malbolge_debugger_vcpu_register_id reg);
+typedef void (*malbolge_vcpu_breakpoint_hit_callback)(malbolge_virtual_cpu vcpu,
+                                                      unsigned int address);
+
+/** Function pointer signature for the vCPU address value callback.
+ *
+ * This is equivalent to virtual_cpu::address_value_callback_type.
+ * @param vcpu vCPU handle
+ * @param address The queried address
+ * @param value Value extracted from the vmem address
+ */
+typedef void (*malbolge_vcpu_address_value_callback)(malbolge_virtual_cpu vcpu,
+                                                     unsigned int address,
+                                                     unsigned int value);
+
+/** Function pointer signature for the vCPU register value callback.
+ *
+ * This is equivalent to virtual_cpu::register_value_callback_type.
+ * @param vcpu vCPU handle
+ * @param reg The queried vCPU register
+ * @param address If @a reg is C or D then it contains an address, otherwise 0
+ * @param value The value of the register if @a reg is A, otherwise the value
+ * at @a address
+ */
+typedef void (*malbolge_vcpu_register_value_callback)(malbolge_virtual_cpu vcpu,
+                                                      enum malbolge_vcpu_register reg,
+                                                      unsigned int address,
+                                                      unsigned int value);
 
 /** Returns the current minimum logging level.
  *
@@ -180,6 +226,7 @@ int malbolge_denormalise_source(char *buffer,
  * @a buffer is not freed by this function.
  * @param buffer Program source
  * @param size Size in bytes of @a buffer
+ * @param mode Program load normalised mode
  * @param fail_line If parsing fails, this is set to the line in the source
  * where the failure occurred.  Ignored if NULL
  * @param fail_column If the parsing fails, this is set to the column in the
@@ -188,29 +235,9 @@ int malbolge_denormalise_source(char *buffer,
  */
 malbolge_virtual_memory malbolge_load_program(char *buffer,
                                               unsigned long size,
+                                              malbolge_load_normalised_mode mode,
                                               unsigned int *fail_line,
                                               unsigned int *fail_column);
-
-/** Same as malbolge_load_program(char*, unsigned long, unsigned int*, unsigned int*)
- * but denormalises the input before execution.
- *
- * If you do not pass the return pointer to malbolge_vcpu_run, it will need
- * manually freeing.
- *
- * @a buffer is not freed by this function.
- * @param buffer Program source
- * @param size Size in bytes of @a buffer
- * @param fail_line If parsing fails, this is set to the line in the source
- * where the failure occurred.  Ignored if NULL
- * @param fail_column If the parsing fails, this is set to the column in the
- * source where the failure occurred.  Ignored if NULL
- * @return Malbolge virtual memory handle, or NULL if loading failed
- */
-malbolge_virtual_memory
-malbolge_load_normalised_program(char *buffer,
-                                 unsigned long size,
-                                 unsigned int *fail_line,
-                                 unsigned int *fail_column);
 
 /** Frees the virtual memory returned from malbolge_load_program.
  *
@@ -227,175 +254,178 @@ void malbolge_free_virtual_memory(malbolge_virtual_memory vmem);
  */
 malbolge_virtual_cpu malbolge_create_vcpu(malbolge_virtual_memory vmem);
 
-/** Frees the vCPU created by malbolge_create_vcpu(malbolge_virtual_memory).
+/** Synchronously stops and frees the vCPU created by
+ *  malbolge_create_vcpu(malbolge_virtual_memory).
+ *
+ * If the program has not already stopped, this will stop it and cause the
+ * vCPU's malbolge_vcpu_state_callback to be called.
  *
  * No-op if vcpu is NULL.
  * @param vcpu vCPU to free
  */
 void malbolge_free_vcpu(malbolge_virtual_cpu vcpu);
 
-/** Run the program loading in @a vcpu.
+/** Attach/bind/connect callbacks to @a vcpu.
  *
- * @param vcpu vCPU handle
- * @param stopped_cb Callback called when the execution stops
- * @param waiting_cb Callback called when the program is expecting user input
- * @param use_cin If true, user input is extracted from cin.  Otherwise input
- * is passed in using malbolge_vcpu_input.
+ * You can call this more than once to bind multiple callbacks.  The callback
+ * addresses are stored separately so duplicates are ignored.
+ * @note The callbacks are called from the vCPU's internal worker, it is the
+ * caller's responsibility to manage thread safety within the callback
+ * @param vcpu vCPU handle returned from
+ * malbolge_create_vcpu(malbolge_virtual_memory)
+ * @param state_cb Callback called when the program state changes, or null to
+ * skip
+ * @param output_cb Callback called when the program emits output, or null to
+ * skip
+ * @param bp_cb Callback called when a breakpoint is hit in the program, or null
+ * to skip
  * @return
  * - MALBOLGE_ERR_SUCCESS for success
  * - MALBOLGE_ERR_NULL_ARG if @a vcpu is NULL
- * - MALBOLGE_ERR_EXECUTION_FAIL if vCPU execution initialisation fails
  * - MALBOLGE_ERR_UNKNOWN if an unknown failure occurs
  */
-int malbolge_vcpu_run(malbolge_virtual_cpu vcpu,
-                      malbolge_program_stopped stopped_cb,
-                      malbolge_program_waiting_for_input waiting_cb,
-                      int use_cin);
+int malbolge_vcpu_attach_callbacks(malbolge_virtual_cpu vcpu,
+                                   malbolge_vcpu_state_callback state_cb,
+                                   malbolge_vcpu_output_callback output_cb,
+                                   malbolge_vcpu_breakpoint_hit_callback bp_cb);
 
-/** Asynchronously stops the virtual CPU.
+/** Detach/unbind/disconnect callbacks from @a vcpu.
  *
- * The stopped callback assigned to @a vcpu is called.
- * @param vcpu Virtual CPU handle returned from
+ * The callback addresses are used to remove their entries, so this can be
+ * called more than once if multiple callbacks were previously attached.
+ * @param vcpu vCPU handle returned from
+ * malbolge_create_vcpu(malbolge_virtual_memory)
+ * @param state_cb Callback called when the program state changes, or null to
+ * skip
+ * @param output_cb Callback called when the program emits output, or null to
+ * skip
+ * @param bp_cb Callback called when a breakpoint is hit in the program, or null
+ * to skip
+ * @return
+ * - MALBOLGE_ERR_SUCCESS for success
+ * - MALBOLGE_ERR_NULL_ARG if @a vcpu is NULL
+ * - MALBOLGE_ERR_UNKNOWN if an unknown failure occurs
+ */
+int malbolge_vcpu_detach_callbacks(malbolge_virtual_cpu vcpu,
+                                   malbolge_vcpu_state_callback state_cb,
+                                   malbolge_vcpu_output_callback output_cb,
+                                   malbolge_vcpu_breakpoint_hit_callback bp_cb);
+
+/** Asynchronously run or resume the program loaded in @a vcpu.
+ *
+ * @param vcpu vCPU handle returned from
  * malbolge_create_vcpu(malbolge_virtual_memory)
  * @return
  * - MALBOLGE_ERR_SUCCESS for success
  * - MALBOLGE_ERR_NULL_ARG if @a vcpu is NULL
+ * - MALBOLGE_ERR_UNKNOWN if an unknown failure occurs
  */
-int malbolge_vcpu_stop(malbolge_virtual_cpu vcpu);
+int malbolge_vcpu_run(malbolge_virtual_cpu vcpu);
 
-/** Passes @a buffer to @a vcpu to use as user input.
+/** Asynchronously pauses the program.
  *
- * This request is ignored if @a vcpu was created with the <TT>use_cin</TT>
- * argument set to true.
+ * @param vcpu vCPU handle returned from
+ * malbolge_create_vcpu(malbolge_virtual_memory)
+ * @return
+ * - MALBOLGE_ERR_SUCCESS for success
+ * - MALBOLGE_ERR_NULL_ARG if @a vcpu is NULL
+ * - MALBOLGE_ERR_UNKNOWN if an unknown failure occurs
+ */
+int malbolge_vcpu_pause(malbolge_virtual_cpu vcpu);
+
+/** Asynchronously advances the program by a single instruction.
  *
- * @a buffer is copied into an internal queue, so this can be called before
- * @a vcpu is ready to receive user input.  As the data is copied, you need to
- * free @a buffer manually (assuming it was malloc-ed).
- * @param vcpu Virtual CPU handle returned from
+ * @param vcpu vCPU handle returned from
+ * malbolge_create_vcpu(malbolge_virtual_memory)
+ * @return
+ * - MALBOLGE_ERR_SUCCESS for success
+ * - MALBOLGE_ERR_NULL_ARG if @a vcpu is NULL
+ * - MALBOLGE_ERR_UNKNOWN if an unknown failure occurs
+ */
+int malbolge_vcpu_step(malbolge_virtual_cpu vcpu);
+
+/** Asynchronsouly passes @a buffer to @a vcpu to use as user input.
+ *
+ * @a buffer is copied into the vCPU, so this can be called before @a vcpu is
+ * ready to receive user input.  As the data is copied, you need to free
+ * @a buffer manually (assuming it was malloc-ed).
+ *
+ * If the program was in a MALBOLGE_VCPU_WAITING_FOR_INPUT state, this will
+ * resume it.
+ * @param vcpu vCPU handle returned from
  * malbolge_create_vcpu(malbolge_virtual_memory)
  * @param buffer Input data
  * @param size Size of @a buffer
  * @return
  * - MALBOLGE_ERR_SUCCESS for success
  * - MALBOLGE_ERR_NULL_ARG if @a vcpu or @a buffer is NULL
- * - MALBOLGE_ERR_CIN_OR_STOPPED if @a vcpu is set to use cin, or already
- *   stopped
- */
-int malbolge_vcpu_input(malbolge_virtual_cpu vcpu,
-                        const char* buffer,
-                        unsigned int size);
-
-/** Attach a debugger to a vCPU.
- *
- * See malbolge::debugger::client_control for more information.
- * @param vcpu Virtual CPU handle returned from
- * malbolge_create_vcpu(malbolge_virtual_memory)
- * @return Debugger handle, or NULL if @a vcpu is NULL or the attachment failed
- */
-malbolge_debugger malbolge_debugger_attach(malbolge_virtual_cpu vcpu);
-
-/** Pause the debugged program.
- *
- * See malbolge::debugger::client_control::pause() for more information.
- * @param debugger Debugger handle returned from
- * malbolge_debugger_attach(malbolge_virtual_cpu)
- * @return
- * - MALBOLGE_ERR_SUCCESS for success
- * - MALBOLGE_ERR_NULL_ARG if @a debugger is NULL
- * - MALBOLGE_ERR_DBG_WRONG_STATE if program is stopped or not started
  * - MALBOLGE_ERR_UNKNOWN if an unknown failure occurs
  */
-int malbolge_debugger_pause(malbolge_debugger debugger);
-
-/** Step the debugged program.
- *
- * See malbolge::debugger::client_control::step() for more information.
- * @param debugger Debugger handle returned from
- * malbolge_debugger_attach(malbolge_virtual_cpu)
- * @return
- * - MALBOLGE_ERR_SUCCESS for success
- * - MALBOLGE_ERR_NULL_ARG if @a debugger is NULL
- * - MALBOLGE_ERR_DBG_WRONG_STATE if program is not in a paused state
- * - MALBOLGE_ERR_UNKNOWN if an unknown failure occurs
- */
-int malbolge_debugger_step(malbolge_debugger debugger);
-
-/** Resume the debugged program.
- *
- * See malbolge::debugger::client_control::resume() for more information.
- * @param debugger Debugger handle returned from
- * malbolge_debugger_attach(malbolge_virtual_cpu)
- * @return
- * - MALBOLGE_ERR_SUCCESS for success
- * - MALBOLGE_ERR_NULL_ARG if @a debugger is NULL
- * - MALBOLGE_ERR_DBG_WRONG_STATE if program is stopped or not started
- * - MALBOLGE_ERR_UNKNOWN if an unknown failure occurs
- */
-int malbolge_debugger_resume(malbolge_debugger debugger);
-
-/** Returns the value at a given vmem address.
- *
- * See malbolge::debugger::client_control::address_value(math::ternary) const
- * for more information.
- * @param debugger Debugger handle returned from
- * malbolge_debugger_attach(malbolge_virtual_cpu)
- * @param address vmem address, will wrap if same or larger than
- * math::ternary::max
- * @return If positive then the value at vmem @a address.  Otherwise:
- * - MALBOLGE_ERR_NULL_ARG if @a debugger is NULL
- * - MALBOLGE_ERR_DBG_WRONG_STATE if program is running
- * - MALBOLGE_ERR_UNKNOWN if an unknown failure occurs
- */
-int malbolge_debugger_address_value(malbolge_debugger debugger,
-                                    unsigned int address);
-
-/** Returns the address and/or value of a given register.
- *
- * See
- * malbolge::debugger::client_control::register_value(vcpu_register::id) const
- * for more information.
- * @param debugger Debugger handle returned from
- * malbolge_debugger_attach(malbolge_virtual_cpu)
- * @param reg vCPU register to query
- * @param address The value pointed at by the register, or NULL if querying the
- * A register.  Ignored if the input is NULL
- * @return If positive then the register value.  Otherwise:
- * - MALBOLGE_ERR_NULL_ARG if @a debugger is NULL
- * - MALBOLGE_ERR_DBG_WRONG_STATE if program is running
- * - MALBOLGE_ERR_UNKNOWN if an unknown failure occurs
- */
-int malbolge_debugger_register_value(malbolge_debugger debugger,
-                                     enum malbolge_debugger_vcpu_register_id reg,
-                                     unsigned int** address);
+int malbolge_vcpu_add_input(malbolge_virtual_cpu vcpu,
+                            const char* buffer,
+                            unsigned int size);
 
 /** Adds a breakpoint.
  *
- * @param debugger Debugger handle returned from
- * malbolge_debugger_attach(malbolge_virtual_cpu)
+ * @param vcpu vCPU handle returned from
+ * malbolge_create_vcpu(malbolge_virtual_memory)
  * @param address vmem address to attach the breakpoint to
- * @param cb Callback fired when the breakpoint is hit, or NULL to use the
- * default (malbolge::debugger::client_control::breakpoint::default_callback)
- * @param ignore_count Number times the breakpoint is hit before the callback is
- * triggered
+ * @param ignore_count Number times the breakpoint is hit before any
+ * malbolge_vcpu_breakpoint_hit_callback callbacks are triggered
  * @return
  * - MALBOLGE_ERR_SUCCESS for success
- * - MALBOLGE_ERR_NULL_ARG if @a debugger is NULL
+ * - MALBOLGE_ERR_NULL_ARG if @a vcpu is NULL
+ * - MALBOLGE_ERR_UNKNOWN if an unknown failure occurs
  */
-int malbolge_debugger_add_breakpoint(malbolge_debugger debugger,
-                                     unsigned int address,
-                                     malbolge_debugger_breakpoint_callback cb,
-                                     unsigned int ignore_count);
+int malbolge_vcpu_add_breakpoint(malbolge_virtual_cpu vcpu,
+                                 unsigned int address,
+                                 unsigned int ignore_count);
 
 /** Removes a breakpoint at the given address.
  *
- * @param debugger Debugger handle returned from
- * malbolge_debugger_attach(malbolge_virtual_cpu)
+ * @param vcpu vCPU handle returned from
+ * malbolge_create_vcpu(malbolge_virtual_memory)
  * @param address vmem address to remove the breakpoint from
  * @return
- * - MALBOLGE_ERR_TRUE if a breakpoint was removed
- * - MALBOLGE_ERR_FALSE if no breakpoint was at @a address
- * - MALBOLGE_ERR_NULL_ARG if @a debugger is NULL
+ * - MALBOLGE_ERR_SUCCESS for success
+ * - MALBOLGE_ERR_NULL_ARG if @a vcpu is NULL
+ * - MALBOLGE_ERR_UNKNOWN if an unknown failure occurs
  */
-int malbolge_debugger_remove_breakpoint(malbolge_debugger debugger,
-                                        unsigned int address);
+int malbolge_vcpu_remove_breakpoint(malbolge_virtual_cpu vcpu,
+                                    unsigned int address);
+
+/** Asynchronously returns the value at a given vmem address.
+ *
+ * @note The callback is called from the vCPU's internal worker, it is the
+ * caller's responsibility to manage thread safety within the callback
+ * @param vcpu vCPU handle returned from
+ * malbolge_create_vcpu(malbolge_virtual_memory)
+ * @param address vmem address, will wrap if same or larger than
+ * math::ternary::max
+ * @param cb Callback used to return the value
+ * @return
+ * - MALBOLGE_ERR_SUCCESS for success
+ * - MALBOLGE_ERR_NULL_ARG if @a vcpu or @a cb is NULL
+ * - MALBOLGE_ERR_UNKNOWN if an unknown failure occurs
+ */
+int malbolge_vcpu_address_value(malbolge_virtual_cpu vcpu,
+                                unsigned int address,
+                                malbolge_vcpu_address_value_callback cb);
+
+/** Asynchronously returns the address and/or value of a given register.
+ *
+ * @note The callback is called from the vCPU's internal worker, it is the
+ * caller's responsibility to manage thread safety within the callback
+ * @param vcpu vCPU handle returned from
+ * malbolge_create_vcpu(malbolge_virtual_memory)
+ * @param reg vCPU register to query
+ * @param cb Callback used to return the value
+ * @return
+ * - MALBOLGE_ERR_SUCCESS for success
+ * - MALBOLGE_ERR_NULL_ARG if @a vcpu or @a cb is NULL
+ * - MALBOLGE_ERR_UNKNOWN if an unknown failure occurs
+ */
+int malbolge_vcpu_register_value(malbolge_virtual_cpu vcpu,
+                                 enum malbolge_vcpu_register reg,
+                                 malbolge_vcpu_register_value_callback cb);
 }

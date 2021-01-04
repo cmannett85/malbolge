@@ -111,19 +111,28 @@ yxwvuysrqpnKmlkjihgfedcba`_^]\[ZYXWVT1|)_"s,
 BOOST_AUTO_TEST_CASE(denormalise_valid_test)
 {
     auto f = [](auto&& expected, auto&& source) {
-        BOOST_REQUIRE_EQUAL(source.size(), expected.size());
-
         // Iterator version
         {
             auto input = source;
-            denormalise_source(input.begin(), input.end());
+            auto it = denormalise_source(input.begin(), input.end());
+
+            input.erase(it, input.end());
             BOOST_CHECK_EQUAL(input, expected);
         }
 
         // Range version
         {
             auto input = source;
-            denormalise_source(input);
+            auto it = denormalise_source(input);
+
+            input.erase(it, input.end());
+            BOOST_CHECK_EQUAL(input, expected);
+        }
+
+        // Resize version
+        {
+            auto input = source;
+            denormalise_source_resize(input);
             BOOST_CHECK_EQUAL(input, expected);
         }
     };
@@ -139,6 +148,8 @@ BOOST_AUTO_TEST_CASE(denormalise_valid_test)
                        "jjjjjjjjjjjjjjjjjjjjjjj*<jjjjjjjjjjjjjjjjjjjjjjjj*<v"s},
             std::tuple{""s,
                        ""s},
+            std::tuple{R"_(('&%$#"!~}|{zyxwvutsrqpnKmlkjihgfedcba`_^]\[ZYXWVT1|)_"s,
+                       "jjjjjjjjjjjjjjjjjjjjjjj*<jjjjjjjjjjjjjjjjjjjjjjjj*<v \n\t"s},
         }
     );
 }
@@ -221,6 +232,8 @@ BOOST_AUTO_TEST_CASE(is_likely_normalised_test)
             std::tuple{"jjjjjjjjjjjjjjjjdjjjjjjj*<jjjjjjjjjjjjjjjjjjjjjjjj*<v"s,
                        false},
             std::tuple{""s,
+                       true},
+            std::tuple{"jpoo*pjoooop*ojoopoo*ojoooooppjoivvvo/i<ivivi<vvvvvvvvvvvvvoji \t\n"s,
                        true},
         }
     );

@@ -5,8 +5,8 @@
 
 #pragma once
 
+#include "malbolge/virtual_cpu.hpp"
 #include "malbolge/utility/string_constant.hpp"
-#include "malbolge/debugger/client_control.hpp"
 #include "malbolge/utility/tuple_iterator.hpp"
 #include "malbolge/utility/visit.hpp"
 
@@ -15,8 +15,6 @@
 
 namespace malbolge
 {
-class virtual_cpu;
-
 namespace debugger
 {
 /** Namespace for debugger scripting functions and types.
@@ -27,10 +25,10 @@ namespace script
  */
 namespace type
 {
-    using uint = std::uint32_t;     ///< 32-bit unsigned int
-    using ternary = math::ternary;  ///< 10-trit ternary
-    using reg = vcpu_register::id;  ///< vCPU register
-    using string = std::string;     ///< String
+    using uint = std::uint32_t;             ///< 32-bit unsigned int
+    using ternary = math::ternary;          ///< 10-trit ternary
+    using reg = virtual_cpu::vcpu_register; ///< vCPU register
+    using string = std::string;             ///< String
 
     /** A tuple type of all valid types.
      */
@@ -154,7 +152,7 @@ public:
      * @param cargs Constructor function arguments
      */
     template <typename... ConArgs>
-    constexpr explicit function(ConArgs... cargs)
+    constexpr function(ConArgs... cargs)
     {
         static_assert(sizeof...(ConArgs) <= sizeof...(Args),
                       "Number of ConArgs must not be greater than Args");
@@ -336,12 +334,6 @@ using resume = function<
     MAL_STR(resume)
 >;
 
-/** Script function type for stopping and exiting the debugged program.
- */
-using stop = function<
-    MAL_STR(stop)
->;
-
 /** Script function type for passing a string for the program to accept as
  * input.
  *
@@ -363,7 +355,6 @@ using function_variant = std::variant<
     register_value,
     step,
     resume,
-    stop,
     on_input
 >;
 
@@ -375,7 +366,6 @@ using function_variant = std::variant<
  *  - A step or resume function does not appear before a run
  *  - If there are any add_breakpoint functions, at least one must appear before
  *    a run
- *  - Nothing appears after a stop
  */
 using sequence = std::vector<function_variant>;
 }
@@ -397,21 +387,111 @@ std::ostream& operator<<(std::ostream& stream,
  */
 std::ostream& operator<<(std::ostream& stream, const functions::sequence& seq);
 
-/** Runs @a fn_seq on @a vcpu.
+/** A wrapper around a virtual_cpu that allows a function sequence to be
+ *  executed on it.
  *
- * @note This function attaches a debugger to @a vcpu, the operation will fail
- * if one is  already attached
- * @param fn_seq Parsed debugger script function sequence to run
- * @param vcpu vCPU to execute the script on
- * @param dstr Debugger output stream
- * @param ostr Porgram output stream
- * @exception base_exception Thrown if @a vcpu if attaching the debugger fails,
- * @a fn_seq is malformed, or the program execution fails
+ * This class can be moved but not copied.
  */
-void run(const functions::sequence& fn_seq,
-         virtual_cpu& vcpu,
-         std::ostream& dstr = std::clog,
-         std::ostream& ostr = std::cout);
+class script_runner
+{
+public:
+    /** Signal type carrying program output data.
+     */
+    using output_signal_type = utility::signal<char>;
+
+    /** Signal type carrying the value resulting from an address_value function.
+     *
+     * @tparam functions::address_value Function
+     * @tparam math::ternary Value
+     */
+    using address_value_signal_type = utility::signal<functions::address_value,
+                                                      math::ternary>;
+
+    /** Signal type carrying the value resulting from a register_value function.
+     *
+     * @tparam functions::address_value Function
+     * @tparam std::optional<math::ternary> If the register is C or D then it
+     * contains an address
+     * @tparam math::ternary The value of the register if the address is empty,
+     * otherwise the value at the address
+     */
+    using register_value_signal_type = utility::signal<functions::register_value,
+                                                       std::optional<math::ternary>,
+                                                       math::ternary>;
+
+    /** Constructor.
+     */
+    explicit script_runner() = default;
+
+    script_runner(script_runner&& other) = default;
+    script_runner& operator=(script_runner&& other) = default;
+    script_runner(const script_runner&) = delete;
+    script_runner& operator=(const script_runner&) = delete;
+
+    /** Runs @a fn_seq on an internal vCPU.
+     *
+     * This is a blocking call.  The internal vCPU's lifetime is the same as
+     * this function's, this means that the script_runner instance can be
+     * reused.
+     * @param vmem Initialised virtual memory
+     * @param fn_seq Function sequence
+     * @exception base_exception Thrown if @a fn_seq is malformed, or the
+     * program execution fails
+     */
+    void run(virtual_memory vmem, const functions::sequence& fn_seq);
+
+    /** Register @a slot to be called when the output signal fires.
+     *
+     * You can disconnect from the signal using the returned connection
+     * instance.
+     * @note @a slot is called from the vCPU's local event loop thread, so you
+     * may need to post into the event loop you intend on processing it with
+     * @param slot Callable instance called when the signal fires
+     * @return Connection data
+     */
+    output_signal_type::connection
+    register_for_output_signal(output_signal_type::slot_type slot)
+    {
+        return output_sig_.connect(std::move(slot));
+    }
+
+    /** Register @a slot to be called when the address value result signal
+     *  fires.
+     *
+     * You can disconnect from the signal using the returned connection
+     * instance.
+     * @note @a slot is called from the vCPU's local event loop thread, so you
+     * may need to post into the event loop you intend on processing it with
+     * @param slot Callable instance called when the signal fires
+     * @return Connection data
+     */
+    address_value_signal_type::connection
+    register_for_address_value_signal(address_value_signal_type::slot_type slot)
+    {
+        return address_sig_.connect(std::move(slot));
+    }
+
+    /** Register @a slot to be called when the register value result signal
+     *  fires.
+     *
+     * You can disconnect from the signal using the returned connection
+     * instance.
+     * @note @a slot is called from the vCPU's local event loop thread, so you
+     * may need to post into the event loop you intend on processing it with
+     * @param slot Callable instance called when the signal fires
+     * @return Connection data
+     */
+    register_value_signal_type::connection
+    register_for_register_value_signal(register_value_signal_type::slot_type slot)
+    {
+        return reg_sig_.connect(std::move(slot));
+    }
+
+private:
+    output_signal_type output_sig_;
+    address_value_signal_type address_sig_;
+    register_value_signal_type reg_sig_;
+};
 }
 }
 }

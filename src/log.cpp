@@ -7,12 +7,14 @@
 
 #include <chrono>
 #include <iomanip>
+#include <atomic>
 
 using namespace malbolge;
 
 namespace
 {
-log::level filter_level = log::INFO;
+std::atomic<log::level> filter_level = log::INFO;
+std::mutex mtx;
 }
 
 std::ostream& log::detail::timestamp(std::ostream& stream)
@@ -33,6 +35,11 @@ std::ostream& log::detail::timestamp(std::ostream& stream)
 
     return stream << std::put_time(std::localtime(&c_now), "%F %T")
                   << "." << std::setfill('0') << std::setw(width) << fractional;
+}
+
+std::mutex& log::detail::log_lock()
+{
+    return mtx;
 }
 
 const char* log::to_string(level lvl)

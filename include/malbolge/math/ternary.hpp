@@ -7,6 +7,8 @@
 
 #include "malbolge/math/tritset.hpp"
 
+#include <optional>
+
 /** Top-level namespace for all of malbolge.
  */
 namespace malbolge
@@ -242,4 +244,19 @@ struct hash<malbolge::math::ternary>
         return static_cast<std::size_t>(t);
     }
 };
+
+/** Textual streaming operator.
+ *
+ * @param stream Output stream
+ * @param t Value to write
+ * @return @a stream
+ */
+inline std::ostream& operator<<(std::ostream& stream,
+                                const std::optional<malbolge::math::ternary>& t)
+{
+    if (!t) {
+        return stream << "{}";
+    }
+    return stream << *t;
+}
 }

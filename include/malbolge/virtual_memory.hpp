@@ -364,6 +364,16 @@ public:
         return iterator{*mem_}[pos];
     }
 
+    /** Ternary overload.
+     *
+     * @param pos Offset from start of memory space
+     * @return Reference to the element at @a pos
+     */
+    reference operator[](math::ternary pos)
+    {
+        return (*this)[static_cast<size_type>(pos)];
+    }
+
     /** Const-overload.
      *
      * If @a pos will exceeds the memory space, it will wrap around.
@@ -373,6 +383,16 @@ public:
     const_reference operator[](size_type pos) const
     {
         return const_iterator{*mem_}[pos];
+    }
+
+    /** Const ternary overload.
+     *
+     * @param pos Offset from start of memory space
+     * @return Reference to the element at @a pos
+     */
+    const_reference operator[](math::ternary pos) const
+    {
+        return (*this)[static_cast<size_type>(pos)];
     }
 
     /** Returns the element at @a pos.
@@ -387,6 +407,16 @@ public:
         return (*this)[pos];
     }
 
+    /** Ternary overload.
+     *
+     * @param pos Offset from start of memory space
+     * @return Reference to the element at @a pos
+     */
+    reference at(math::ternary pos)
+    {
+        return at(static_cast<size_type>(pos));
+    }
+
     /** Const-overload.
      *
      * Because this type's iterators wrap, this is the same as
@@ -397,6 +427,16 @@ public:
     const_reference at(size_type pos) const
     {
         return (*this)[pos];
+    }
+
+    /** Const ternary overload.
+     *
+     * @param pos Offset from start of memory space
+     * @return Reference to the element at @a pos
+     */
+    const_reference at(math::ternary pos) const
+    {
+        return at(static_cast<size_type>(pos));
     }
 
     /** A iterator to the beginning of the memory space.

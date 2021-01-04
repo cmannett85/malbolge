@@ -92,6 +92,16 @@ public:
         return log_level_;
     }
 
+    /** Overrides the normalised input detection to load the program data as
+     *  non-normalised.
+     *
+     * @return True to force non-normalised
+     */
+    bool force_non_normalised() const
+    {
+        return force_nn_;
+    }
+
     /** Returns the debugger script path, or an empty optional if not specified.
      *
      * @return Debugger script path, if specified
@@ -106,6 +116,7 @@ private:
     bool version_;
     program_data p_;
     log::level log_level_;
+    bool force_nn_;
     std::optional<std::filesystem::path> debugger_script_;
 };
 

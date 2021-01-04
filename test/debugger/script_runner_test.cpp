@@ -4,10 +4,11 @@
  */
 
 #include "malbolge/debugger/script_runner.hpp"
-#include "malbolge/virtual_cpu.hpp"
 #include "malbolge/loader.hpp"
 
 #include "test_helpers.hpp"
+
+#include <deque>
 
 using namespace malbolge;
 using namespace debugger;
@@ -17,29 +18,56 @@ BOOST_AUTO_TEST_SUITE(script_runner_suite)
 
 BOOST_AUTO_TEST_CASE(hello_world_debugger)
 {
-    constexpr auto dstr_expected =
-R"([DBGR]: address_value(address={d:9, t:0000000100}) = {d:125, t:0000011122}
-[DBGR]: register_value(reg=A) = {{}, {d:72, t:0000002200}}
-[DBGR]: register_value(reg=C) = {{d:9, t:0000000100}, {d:125, t:0000011122}}
-[DBGR]: register_value(reg=D) = {{d:62, t:0000002022}, {d:37, t:0000001101}}
-[DBGR]: address_value(address={d:10, t:0000000101}) = {d:124, t:0000011121}
-[DBGR]: register_value(reg=A) = {{}, {d:72, t:0000002200}}
-[DBGR]: register_value(reg=C) = {{d:10, t:0000000101}, {d:124, t:0000011121}}
-[DBGR]: register_value(reg=D) = {{d:38, t:0000001102}, {d:61, t:0000002021}}
-[DBGR]: address_value(address={d:19, t:0000000201}) = {d:80, t:0000002222}
-[DBGR]: register_value(reg=A) = {{}, {d:9836, t:0111111022}}
-[DBGR]: register_value(reg=C) = {{d:19, t:0000000201}, {d:80, t:0000002222}}
-[DBGR]: register_value(reg=D) = {{d:37, t:0000001101}, {d:125, t:0000011122}}
-)";
-
     auto vmem = load(std::filesystem::path{"programs/hello_world.mal"});
-    auto vcpu = virtual_cpu{std::move(vmem)};
-    BOOST_CHECK_EQUAL(vcpu.state(), virtual_cpu::execution_state::READY);
+    auto runner = script::script_runner{};
 
-    auto ostr = std::stringstream{};
-    auto dstr = std::stringstream{};
+    auto output_str = ""s;
+    runner.register_for_output_signal([&](auto c) {
+        output_str += c;
+    });
 
-    auto fn_seq = script::functions::sequence{
+    using address_value_args = traits::arg_extractor<script::script_runner::address_value_signal_type>;
+    auto address_expected = std::deque<address_value_args>{
+        {9, 125},
+        {10, 124},
+        {19, 80}
+    };
+    runner.register_for_address_value_signal([&](auto fn, auto value) {
+        BOOST_REQUIRE(!address_expected.empty());
+
+        const auto& expected = address_expected.front();
+        BOOST_CHECK_EQUAL(std::get<0>(expected), fn);
+        BOOST_CHECK_EQUAL(std::get<1>(expected), value);
+
+        address_expected.pop_front();
+    });
+
+    using reg_value_args = traits::arg_extractor<script::script_runner::register_value_signal_type>;
+    auto reg_expected = std::deque<reg_value_args>{
+        {virtual_cpu::vcpu_register::A, {},  72},
+        {virtual_cpu::vcpu_register::C,  9, 125},
+        {virtual_cpu::vcpu_register::D, 62,  37},
+
+        {virtual_cpu::vcpu_register::A, {},  72},
+        {virtual_cpu::vcpu_register::C, 10, 124},
+        {virtual_cpu::vcpu_register::D, 38,  61},
+
+        {virtual_cpu::vcpu_register::A, {}, 9836},
+        {virtual_cpu::vcpu_register::C, 19,   80},
+        {virtual_cpu::vcpu_register::D, 37,  125},
+    };
+    runner.register_for_register_value_signal([&](auto fn, auto address, auto value) {
+        BOOST_REQUIRE(!reg_expected.empty());
+
+        const auto& expected = reg_expected.front();
+        BOOST_CHECK_EQUAL(std::get<0>(expected), fn);
+        BOOST_CHECK_EQUAL(std::get<1>(expected), address);
+        BOOST_CHECK_EQUAL(std::get<2>(expected), value);
+
+        reg_expected.pop_front();
+    });
+
+    const auto fn_seq = script::functions::sequence{
         script::functions::add_breakpoint{9},
         script::functions::add_breakpoint{19},
         script::functions::run{},
@@ -66,41 +94,118 @@ R"([DBGR]: address_value(address={d:9, t:0000000100}) = {d:125, t:0000011122}
         script::functions::address_value{20},
     };
 
-    script::run(fn_seq, vcpu, dstr, ostr);
+    runner.run(std::move(vmem), fn_seq);
 
-    BOOST_CHECK_EQUAL(ostr.str(), "Hello World!");
-
-    // We have to strip the timestamp off each dstr line
-    auto result = ""s;
-    for (auto line = ""s; std::getline(dstr, line); ) {
-        result += line.substr(34, line.size()-38) + '\n';
-    }
-
-    BOOST_CHECK_EQUAL(result, dstr_expected);
+    BOOST_CHECK_EQUAL(output_str, "Hello World!");
+    BOOST_CHECK(address_expected.empty());
+    BOOST_CHECK(reg_expected.empty());
 }
 
 BOOST_AUTO_TEST_CASE(echo_debugger)
 {
-    constexpr auto ostr_expected = "Hello!\nGoodbye!\n";
-    constexpr auto dstr_expected = "";
-
     auto vmem = load(std::filesystem::path{"programs/echo.mal"});
-    auto vcpu = virtual_cpu{std::move(vmem)};
-    BOOST_CHECK_EQUAL(vcpu.state(), virtual_cpu::execution_state::READY);
+    auto runner = script::script_runner{};
 
-    auto ostr = std::stringstream{};
-    auto dstr = std::stringstream{};
+    auto output_str = ""s;
+    runner.register_for_output_signal([&](auto c) {
+        output_str += c;
+    });
 
-    auto fn_seq = script::functions::sequence{
-        script::functions::on_input{"Hello!"},
-        script::functions::on_input{"Goodbye!"},
+    runner.register_for_address_value_signal([&](auto, auto) {
+        BOOST_CHECK_MESSAGE(false, "Signal should not have fired");
+    });
+    runner.register_for_register_value_signal([&](auto, auto, auto) {
+        BOOST_CHECK_MESSAGE(false, "Signal should not have fired");
+    });
+
+    const auto fn_seq = script::functions::sequence{
+        script::functions::on_input{"Hello!\n"},
+        script::functions::on_input{"Goodbye!\n"},
         script::functions::run{100},
     };
 
-    script::run(fn_seq, vcpu, dstr, ostr);
+    runner.run(std::move(vmem), fn_seq);
 
-    BOOST_CHECK_EQUAL(ostr.str(), ostr_expected);
-    BOOST_CHECK_EQUAL(dstr.str(), dstr_expected);
+    BOOST_CHECK_EQUAL(output_str, "Hello!\nGoodbye!\n");
+}
+
+BOOST_AUTO_TEST_CASE(validation)
+{
+    auto f = [](auto fn_seq) {
+        auto vmem = load(std::filesystem::path{"programs/hello_world.mal"});
+        auto runner = script::script_runner{};
+
+        try {
+            runner.run(std::move(vmem), fn_seq);
+            BOOST_CHECK_MESSAGE(false, "Should have thrown");
+        } catch (std::exception& e) {
+            BOOST_TEST_MESSAGE(e.what());
+        }
+    };
+
+    test::data_set(
+        f,
+        {
+            std::tuple{
+                script::functions::sequence{}
+            },
+            std::tuple{
+                script::functions::sequence{
+                    script::functions::add_breakpoint{9},
+                    script::functions::add_breakpoint{19},
+                }
+            },
+            std::tuple{
+                script::functions::sequence{
+                    script::functions::run{},
+                    script::functions::run{100},
+                }
+            },
+            std::tuple{
+                script::functions::sequence{
+                    script::functions::step{},
+                    script::functions::run{100},
+                }
+            },
+            std::tuple{
+                script::functions::sequence{
+                    script::functions::resume{},
+                    script::functions::run{100},
+                }
+            },
+            std::tuple{
+                script::functions::sequence{
+                    script::functions::run{100},
+                    script::functions::add_breakpoint{9},
+                }
+            },
+        }
+    );
+}
+
+BOOST_AUTO_TEST_CASE(program_error)
+{
+    auto program = "jjjjpp<jjjj*p<jjjpp<<jjjj*p"s;
+    auto vmem = load(program);
+    auto runner = script::script_runner{};
+
+    runner.register_for_address_value_signal([&](auto, auto) {
+        BOOST_CHECK_MESSAGE(false, "Signal should not have fired");
+    });
+    runner.register_for_register_value_signal([&](auto, auto, auto) {
+        BOOST_CHECK_MESSAGE(false, "Signal should not have fired");
+    });
+
+    const auto fn_seq = script::functions::sequence{
+        script::functions::run{},
+    };
+
+    try {
+        runner.run(std::move(vmem), fn_seq);
+        BOOST_CHECK_MESSAGE(false, "Should have thrown");
+    } catch (std::exception& e) {
+        BOOST_TEST_MESSAGE(e.what());
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()

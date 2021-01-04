@@ -6,6 +6,7 @@
 #include "malbolge/c_interface.hpp"
 #include "malbolge/version.hpp"
 #include "malbolge/loader.hpp"
+#include "malbolge/virtual_cpu.hpp"
 
 #ifdef EMSCRIPTEN
 #include "malbolge/c_interface_wasm.hpp"
@@ -16,107 +17,147 @@
 #include <sstream>
 
 using namespace malbolge;
+using namespace std::string_literals;
 
 namespace
 {
-static_assert(static_cast<int>(MALBOLGE_DBG_REGISTER_MAX) ==
-                static_cast<int>(debugger::vcpu_register::NUM_REGISTERS),
-              "malbolge::debugger::vcpu_reguster::id and "
-                "malbolge_debugger_vcpu_register_id mismatch");
+static_assert(static_cast<int>(MALBOLGE_VCPU_NUM_STATES) ==
+                static_cast<int>(virtual_cpu::execution_state::NUM_STATES),
+              "malbolge_vcpu_execution_state and virtual_cpu::execution_state mismatch");
+static_assert(static_cast<int>(MALBOLGE_VCPU_REGISTER_MAX) ==
+                static_cast<int>(virtual_cpu::vcpu_register::NUM_REGISTERS),
+              "malbolge_vcpu_register and virtual_cpu::vcpu_register mismatch");
 
-// The stopped callback can be called by the worker thread so we need to
-// serialise access to the underlying container - hence this class.  The
-// element contents do not need protecting here as the stream and mutex are not
-// in use when the stopped callback is fired
-class custom_input
+class vcpu_signal_manager
 {
 public:
-    template <typename StoppedCb, typename WaitingCb>
-    void run(malbolge::virtual_cpu& vcpu,
-             StoppedCb&& stopped_cb,
-             WaitingCb&& waiting_cb)
-    {
-        auto lock = std::lock_guard(mtx_);
-        auto it = data_.emplace(static_cast<void*>(&vcpu), per_vcpu{}).first;
+    using callback_address = void*;
 
-        vcpu.run(std::forward<StoppedCb>(stopped_cb),
-                 std::forward<WaitingCb>(waiting_cb),
-                 it->second.stream,
-                 std::cout,
-                 *(it->second.mtx));
-    }
+    enum class signal_type {
+        STATE,
+        OUTPUT,
+        BREAKPOINT,
+        NUM_TYPES
+    };
 
-    void erase(malbolge_virtual_cpu vcpu)
+    void connect(malbolge_virtual_cpu vcpu,
+                 signal_type signal,
+                 callback_address cb_address)
     {
-        auto lock = std::lock_guard(mtx_);
-        data_.erase(vcpu);
-    }
+        auto vcpu_ptr = static_cast<virtual_cpu*>(vcpu);
 
-    bool write(malbolge_virtual_cpu vcpu, std::string_view buffer)
-    {
-        auto lock = std::lock_guard(mtx_);
-        auto it = data_.find(vcpu);
-        if (it == data_.end())  {
-            return false;
+        switch (signal) {
+        case signal_type::STATE:
+        {
+            auto state_cb = [vcpu, cb_address](auto state, auto eptr) {
+                auto cb = reinterpret_cast<malbolge_vcpu_state_callback>(cb_address);
+                const auto c_state = static_cast<malbolge_vcpu_execution_state>(state);
+                auto err = MALBOLGE_ERR_SUCCESS;
+
+                if (eptr) {
+                    try {
+                        std::rethrow_exception(eptr);
+                    } catch (system_exception& e) {
+                        log::print(log::ERROR, e.what());
+                        err = static_cast<malbolge_result>(e.code().value());
+                    } catch (std::exception& e) {
+                        log::print(log::ERROR, e.what());
+                        err = MALBOLGE_ERR_EXECUTION_FAIL;
+                    } catch (...) {
+                        log::print(log::ERROR, "Unknown exception");
+                        err = MALBOLGE_ERR_UNKNOWN;
+                    }
+                }
+
+                cb(vcpu, c_state, err);
+            };
+
+            auto& conn = state_[vcpu][cb_address];
+            conn = vcpu_ptr->register_for_state_signal(std::move(state_cb));
+            break;
         }
+        case signal_type::OUTPUT:
+        {
+            auto output_cb = [vcpu, cb_address](auto c) {
+                auto cb = reinterpret_cast<malbolge_vcpu_output_callback>(cb_address);
+                cb(vcpu, c);
+            };
+            auto& conn = output_[vcpu][cb_address];
+            conn = vcpu_ptr->register_for_output_signal(std::move(output_cb));
+            break;
+        }
+        case signal_type::BREAKPOINT:
+        {
+            auto bp_cb = [vcpu, cb_address](auto address) {
+                auto cb = reinterpret_cast<malbolge_vcpu_breakpoint_hit_callback>(cb_address);
+                cb(vcpu, static_cast<unsigned int>(address));
+            };
+            auto& conn = bp_[vcpu][cb_address];
+            conn = vcpu_ptr->register_for_breakpoint_hit_signal(std::move(bp_cb));
+            break;
+        }
+        default:
+            // Will never get here due to the strong enum typing and the
+            // static_assert check below
+            break;;
+        }
+    }
 
-        auto stream_lock = std::lock_guard{*(it->second.mtx)};
-        it->second.stream << buffer;
+    void disconnect(malbolge_virtual_cpu vcpu,
+                    signal_type signal,
+                    callback_address cb_address)
+    {
+        auto simple_remover = [&](auto& map) {
+            auto vcpu_it = map.find(vcpu);
+            if (vcpu_it == map.end()) {
+                return;
+            }
 
-        return true;
+            auto it = vcpu_it->second.find(cb_address);
+            if (it == vcpu_it->second.end()) {
+                return;
+            }
+
+            it->second.disconnect();
+            vcpu_it->second.erase(it);
+
+            if (vcpu_it->second.empty()) {
+                map.erase(vcpu_it);
+            }
+        };
+
+        switch (signal) {
+        case signal_type::STATE:
+            simple_remover(state_);
+            break;
+        case signal_type::OUTPUT:
+            simple_remover(output_);
+            break;
+        case signal_type::BREAKPOINT:
+            simple_remover(bp_);
+            break;
+        default:
+            // Will never get here due to the strong enum typing and the
+            // static_assert check below
+            break;;
+        }
     }
 
 private:
-    struct per_vcpu
-    {
-        per_vcpu() :
-            mtx{std::make_unique<std::mutex>()}
-        {}
+    static_assert(static_cast<int>(signal_type::NUM_TYPES) == 3,
+                  "Number of C API signal types has changed");
 
-        std::stringstream stream;
-        std::unique_ptr<std::mutex> mtx;
-    };
+    template <typename Connection>
+    using address_map = std::unordered_map<malbolge_virtual_cpu,
+                                           std::unordered_map<callback_address,
+                                                              Connection>>;
 
-    std::mutex mtx_;
-    std::unordered_map<void*, per_vcpu> data_;
+    address_map<virtual_cpu::state_signal_type::connection> state_;
+    address_map<virtual_cpu::output_signal_type::connection> output_;
+    address_map<virtual_cpu::breakpoint_hit_signal_type::connection> bp_;
 };
 
-custom_input input_data;
-
-malbolge_virtual_memory
-malbolge_load_program_impl(char *buffer,
-                           unsigned long size,
-                           unsigned int *fail_line,
-                           unsigned int *fail_column,
-                           bool normalised)
-{
-    if (!buffer) {
-        log::print(log::ERROR, "NULL program source pointer");
-        return nullptr;
-    }
-
-    try {
-        auto vmem = load(buffer, buffer + size, normalised);
-        return new virtual_memory(std::move(vmem));
-    } catch (parse_exception& e) {
-        log::print(log::ERROR, e.what());
-
-        if (e.has_location()) {
-            if (fail_line) {
-                *fail_line = e.location()->line;
-            }
-            if (fail_column) {
-                *fail_column = e.location()->column;
-            }
-        }
-    } catch (std::exception& e) {
-        log::print(log::ERROR, e.what());
-    } catch (...) {
-        log::print(log::ERROR, "Unknown exception");
-    }
-
-    return nullptr;
-}
+vcpu_signal_manager signal_manager_;
 }
 
 unsigned int malbolge_log_level()
@@ -224,27 +265,38 @@ int malbolge_denormalise_source(char *buffer,
 
 malbolge_virtual_memory malbolge_load_program(char *buffer,
                                               unsigned long size,
+                                              malbolge_load_normalised_mode mode,
                                               unsigned int *fail_line,
                                               unsigned int *fail_column)
 {
-    return malbolge_load_program_impl(buffer,
-                                      size,
-                                      fail_line,
-                                      fail_column,
-                                      false);
-}
+    if (!buffer) {
+        log::print(log::ERROR, "NULL program source pointer");
+        return nullptr;
+    }
 
-malbolge_virtual_memory
-malbolge_load_normalised_program(char *buffer,
-                                 unsigned long size,
-                                 unsigned int *fail_line,
-                                 unsigned int *fail_column)
-{
-    return malbolge_load_program_impl(buffer,
-                                      size,
-                                      fail_line,
-                                      fail_column,
-                                      true);
+    try {
+        auto vmem = load(buffer,
+                         buffer + size,
+                         static_cast<load_normalised_mode>(mode));
+        return new virtual_memory(std::move(vmem));
+    } catch (parse_exception& e) {
+        log::print(log::ERROR, e.what());
+
+        if (e.has_location()) {
+            if (fail_line) {
+                *fail_line = e.location()->line;
+            }
+            if (fail_column) {
+                *fail_column = e.location()->column;
+            }
+        }
+    } catch (std::exception& e) {
+        log::print(log::ERROR, e.what());
+    } catch (...) {
+        log::print(log::ERROR, "Unknown exception");
+    }
+
+    return nullptr;
 }
 
 void malbolge_free_virtual_memory(malbolge_virtual_memory vmem)
@@ -270,54 +322,75 @@ void malbolge_free_vcpu(malbolge_virtual_cpu vcpu)
     delete static_cast<virtual_cpu*>(vcpu);
 }
 
-int malbolge_vcpu_run(malbolge_virtual_cpu vcpu,
-                      malbolge_program_stopped stopped_cb,
-                      malbolge_program_waiting_for_input waiting_cb,
-                      int use_cin)
+int malbolge_vcpu_attach_callbacks(malbolge_virtual_cpu vcpu,
+                                   malbolge_vcpu_state_callback state_cb,
+                                   malbolge_vcpu_output_callback output_cb,
+                                   malbolge_vcpu_breakpoint_hit_callback bp_cb)
 {
     if (!vcpu) {
-        log::print(log::ERROR, "NULL virtual memory pointer");
+        log::print(log::ERROR, "NULL virtual CPU pointer");
         return MALBOLGE_ERR_NULL_ARG;
     }
 
-    auto wrapped_stopped_cb = [=](std::exception_ptr eptr) {
-        input_data.erase(vcpu);
+    if (state_cb) {
+        signal_manager_.connect(vcpu,
+                                vcpu_signal_manager::signal_type::STATE,
+                                reinterpret_cast<void*>(state_cb));
+    }
+    if (output_cb) {
+        signal_manager_.connect(vcpu,
+                                vcpu_signal_manager::signal_type::OUTPUT,
+                                reinterpret_cast<void*>(output_cb));
+    }
+    if (bp_cb) {
+        signal_manager_.connect(vcpu,
+                                vcpu_signal_manager::signal_type::BREAKPOINT,
+                                reinterpret_cast<void*>(bp_cb));
+    }
 
-        auto err = MALBOLGE_ERR_SUCCESS;
-        try {
-            if (eptr) {
-                std::rethrow_exception(eptr);
-            }
-        } catch (system_exception& e) {
-            log::print(log::ERROR, e.what());
-            err = static_cast<malbolge_result>(e.code().value());
-        } catch (std::exception& e) {
-            log::print(log::ERROR, e.what());
-            err = MALBOLGE_ERR_EXECUTION_FAIL;
-        } catch (...) {
-            log::print(log::ERROR, "Unknown exception");
-            err = MALBOLGE_ERR_UNKNOWN;
-        }
+    return MALBOLGE_ERR_SUCCESS;
+}
 
-        stopped_cb(err, vcpu);
-    };
+int malbolge_vcpu_detach_callbacks(malbolge_virtual_cpu vcpu,
+                                   malbolge_vcpu_state_callback state_cb,
+                                   malbolge_vcpu_output_callback output_cb,
+                                   malbolge_vcpu_breakpoint_hit_callback bp_cb)
+{
+    if (!vcpu) {
+        log::print(log::ERROR, "NULL virtual CPU pointer");
+        return MALBOLGE_ERR_NULL_ARG;
+    }
 
-    auto wrapped_waiting_cb = [=]() {
-        waiting_cb(vcpu);
-    };
+    if (state_cb) {
+        signal_manager_.disconnect(vcpu,
+                                   vcpu_signal_manager::signal_type::STATE,
+                                   reinterpret_cast<void*>(state_cb));
+    }
+    if (output_cb) {
+        signal_manager_.disconnect(vcpu,
+                                   vcpu_signal_manager::signal_type::OUTPUT,
+                                   reinterpret_cast<void*>(output_cb));
+    }
+    if (bp_cb) {
+        signal_manager_.disconnect(vcpu,
+                                   vcpu_signal_manager::signal_type::BREAKPOINT,
+                                   reinterpret_cast<void*>(bp_cb));
+    }
+
+    return MALBOLGE_ERR_SUCCESS;
+}
+
+int malbolge_vcpu_run(malbolge_virtual_cpu vcpu)
+{
+    if (!vcpu) {
+        log::print(log::ERROR, "NULL virtual CPU pointer");
+        return MALBOLGE_ERR_NULL_ARG;
+    }
 
     auto vcpu_ptr = static_cast<virtual_cpu*>(vcpu);
     auto err = static_cast<int>(MALBOLGE_ERR_UNKNOWN);
     try {
-        if (use_cin) {
-            vcpu_ptr->run(std::move(wrapped_stopped_cb),
-                          std::move(wrapped_waiting_cb));
-        } else {
-            input_data.run(*vcpu_ptr,
-                           std::move(wrapped_stopped_cb),
-                           std::move(wrapped_waiting_cb));
-        }
-
+        vcpu_ptr->run();
         return MALBOLGE_ERR_SUCCESS;
     } catch (std::exception& e) {
         log::print(log::ERROR, e.what());
@@ -326,25 +399,52 @@ int malbolge_vcpu_run(malbolge_virtual_cpu vcpu,
         log::print(log::ERROR, "Unknown exception");
     }
 
-    input_data.erase(vcpu);
     return err;
 }
 
-int malbolge_vcpu_stop(malbolge_virtual_cpu vcpu)
+int malbolge_vcpu_pause(malbolge_virtual_cpu vcpu)
 {
     if (!vcpu) {
         log::print(log::ERROR, "NULL virtual CPU pointer");
         return MALBOLGE_ERR_NULL_ARG;
     }
 
-    auto vcpu_ptr = static_cast<virtual_cpu*>(vcpu);
-    vcpu_ptr->stop();
-    return MALBOLGE_ERR_SUCCESS;
+    try {
+        auto vcpu_ptr = static_cast<virtual_cpu*>(vcpu);
+        vcpu_ptr->pause();
+        return MALBOLGE_ERR_SUCCESS;
+    } catch (std::exception& e) {
+        log::print(log::ERROR, e.what());
+    } catch (...) {
+        log::print(log::ERROR, "Unknown exception");
+    }
+
+    return MALBOLGE_ERR_UNKNOWN;
 }
 
-int malbolge_vcpu_input(malbolge_virtual_cpu vcpu,
-                        const char* buffer,
-                        unsigned int size)
+int malbolge_vcpu_step(malbolge_virtual_cpu vcpu)
+{
+    if (!vcpu) {
+        log::print(log::ERROR, "NULL virtual CPU pointer");
+        return MALBOLGE_ERR_NULL_ARG;
+    }
+
+    try {
+        auto vcpu_ptr = static_cast<virtual_cpu*>(vcpu);
+        vcpu_ptr->step();
+        return MALBOLGE_ERR_SUCCESS;
+    } catch (std::exception& e) {
+        log::print(log::ERROR, e.what());
+    } catch (...) {
+        log::print(log::ERROR, "Unknown exception");
+    }
+
+    return MALBOLGE_ERR_UNKNOWN;
+}
+
+int malbolge_vcpu_add_input(malbolge_virtual_cpu vcpu,
+                            const char* buffer,
+                            unsigned int size)
 {
     if (!vcpu) {
         log::print(log::ERROR, "NULL virtual CPU pointer");
@@ -356,48 +456,32 @@ int malbolge_vcpu_input(malbolge_virtual_cpu vcpu,
         return MALBOLGE_ERR_NULL_ARG;
     }
 
-    auto written = input_data.write(vcpu, {buffer, size});
-    if (!written) {
-        log::print(log::ERROR, "vCPU set to use cin, or already stopped");
-        return MALBOLGE_ERR_CIN_OR_STOPPED;
+    try {
+        auto vcpu_ptr = static_cast<virtual_cpu*>(vcpu);
+        vcpu_ptr->add_input({buffer, size});
+        return MALBOLGE_ERR_SUCCESS;
+    } catch (std::exception& e) {
+        log::print(log::ERROR, e.what());
+    } catch (...) {
+        log::print(log::ERROR, "Unknown exception");
     }
 
-    return MALBOLGE_ERR_SUCCESS;
+    return MALBOLGE_ERR_UNKNOWN;
 }
 
-malbolge_debugger malbolge_debugger_attach(malbolge_virtual_cpu vcpu)
+int malbolge_vcpu_add_breakpoint(malbolge_virtual_cpu vcpu,
+                                 unsigned int address,
+                                 unsigned int ignore_count)
 {
     if (!vcpu) {
         log::print(log::ERROR, "NULL virtual CPU pointer");
-        return nullptr;
+        return MALBOLGE_ERR_NULL_ARG;
     }
 
     try {
         auto vcpu_ptr = static_cast<virtual_cpu*>(vcpu);
-        return new debugger::client_control{*vcpu_ptr};
-    }  catch (std::exception& e) {
-        log::print(log::ERROR, e.what());
-    } catch (...) {
-        log::print(log::ERROR, "Unknown exception");
-    }
-
-    return nullptr;
-}
-
-int malbolge_debugger_pause(malbolge_debugger debugger)
-{
-    if (!debugger) {
-        log::print(log::ERROR, "NULL debugger pointer");
-        return MALBOLGE_ERR_NULL_ARG;
-    }
-
-    try {
-        auto dbg_ptr = static_cast<debugger::client_control*>(debugger);
-        dbg_ptr->pause();
+        vcpu_ptr->add_breakpoint(address, ignore_count);
         return MALBOLGE_ERR_SUCCESS;
-    }  catch (basic_exception& e) {
-        log::print(log::ERROR, e.what());
-        return MALBOLGE_ERR_DBG_WRONG_STATE;
     } catch (std::exception& e) {
         log::print(log::ERROR, e.what());
     } catch (...) {
@@ -407,66 +491,18 @@ int malbolge_debugger_pause(malbolge_debugger debugger)
     return MALBOLGE_ERR_UNKNOWN;
 }
 
-int malbolge_debugger_step(malbolge_debugger debugger)
-{
-    if (!debugger) {
-        log::print(log::ERROR, "NULL debugger pointer");
-        return MALBOLGE_ERR_NULL_ARG;
-    }
-
-    try {
-        auto dbg_ptr = static_cast<debugger::client_control*>(debugger);
-        dbg_ptr->step();
-        return MALBOLGE_ERR_SUCCESS;
-    }  catch (basic_exception& e) {
-        log::print(log::ERROR, e.what());
-        return MALBOLGE_ERR_DBG_WRONG_STATE;
-    } catch (std::exception& e) {
-        log::print(log::ERROR, e.what());
-    } catch (...) {
-        log::print(log::ERROR, "Unknown exception");
-    }
-
-    return MALBOLGE_ERR_UNKNOWN;
-}
-
-int malbolge_debugger_resume(malbolge_debugger debugger)
-{
-    if (!debugger) {
-        log::print(log::ERROR, "NULL debugger pointer");
-        return MALBOLGE_ERR_NULL_ARG;
-    }
-
-    try {
-        auto dbg_ptr = static_cast<debugger::client_control*>(debugger);
-        dbg_ptr->resume();
-        return MALBOLGE_ERR_SUCCESS;
-    }  catch (basic_exception& e) {
-        log::print(log::ERROR, e.what());
-        return MALBOLGE_ERR_DBG_WRONG_STATE;
-    } catch (std::exception& e) {
-        log::print(log::ERROR, e.what());
-    } catch (...) {
-        log::print(log::ERROR, "Unknown exception");
-    }
-
-    return MALBOLGE_ERR_UNKNOWN;
-}
-
-int malbolge_debugger_address_value(malbolge_debugger debugger,
+int malbolge_vcpu_remove_breakpoint(malbolge_virtual_cpu vcpu,
                                     unsigned int address)
 {
-    if (!debugger) {
-        log::print(log::ERROR, "NULL debugger pointer");
+    if (!vcpu) {
+        log::print(log::ERROR, "NULL virtual CPU pointer");
         return MALBOLGE_ERR_NULL_ARG;
     }
 
     try {
-        auto dbg_ptr = static_cast<debugger::client_control*>(debugger);
-        return static_cast<int>(dbg_ptr->address_value(address));
-    }  catch (basic_exception& e) {
-        log::print(log::ERROR, e.what());
-        return MALBOLGE_ERR_DBG_WRONG_STATE;
+        auto vcpu_ptr = static_cast<virtual_cpu*>(vcpu);
+        vcpu_ptr->remove_breakpoint(address);
+        return MALBOLGE_ERR_SUCCESS;
     } catch (std::exception& e) {
         log::print(log::ERROR, e.what());
     } catch (...) {
@@ -476,148 +512,159 @@ int malbolge_debugger_address_value(malbolge_debugger debugger,
     return MALBOLGE_ERR_UNKNOWN;
 }
 
-int malbolge_debugger_register_value(malbolge_debugger debugger,
-                                     enum malbolge_debugger_vcpu_register_id reg,
-                                     unsigned int** address)
+int malbolge_vcpu_address_value(malbolge_virtual_cpu vcpu,
+                                unsigned int address,
+                                malbolge_vcpu_address_value_callback cb)
 {
-    if (!debugger) {
-        log::print(log::ERROR, "NULL debugger pointer");
+    if (!vcpu) {
+        log::print(log::ERROR, "NULL virtual CPU pointer");
         return MALBOLGE_ERR_NULL_ARG;
     }
 
     try {
-        auto dbg_ptr = static_cast<debugger::client_control*>(debugger);
-        const auto data = dbg_ptr->register_value(
-            static_cast<debugger::vcpu_register::id>(reg));
+        auto vcpu_ptr = static_cast<virtual_cpu*>(vcpu);
 
-        if (address) {
-            if (data.address) {
-                if (*address) {
-                    **address = static_cast<unsigned int>(*data.address);
-                } else {
-                    log::print(log::ERROR, "NULL dereferenced address pointer");
-                    return MALBOLGE_ERR_NULL_ARG;
-                }
-            } else {
-                *address = nullptr;
-            }
-        }
-
-        return static_cast<unsigned int>(data.value);
-    }  catch (basic_exception& e) {
-        log::print(log::ERROR, e.what());
-        return MALBOLGE_ERR_DBG_WRONG_STATE;
-    } catch (std::exception& e) {
-        log::print(log::ERROR, e.what());
-    } catch (...) {
-        log::print(log::ERROR, "Unknown exception");
-    }
-
-    return MALBOLGE_ERR_UNKNOWN;
-}
-
-int malbolge_debugger_add_breakpoint(malbolge_debugger debugger,
-                                     unsigned int address,
-                                     malbolge_debugger_breakpoint_callback cb,
-                                     unsigned int ignore_count)
-{
-    if (!debugger) {
-        log::print(log::ERROR, "NULL debugger pointer");
-        return MALBOLGE_ERR_NULL_ARG;
-    }
-
-    auto dbg_ptr = static_cast<debugger::client_control*>(debugger);
-    auto wrapped_cb = debugger::client_control::breakpoint::default_callback;
-    if (cb) {
-        wrapped_cb = [cb](math::ternary a, debugger::vcpu_register::id r) {
-            return cb(static_cast<unsigned int>(a),
-                      static_cast<malbolge_debugger_vcpu_register_id>(r)) > 0;
+        auto wrapped_cb = [cb, vcpu](auto address, auto value) {
+            cb(vcpu,
+               static_cast<unsigned int>(address),
+               static_cast<unsigned int>(value));
         };
+        vcpu_ptr->address_value(address, std::move(wrapped_cb));
+        return MALBOLGE_ERR_SUCCESS;
+    } catch (std::exception& e) {
+        log::print(log::ERROR, e.what());
+    } catch (...) {
+        log::print(log::ERROR, "Unknown exception");
     }
 
-    dbg_ptr->add_breakpoint({address, std::move(wrapped_cb), ignore_count});
-    return MALBOLGE_ERR_SUCCESS;
+    return MALBOLGE_ERR_UNKNOWN;
 }
 
-int malbolge_debugger_remove_breakpoint(malbolge_debugger debugger,
-                                        unsigned int address)
+int malbolge_vcpu_register_value(malbolge_virtual_cpu vcpu,
+                                 enum malbolge_vcpu_register reg,
+                                 malbolge_vcpu_register_value_callback cb)
 {
-    if (!debugger) {
-        log::print(log::ERROR, "NULL debugger pointer");
+    if (!vcpu) {
+        log::print(log::ERROR, "NULL virtual CPU pointer");
         return MALBOLGE_ERR_NULL_ARG;
     }
 
-    auto dbg_ptr = static_cast<debugger::client_control*>(debugger);
-    return dbg_ptr->remove_breakpoint(address);
+    try {
+        auto vcpu_ptr = static_cast<virtual_cpu*>(vcpu);
+
+        auto wrapped_cb = [cb, vcpu](auto reg, auto address, auto value) {
+            cb(vcpu,
+               static_cast<malbolge_vcpu_register>(reg),
+               address ? static_cast<unsigned int>(*address) : 0,
+               static_cast<unsigned int>(value));
+        };
+        vcpu_ptr->register_value(static_cast<virtual_cpu::vcpu_register>(reg),
+                                 std::move(wrapped_cb));
+        return MALBOLGE_ERR_SUCCESS;
+    } catch (std::exception& e) {
+        log::print(log::ERROR, e.what());
+    } catch (...) {
+        log::print(log::ERROR, "Unknown exception");
+    }
+
+    return MALBOLGE_ERR_UNKNOWN;
 }
 
 #ifdef EMSCRIPTEN
-EM_JS(void, malbolge_worker_stopped_cb, (int err_code, malbolge_virtual_cpu ptr),
+EM_JS(void, malbolge_state_cb, (int state, int err_code, malbolge_virtual_cpu ptr),
 {
     postMessage({
-        cmd: "malbolgeStopped",
+        cmd: "malbolgevCPUState",
+        state: state,
         errorCode: err_code,
         vcpu: ptr
     });
 })
 
-EM_JS(void, malbolge_worker_waiting_cb, (malbolge_virtual_cpu ptr),
+EM_JS(void, malbolge_breakpoint_cb, (int address, malbolge_virtual_cpu ptr),
 {
     postMessage({
-        cmd: "malbolgeWaitingForInput",
+        cmd: "malbolgeBreakpoint",
+        address: address,
+        vcpu: ptr
+    });
+})
+
+EM_JS(void, malbolge_output_cb, (const char* text, malbolge_virtual_cpu ptr),
+{
+    postMessage({
+        cmd: "malbolgeOutput",
+        data: UTF8ToString(text),
         vcpu: ptr
     });
 })
 
 int malbolge_vcpu_run_wasm(malbolge_virtual_cpu vcpu)
 {
+    constexpr static auto max_buf_size = std::size_t{10};
+
     if (!vcpu) {
         log::print(log::ERROR, "NULL virtual CPU pointer");
         return MALBOLGE_ERR_NULL_ARG;
     }
 
-    auto wrapped_stopped_cb = [=](std::exception_ptr eptr) {
-        input_data.erase(vcpu);
+    auto vcpu_ptr = static_cast<virtual_cpu*>(vcpu);
 
-        auto err = MALBOLGE_ERR_SUCCESS;
-        try {
-            if (eptr) {
-                std::rethrow_exception(eptr);
-            }
-        } catch (system_exception& e) {
-            log::print(log::ERROR, e.what());
-            err = static_cast<malbolge_result>(e.code().value());
-        } catch (std::exception& e) {
-            log::print(log::ERROR, e.what());
-            err = MALBOLGE_ERR_EXECUTION_FAIL;
-        } catch (...) {
-            log::print(log::ERROR, "Unknown exception");
-            err = MALBOLGE_ERR_UNKNOWN;
+    // As the signals are called from the same thread, we do not need any
+    // locking around shared state
+    auto output_buf = std::make_shared<std::string>();
+    output_buf->reserve(max_buf_size);
+
+    vcpu_ptr->register_for_output_signal([vcpu, buf = output_buf](auto c) {
+        buf->push_back(c);
+        if (buf->size() >= max_buf_size) {
+            malbolge_output_cb(buf->data(), vcpu);
+            buf->clear();
+        }
+    });
+    vcpu_ptr->register_for_state_signal([vcpu, buf = std::move(output_buf)]
+                                        (auto state, auto eptr) {
+        // Flush the output buffer on a vCPU state change
+        if (!buf->empty()) {
+            malbolge_output_cb(buf->data(), vcpu);
+            buf->clear();
         }
 
-        malbolge_worker_stopped_cb(err, vcpu);
-    };
+        const auto c_state = static_cast<malbolge_vcpu_execution_state>(state);
+        auto err = MALBOLGE_ERR_SUCCESS;
 
-    auto wrapped_waiting_cb = [=]() {
-        malbolge_worker_waiting_cb(vcpu);
-    };
+        if (eptr) {
+            try {
+                std::rethrow_exception(eptr);
+            } catch (system_exception& e) {
+                log::print(log::ERROR, e.what());
+                err = static_cast<malbolge_result>(e.code().value());
+            } catch (std::exception& e) {
+                log::print(log::ERROR, e.what());
+                err = MALBOLGE_ERR_EXECUTION_FAIL;
+            } catch (...) {
+                log::print(log::ERROR, "Unknown exception");
+                err = MALBOLGE_ERR_UNKNOWN;
+            }
+        }
 
-    auto vcpu_ptr = static_cast<virtual_cpu*>(vcpu);
-    auto err = MALBOLGE_ERR_UNKNOWN;
+        malbolge_state_cb(c_state, err, vcpu);
+    });
+    vcpu_ptr->register_for_breakpoint_hit_signal([vcpu](auto address) {
+        malbolge_breakpoint_cb(static_cast<int>(address), vcpu);
+    });
+
+    auto err = static_cast<int>(MALBOLGE_ERR_UNKNOWN);
     try {
-        input_data.run(*vcpu_ptr,
-                       std::move(wrapped_stopped_cb),
-                       std::move(wrapped_waiting_cb));
-
+        vcpu_ptr->run();
         return MALBOLGE_ERR_SUCCESS;
     } catch (std::exception& e) {
         log::print(log::ERROR, e.what());
-        return MALBOLGE_ERR_EXECUTION_FAIL;
+        err = MALBOLGE_ERR_EXECUTION_FAIL;
     } catch (...) {
         log::print(log::ERROR, "Unknown exception");
     }
 
-    input_data.erase(vcpu);
     return err;
 }
 #endif

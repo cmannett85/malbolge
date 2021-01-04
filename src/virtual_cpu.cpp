@@ -5,452 +5,445 @@
 
 #include "malbolge/virtual_cpu.hpp"
 #include "malbolge/cpu_instruction.hpp"
-#include "malbolge/utility/raii.hpp"
-#include "malbolge/utility/stream_lock_guard.hpp"
-#include "malbolge/exception.hpp"
 #include "malbolge/log.hpp"
 
+#include <boost/asio/io_context.hpp>
+#include <boost/asio/post.hpp>
+
+#include <thread>
+#include <deque>
+#include <unordered_map>
+
 using namespace malbolge;
-using namespace debugger;
-using namespace std::string_literals;
-using namespace std::chrono_literals;
+
+class virtual_cpu::impl_t : public std::enable_shared_from_this<impl_t>
+{
+public:
+    class breakpoint
+    {
+    public:
+        breakpoint(math::ternary a, std::size_t i = 0) :
+            address_{a},
+            ignore_count_{i},
+            pre_{false}
+        {}
+
+        bool operator()()
+        {
+            if (pre_) {
+                pre_ = false;
+                return false;
+            }
+
+            if (ignore_count_ == 0) {
+                pre_ = true;
+                return true;
+            }
+
+            --ignore_count_;
+            return false;
+        }
+
+    private:
+        math::ternary address_;
+        std::size_t ignore_count_;
+
+        // The breakpoint is fired (and this variable set) on entry to an
+        // address, so on the next run() call the breakpoint will be hit again -
+        // this variable being set high will cause the breakpoint to be ignored.
+        // This must be set low after, otherwise the breakpoint will never fire
+        // again
+        bool pre_;
+    };
+
+    class input
+    {
+    public:
+        input(std::string p) :
+            phrase_{std::move(p)},
+            view_{phrase_.data()}
+        {}
+
+        char get()
+        {
+            if (view_.empty()) {
+                return 0;
+            }
+
+            auto c = view_.front();
+            view_.remove_prefix(1);
+            return c;
+        }
+
+    private:
+        std::string phrase_;
+        std::string_view view_;
+    };
+
+    explicit impl_t(virtual_memory vm) :
+        worker_guard_{ctx.get_executor()},
+        vmem(std::move(vm)),
+        c{vmem.begin()},
+        d{vmem.begin()},
+        p_counter{0},
+        state_{virtual_cpu::execution_state::READY}
+    {}
+
+    virtual_cpu::execution_state state() const
+    {
+        return state_;
+    }
+
+    void set_state(virtual_cpu::execution_state new_state,
+                   std::exception_ptr eptr = {})
+    {
+        if (state_ == new_state) {
+            return;
+        }
+
+        state_ = new_state;
+        state_sig(state_, eptr);
+    }
+
+    void stop()
+    {
+        worker_guard_.reset();
+        ctx.stop();
+        if (thread.joinable()) {
+            thread.join();
+        }
+    }
+
+    void stopped_check()
+    {
+        if (state_ == virtual_cpu::execution_state::STOPPED) {
+            throw execution_exception{"vCPU has been stopped", p_counter};
+        }
+    }
+
+    bool bp_check(virtual_memory::iterator reg_it);
+
+    void run(bool schedule_next = true);
+
+    boost::asio::io_context ctx;
+    boost::asio::executor_work_guard<boost::asio::io_context::executor_type> worker_guard_;
+    std::thread thread;
+
+    virtual_memory vmem;
+    std::deque<input> input_queue_;
+    std::unordered_map<math::ternary, breakpoint> bps;
+
+    // vCPU Registers
+    math::ternary a;
+    virtual_memory::iterator c;
+    virtual_memory::iterator d;
+    std::size_t p_counter;
+
+    state_signal_type state_sig;
+    output_signal_type output_sig;
+    breakpoint_hit_signal_type bp_hit_sig;
+
+private:
+    virtual_cpu::execution_state state_;
+};
 
 virtual_cpu::virtual_cpu(virtual_memory vmem) :
-    state_{std::make_shared<decltype(state_)::element_type>(execution_state::READY)},
-    vmem_(std::move(vmem)),
-    cycle_delay_{std::make_shared<decltype(cycle_delay_)::element_type>(0)}
-{}
+    impl_{std::make_shared<impl_t>(std::move(vmem))}
+{
+    impl_->thread = std::thread{[impl = impl_]() {
+        auto eptr = std::exception_ptr{};
+        try {
+            impl->ctx.run();
+        } catch (std::exception&) {
+            eptr = std::current_exception();
+        }
+        impl->set_state(execution_state::STOPPED, eptr);
+    }};
+}
 
 virtual_cpu::~virtual_cpu()
 {
-    *state_ = execution_state::STOPPED;
-    debugger_.reset();
+    if (!impl_) {
+        return;
+    }
+    impl_->stop();
+}
 
-    if (thread_.joinable()) {
-        thread_.join();
+void virtual_cpu::run()
+{
+    impl_check();
+    boost::asio::post(impl_->ctx, [impl = impl_]() {
+        impl->stopped_check();
+        if (impl->state() == execution_state::RUNNING ||
+            impl->state() == execution_state::WAITING_FOR_INPUT) {
+            return;
+        }
+
+        impl->set_state(execution_state::RUNNING);
+        impl->run();
+    });
+}
+
+void virtual_cpu::pause()
+{
+    impl_check();
+    boost::asio::post(impl_->ctx, [impl = impl_]() {
+        impl->stopped_check();
+        if (impl->state() == execution_state::PAUSED ||
+            impl->state() == execution_state::WAITING_FOR_INPUT) {
+            return;
+        }
+
+        impl->set_state(execution_state::PAUSED);
+    });
+}
+
+void virtual_cpu::step()
+{
+    impl_check();
+    boost::asio::post(impl_->ctx, [impl = impl_]() {
+        impl->stopped_check();
+        if (impl->state() == execution_state::WAITING_FOR_INPUT) {
+            return;
+        }
+
+        impl->set_state(execution_state::PAUSED);
+        impl->run(false);
+    });
+}
+
+void virtual_cpu::add_input(std::string data)
+{
+    impl_check();
+    boost::asio::post(impl_->ctx, [impl = impl_, data = std::move(data)]() {
+        impl->input_queue_.emplace_back(std::move(data));
+        if (impl->state() == execution_state::WAITING_FOR_INPUT) {
+            impl->set_state(execution_state::RUNNING);
+            impl->run();
+        }
+    });
+}
+
+void virtual_cpu::add_breakpoint(math::ternary address, std::size_t ignore_count)
+{
+    impl_check();
+    boost::asio::post(impl_->ctx, [impl = impl_, address, ignore_count]() {
+        auto bp = impl_t::breakpoint{address, ignore_count};
+        impl->bps.insert_or_assign(address, std::move(bp));
+    });
+}
+
+void virtual_cpu::remove_breakpoint(math::ternary address)
+{
+    impl_check();
+    boost::asio::post(impl_->ctx, [impl = impl_, address]() {
+        impl->bps.erase(address);
+    });
+}
+
+void virtual_cpu::address_value(math::ternary address,
+                                address_value_callback_type cb) const
+{
+    impl_check();
+    boost::asio::post(impl_->ctx, [impl = impl_, address, cb = std::move(cb)]() {
+        const auto value = impl->vmem[address];
+        cb(address, value);
+    });
+}
+
+void virtual_cpu::register_value(vcpu_register reg,
+                                 register_value_callback_type cb) const
+{
+    impl_check();
+    boost::asio::post(impl_->ctx, [impl = impl_, reg, cb = std::move(cb)]() {
+        switch (reg) {
+        case vcpu_register::A:
+            cb(reg, {}, impl->a);
+            break;
+        case vcpu_register::C:
+        {
+            const auto address = static_cast<math::ternary::underlying_type>(
+                                    std::distance(impl->vmem.begin(), impl->c));
+            cb(reg, address, impl->vmem[address]);
+            break;
+        }
+        case vcpu_register::D:
+        {
+            const auto address = static_cast<math::ternary::underlying_type>(
+                                    std::distance(impl->vmem.begin(), impl->d));
+            cb(reg, address, impl->vmem[address]);
+            break;
+        }
+        default:
+            throw execution_exception{
+                "Unhandled register query: " + std::to_string(static_cast<int>(reg)),
+                impl->p_counter
+            };
+        }
+    });
+}
+
+virtual_cpu::state_signal_type::connection
+virtual_cpu::register_for_state_signal(state_signal_type::slot_type slot)
+{
+    impl_check();
+    return impl_->state_sig.connect(std::move(slot));
+}
+
+virtual_cpu::output_signal_type::connection
+virtual_cpu::register_for_output_signal(output_signal_type::slot_type slot)
+{
+    impl_check();
+    return impl_->output_sig.connect(std::move(slot));
+}
+
+virtual_cpu::breakpoint_hit_signal_type::connection
+virtual_cpu::register_for_breakpoint_hit_signal(breakpoint_hit_signal_type::slot_type slot)
+{
+    impl_check();
+    return impl_->bp_hit_sig.connect(std::move(slot));
+}
+
+void virtual_cpu::impl_check() const
+{
+    if (!impl_) {
+        throw execution_exception{"vCPU backend destroyed, use-after-move?", 0};
     }
 }
 
-virtual_cpu& virtual_cpu::operator=(virtual_cpu&& other)
+bool virtual_cpu::impl_t::bp_check(virtual_memory::iterator reg_it)
 {
-    thread_         = std::move(other.thread_);
-    state_          = std::move(other.state_);
-    vmem_           = std::move(other.vmem_);
-    debugger_       = std::move(other.debugger_);
-    cycle_delay_    = std::move(other.cycle_delay_);
-
-    return *this;
+    const auto address = static_cast<math::ternary::underlying_type>(
+        std::distance(vmem.begin(), reg_it)
+    );
+    auto it = bps.find(address);
+    if (it == bps.end()) {
+        return false;
+    } else if (it->second()) {
+        set_state(virtual_cpu::execution_state::PAUSED);
+        bp_hit_sig(address);
+        return true;
+    }
+    return false;
 }
 
-std::future<void> virtual_cpu::run(std::istream& istr,
-                                   std::ostream& ostr,
-                                   utility::mutex_wrapper mtx)
+void virtual_cpu::impl_t::run(bool schedule_next)
 {
-    basic_run_check(istr, ostr, mtx);
-
-    log::print(log::DEBUG, "Starting program (future-based)");
-
-    auto promise = std::promise<void>{};
-    auto fut = promise.get_future();
-
-    thread_ = std::thread{[vmem = std::move(vmem_),
-                           state = state_,
-                           p = std::move(promise),
-                           &istr,
-                           &ostr,
-                           mtx = std::move(mtx),
-                           debugger = debugger_,
-                           cycle_delay = cycle_delay_]() mutable {
-        log::print(log::VERBOSE_DEBUG, "Program thread started");
-        if (debugger) {
-            debugger->running_cb(true);
-        }
-
-        auto exception = false;
-        auto stopped_setter = utility::raii{[&]() {
-            *state = execution_state::STOPPED;
-
-            if (debugger) {
-                debugger->running_cb(false);
-            }
-
-            if (!exception) {
-                p.set_value();
-            }
-
-#ifdef EMSCRIPTEN
-            ostr << std::endl;
-#endif
-            log::print(log::DEBUG, "Program thread exiting");
-        }};
-
-        try {
-            vcpu_loop(vmem,
-                      *state,
-                      {},
-                      istr,
-                      ostr,
-                      std::move(mtx),
-                      debugger,
-                      std::move(cycle_delay));
-        } catch (std::exception& e) {
-            auto e_ptr = std::make_exception_ptr(std::move(e));
-            p.set_exception(std::move(e_ptr));
-            exception = true;
-            return;
-        }
-    }};
-
-    return fut;
-}
-
-void virtual_cpu::run(std::function<void (std::exception_ptr)> stopped,
-                      std::function<void ()> waiting_for_input,
-                      std::istream& istr,
-                      std::ostream& ostr,
-                      utility::mutex_wrapper mtx)
-{
-    basic_run_check(istr, ostr, mtx);
-
-    log::print(log::DEBUG, "Starting program (callback-based)");
-
-    thread_ = std::thread{[vmem = std::move(vmem_),
-                           state = state_,
-                           stopped_cb = std::move(stopped),
-                           waiting_cb = std::move(waiting_for_input),
-                           &istr,
-                           &ostr,
-                           mtx = std::move(mtx),
-                           debugger = debugger_,
-                           cycle_delay = cycle_delay_]() mutable {
-        log::print(log::VERBOSE_DEBUG, "Program thread started");
-        if (debugger) {
-            debugger->running_cb(true);
-        }
-
-        auto exception = std::exception_ptr{};
-        auto stopped_setter = utility::raii{[&]() {
-            *state = execution_state::STOPPED;
-
-            if (debugger) {
-                debugger->running_cb(false);
-            }
-
-            stopped_cb(exception);
-
-#ifdef EMSCRIPTEN
-            ostr << std::endl;
-#endif
-            log::print(log::DEBUG, "Program thread exiting");
-        }};
-
-        try {
-            vcpu_loop(vmem,
-                      *state,
-                      std::move(waiting_cb),
-                      istr,
-                      ostr,
-                      std::move(mtx),
-                      debugger,
-                      std::move(cycle_delay));
-        } catch (std::exception& e) {
-            exception = std::current_exception();
-            return;
-        }
-    }};
-}
-
-void virtual_cpu::stop()
-{
-    if (*state_ != execution_state::RUNNING) {
+    // A pause() needs to break the run()-chain
+    if (state_ == virtual_cpu::execution_state::PAUSED && schedule_next) {
         return;
     }
 
-    log::print(log::DEBUG, "Early exit requested");
-    *state_ = execution_state::STOPPED;
-}
-
-vcpu_control
-virtual_cpu::configure_debugger(running_callback_type running,
-                                step_data_callback_type step_data)
-{
-    if (!running || !step_data) {
-        throw basic_exception{"Debugger callbacks must be valid"};
+    if (bp_check(c)) {
+        return;
     }
 
-    if (*state_ != execution_state::READY) {
-        throw basic_exception{"Cannot configure debugger as program not ready"};
-    }
-
-    if (debugger_) {
-        throw basic_exception{"Debugger already configured"};
-    }
-
-    debugger_ = std::make_shared<debugger_data>();
-    debugger_->running_cb = std::move(running);
-    debugger_->step_data_cb = std::move(step_data);
-
-    auto controller = vcpu_control{};
-    controller.pause = [this](auto cb) {
-        {
-            auto lock = std::lock_guard{debugger_->mtx};
-            debugger_->stop_cb = std::move(cb);
-        }
-        debugger_->gate.close();
-    };
-    controller.step = [this](auto cb) {
-        {
-            auto lock = std::lock_guard{debugger_->mtx};
-            debugger_->stop_cb = std::move(cb);
-        }
-        debugger_->gate.open(1);
-    };
-    controller.resume = [this](auto cb) {
-        {
-            auto lock = std::lock_guard{debugger_->mtx};
-            debugger_->resume_cb = std::move(cb);
-        }
-        debugger_->gate.open();
-    };
-
-    controller.address_value = [this](auto address) {
-        return debugger_->address_value(address);
-    };
-    controller.register_value = [this](auto reg) {
-        return debugger_->register_value(reg);
-    };
-
-    return controller;
-}
-
-void virtual_cpu::basic_run_check(std::istream& istr,
-                                  std::ostream& ostr,
-                                  utility::mutex_wrapper mtx)
-{
-    if (*state_ != execution_state::READY) {
-        throw execution_exception{"vCPU is not in a ready state", 0};
-    }
-
-    if (!mtx && (istr.rdbuf() != std::cin.rdbuf() ||
-                 ostr.rdbuf() != std::cout.rdbuf())){
+    // Pre-cipher the instruction
+    auto instr = pre_cipher_instruction(*c, c - vmem.begin());
+    if (!instr) {
         throw execution_exception{
-            "Non-stdio I/O streams provided but no mutex",
-            0
+            "Pre-cipher non-whitespace character must be graphical "
+                "ASCII: " + std::to_string(static_cast<int>(*c)),
+            p_counter
         };
     }
 
-    *state_ = execution_state::RUNNING;
+    log::print(log::VERBOSE_DEBUG,
+               "Step: ", p_counter, ", pre-cipher instr: ",
+               static_cast<int>(*instr));
+
+    switch (*instr) {
+    case cpu_instruction::set_data_ptr:
+        d = vmem.begin() + static_cast<std::size_t>(*d);
+        break;
+    case cpu_instruction::set_code_ptr:
+        c = vmem.begin() + static_cast<std::size_t>(*d);
+        break;
+    case cpu_instruction::rotate:
+        a = d->rotate();
+        break;
+    case cpu_instruction::op:
+        a = *d = a.op(*d);
+        break;
+    case cpu_instruction::read:
+    {
+        if (input_queue_.empty()) {
+            set_state(virtual_cpu::execution_state::WAITING_FOR_INPUT);
+            log::print(log::VERBOSE_DEBUG, "\tWaiting for input...");
+            return;
+        }
+
+        auto c = input_queue_.front().get();
+        if (!c) {
+            a = math::ternary::max;
+            input_queue_.pop_front();
+        } else {
+            a = c;
+        }
+        break;
+    }
+    case cpu_instruction::write:
+        if (a != math::ternary::max) {
+            output_sig(static_cast<char>(a));
+        }
+        break;
+    case cpu_instruction::stop:
+        set_state(virtual_cpu::execution_state::STOPPED);
+        return;
+    default:
+        // Nop
+        break;
+    }
+
+    // Post-cipher the instruction
+    auto pc = post_cipher_instruction(*c);
+    if (!pc) {
+        throw execution_exception{
+            "Post-cipher non-whitespace character must be graphical "
+                "ASCII: " + std::to_string(static_cast<int>(*c)),
+            p_counter
+        };
+    }
+    *c = *pc;
+
+    log::print(log::VERBOSE_DEBUG,
+               "\tPost-op regs - a: ", a,
+               ", c[", std::distance(vmem.begin(), c), "]: ", *c,
+               ", d[", std::distance(vmem.begin(), d), "]: ", *d);
+
+    ++c;
+    ++d;
+    ++p_counter;
+    if (schedule_next) {
+        // Schedule the next iteration
+        boost::asio::post(ctx, [impl = shared_from_this()]() {
+            impl->run();
+        });
+    }
 }
 
-void virtual_cpu::vcpu_loop(virtual_memory& vmem,
-                            std::atomic<virtual_cpu::execution_state>& state,
-                            std::function<void ()> waiting_for_input,
-                            std::istream& istr,
-                            std::ostream& ostr,
-                            utility::mutex_wrapper mtx,
-                            std::shared_ptr<debugger_data> debugger,
-                            std::shared_ptr<std::atomic_uint> cycle_delay)
+std::ostream& malbolge::operator<<(std::ostream& stream,
+                                   virtual_cpu::vcpu_register register_id)
 {
-    auto a = math::ternary{};   // Accumulator register
-    auto c = vmem.begin();      // Code pointer
-    auto d = vmem.begin();      // Data pointer
+    static_assert(static_cast<int>(virtual_cpu::vcpu_register::NUM_REGISTERS) == 3,
+                  "Register IDs have changed, update this");
 
-    auto reading_stream = false;
-
-    // Minimise branching by using no-op functions when there's no debugger in
-    // use
-    auto pause_check = std::function<void ()>{[]() {}};
-    auto step_check = std::function<void (virtual_memory::iterator,
-                                          vcpu_register::id)>{[](auto, auto) {}};
-    if (debugger) {
-        auto gate_cb = [&](bool closed) {
-            auto lock = std::lock_guard{debugger->mtx};
-            if (closed && debugger->stop_cb) {
-                debugger->stop_cb();
-            } else if (!closed && debugger->resume_cb) {
-                debugger->resume_cb();
-            }
-        };
-        pause_check = [&, gate_cb]() {
-            debugger->gate(gate_cb);
-        };
-        step_check = [&, gate_cb](virtual_memory::iterator reg_it,
-                         vcpu_register::id reg) {
-            const auto index = static_cast<math::ternary::underlying_type>(
-                std::distance(vmem.begin(), reg_it)
-            );
-            const auto stop = debugger->step_data_cb(index, reg);
-            if (stop) {
-                debugger->gate.close();
-                debugger->gate(gate_cb);
-            }
-        };
-
-        // Populate the memory access functions
-        debugger->address_value = [&](math::ternary address) {
-            return vmem[static_cast<math::ternary::underlying_type>(address)];
-        };
-        debugger->register_value = [&](vcpu_register::id reg) {
-            switch (reg) {
-            case vcpu_register::A:
-                return vcpu_register::data{a};
-            case vcpu_register::C:
-            {
-                const auto address = static_cast<math::ternary::underlying_type>(
-                                        std::distance(vmem.begin(), c));
-                return vcpu_register::data{address, vmem[address]};
-            }
-            case vcpu_register::D:
-            {
-                const auto address = static_cast<math::ternary::underlying_type>(
-                                        std::distance(vmem.begin(), d));
-                return vcpu_register::data{address, vmem[address]};
-            }
-            default:
-                throw basic_exception{
-                    "Unhandled register query: " + std::to_string(reg)
-                };
-            }
-        };
-    }
-
-    // Loop forever, but increment the pointers on each iteration
-    auto step = std::size_t{0};
-    for (; true; ++c, ++d, ++step) {
-        if (state == virtual_cpu::execution_state::STOPPED) {
-            return;
-        }
-
-        pause_check();
-        step_check(c, vcpu_register::C);
-
-        // Pre-cipher the instruction
-        auto instr = pre_cipher_instruction(*c, c - vmem.begin());
-        if (!instr) {
-            throw execution_exception{
-                "Pre-cipher non-whitespace character must be graphical "
-                    "ASCII: " + std::to_string(static_cast<int>(*c)),
-                step
-            };
-        }
-
-        log::print(log::VERBOSE_DEBUG,
-                   "Step: ", step, ", pre-cipher instr: ",
-                   static_cast<int>(*instr));
-
-        switch (*instr) {
-        case cpu_instruction::set_data_ptr:
-            step_check(d, vcpu_register::D);
-            d = vmem.begin() + static_cast<std::size_t>(*d);
-            break;
-        case cpu_instruction::set_code_ptr:
-            step_check(d, vcpu_register::D);
-            c = vmem.begin() + static_cast<std::size_t>(*d);
-            break;
-        case cpu_instruction::rotate:
-            step_check(d, vcpu_register::D);
-            a = d->rotate();
-            break;
-        case cpu_instruction::op:
-            step_check(d, vcpu_register::D);
-            a = *d = a.op(*d);
-            break;
-        case cpu_instruction::read:
-        {
-            // We can't block on waiting for input because it prevents the
-            // thread from exiting, so we poll the input stream, checking for
-            // a stop state in between each cycle
-            // Issue #97
-            auto waiting_called = false;
-            while (true) {
-                if (state == virtual_cpu::execution_state::STOPPED) {
-                    return;
-                }
-
-                {
-                    auto guard = stream_lock_guard{mtx, istr};
-                    if (istr.peek() < 0) {
-                        // No data
-                        if (!reading_stream) {
-                            // Only call the waiting callback once per read
-                            // operation
-                            if (!waiting_called && waiting_for_input) {
-                                waiting_for_input();
-                                waiting_called = true;
-                            }
-
-                            // Clear the fail bits
-                            istr.clear();
-                        } else {
-                            // We have finished reading the data
-                            reading_stream = false;
-                            a = math::ternary::max;
-                            istr.clear();
-                            break;
-                        }
-                    } else {
-                        // We have found data to read
-                        reading_stream = true;
-                        a = istr.get();
-                        break;
-                    }
-                }
-
-                std::this_thread::sleep_for(25ms);
-            }
-            break;
-        }
-        case cpu_instruction::write:
-            if (a != math::ternary::max) {
-                auto guard = stream_lock_guard{mtx, ostr};
-#ifdef EMSCRIPTEN
-                // Emscripten cannot flush output without a newline, so
-                // we need to force with std::endl
-                if (static_cast<char>(a) == '\n') {
-                    ostr << std::endl;
-                } else {
-                    ostr << static_cast<char>(a);
-                }
-#else
-                ostr << static_cast<char>(a);
-#endif
-            }
-            break;
-        case cpu_instruction::stop:
-            return;
-        default:
-            // Nop
-            break;
-        }
-
-        // Post-cipher the instruction
-        auto pc = post_cipher_instruction(*c);
-        if (!pc) {
-            throw execution_exception{
-                "Post-cipher non-whitespace character must be graphical "
-                    "ASCII: " + std::to_string(static_cast<int>(*c)),
-                step
-            };
-        }
-        *c = *pc;
-
-        log::print(log::VERBOSE_DEBUG,
-                   "\tPost-op regs - a: ", a,
-                   ", c[", std::distance(vmem.begin(), c), "]: ", *c,
-                   ", d[", std::distance(vmem.begin(), d), "]: ", *d);
-
-        // If a cycle delay has been set, then delay the next iteration
-        const auto delay = cycle_delay->load();
-        if (delay) {
-            std::this_thread::sleep_for(std::chrono::milliseconds{delay});
-        }
+    switch(register_id) {
+    case virtual_cpu::vcpu_register::A:
+        return stream << "A";
+    case virtual_cpu::vcpu_register::C:
+        return stream << "C";
+    case virtual_cpu::vcpu_register::D:
+        return stream << "D";
+    default:
+        return stream << "Unknown register ID: " << register_id;
     }
 }
 
 std::ostream& malbolge::operator<<(std::ostream& stream,
                                    virtual_cpu::execution_state state)
 {
-    static_assert(static_cast<int>(virtual_cpu::execution_state::NUM_STATES) == 3,
+    static_assert(static_cast<int>(virtual_cpu::execution_state::NUM_STATES) == 5,
                   "Number of execution states have change, update operator<<");
 
     switch (state) {
@@ -458,6 +451,10 @@ std::ostream& malbolge::operator<<(std::ostream& stream,
         return stream << "READY";
     case virtual_cpu::execution_state::RUNNING:
         return stream << "RUNNING";
+    case virtual_cpu::execution_state::PAUSED:
+        return stream << "PAUSED";
+    case virtual_cpu::execution_state::WAITING_FOR_INPUT:
+        return stream << "WAITING_FOR_INPUT";
     case virtual_cpu::execution_state::STOPPED:
         return stream << "STOPPED";
     default:

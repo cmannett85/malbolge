@@ -29,7 +29,7 @@ BOOST_AUTO_TEST_CASE(load_test)
 
         BOOST_TEST_MESSAGE("In memory");
         try {
-            auto vmem = load(program_data);
+            auto vmem = load(program_data, load_normalised_mode::OFF);
             if (throws) {
                 BOOST_FAIL("Should have thrown");
             }
@@ -55,7 +55,7 @@ BOOST_AUTO_TEST_CASE(load_test)
                           stream_iterator{stream});
             }
 
-            auto vmem = load(tmp_path);
+            auto vmem = load(tmp_path, load_normalised_mode::OFF);
             if (throws) {
                 BOOST_FAIL("Should have thrown");
             }
@@ -94,6 +94,45 @@ BOOST_AUTO_TEST_CASE(load_test)
             pdata_t{{' ', '\t', '\n', 40, 39},
                     {40, 39},
                     false},
+        }
+    );
+}
+
+BOOST_AUTO_TEST_CASE(normalisation_test)
+{
+    log::set_log_level(log::DEBUG);
+
+    auto f = [](auto path, auto mode, auto fail) {
+        try {
+            auto vmem = load(std::filesystem::path{path}, mode);
+            BOOST_CHECK_MESSAGE(!fail, "Should have thrown");
+        } catch (std::exception& e) {
+            BOOST_CHECK_MESSAGE(fail, "Should not have thrown");
+            BOOST_TEST_MESSAGE(e.what());
+        }
+    };
+
+    test::data_set(
+        f,
+        {
+            std::tuple{"programs/hello_world.mal",
+                       load_normalised_mode::AUTO,
+                       false},
+            std::tuple{"programs/hello_world_normalised.mal",
+                       load_normalised_mode::AUTO,
+                       false},
+            std::tuple{"programs/hello_world.mal",
+                       load_normalised_mode::ON,
+                       true},
+            std::tuple{"programs/hello_world_normalised.mal",
+                       load_normalised_mode::ON,
+                       false},
+            std::tuple{"programs/hello_world.mal",
+                       load_normalised_mode::OFF,
+                       false},
+            std::tuple{"programs/hello_world_normalised.mal",
+                       load_normalised_mode::OFF,
+                       true},
         }
     );
 }

@@ -23,13 +23,15 @@ constexpr auto version_flags        = std::array{"--version", "-v"};
 constexpr auto log_flag_prefix      = "-l";
 constexpr auto string_flag          = "--string";
 constexpr auto debugger_script_flag = "--debugger-script";
+constexpr auto force_nn_flag        = "--force-non-normalised";
 }
 
 argument_parser::argument_parser(int argc, char* argv[]) :
     help_{false},
     version_{false},
     p_{program_source::STDIN, ""},
-    log_level_{log::ERROR}
+    log_level_{log::ERROR},
+    force_nn_{false}
 {
     // Convert to string_views, they're easier to work with
     auto args = std::deque<std::string_view>(argc-1);
@@ -55,6 +57,13 @@ argument_parser::argument_parser(int argc, char* argv[]) :
 
         version_ = true;
         return;
+    }
+
+    // Force non-normalised
+    auto force_nn_it = std::find(args.begin(), args.end(), force_nn_flag);
+    if (force_nn_it != args.end()) {
+        force_nn_ = true;
+        args.erase(force_nn_it);
     }
 
     auto string_it = std::find(args.begin(), args.end(), string_flag);
@@ -164,8 +173,8 @@ std::ostream& malbolge::operator<<(std::ostream& stream, const argument_parser&)
 {
     return stream << "Malbolge virtual machine v" << project_version
                   << "\nUsage:"
-                     "\n\tmalbolge <file>\n"
-                     "\tcat <file> | malbolge\n\n"
+                     "\n\tmalbolge [options] <file>\n"
+                     "\tcat <file> | malbolge [options]\n\n"
                      "Options:\n"
                   << "\t" << help_flags[1] << " " << help_flags[0]
                   << "\t\tDisplay this help message\n"
@@ -176,5 +185,7 @@ std::ostream& malbolge::operator<<(std::ostream& stream, const argument_parser&)
                   << "\t" << string_flag
                   << "\t\tPass a string argument as the program to run\n"
                   << "\t" << debugger_script_flag
-                  << "\tRun the given debugger script on the program";
+                  << "\tRun the given debugger script on the program\n"
+                  << "\t" << force_nn_flag
+                  << "\tOverride normalised program detection to force to non-normalised";
 }

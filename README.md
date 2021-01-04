@@ -1,4 +1,4 @@
-![Documentation Generator](https://github.com/cmannett85/malbolge/workflows/Documentation%20Generator/badge.svg) ![Release Builder](https://github.com/cmannett85/malbolge/workflows/Release%20Builder/badge.svg) ![Unit test coverage](https://img.shields.io/badge/Unit_Test_Coverage-97.5%25-brightgreen)
+![Documentation Generator](https://github.com/cmannett85/malbolge/workflows/Documentation%20Generator/badge.svg) ![Release Builder](https://github.com/cmannett85/malbolge/workflows/Release%20Builder/badge.svg) ![Unit test coverage](https://img.shields.io/badge/Unit_Test_Coverage-85.7%25-green)
 
 <img src="./playground/logo.svg" alt="Malbolge Logo" width="250"/>
 
@@ -53,6 +53,7 @@ You can increase logging up to 3 levels.  As it is output into the error stream,
 $ malbolge -lll ./test/programs/hello_world.mal  2> logging.txt
 Hello World!
 ```
+The application will automatically detect if the program is normalised, and denormalise it accordingly.  Normalisation is the whitespace and [initial mapping](#pre-ciphering) removed leaving only the initial [vCPU instructions](#vcpu-instructions), denormalisation is the reverse.
 
 <a name="debugging"></a>
 ## Debugging
@@ -164,14 +165,6 @@ resume();
 ```
 ---
 
-##### stop
-In a paused state, this will stop program execution.  If present in a script, it must be last.
-
-```
-stop();
-```
----
-
 ##### on_input
 Adds a string onto the input data queue.  When the program requests input data (i.e. from `cin`), then the next string in this queue is passed to it or the program will block waiting for input.  This allows you to 'pre-load' input data before starting program execution.
 ###### Arguments:
@@ -227,7 +220,7 @@ API documentation for Malbolge is available [here](https://cmannett85.github.io/
 <a name="dependencies"></a>
 ## Dependencies
 * C++ toolchain supporting C++20 (only tested using g++ v10.2)
-* Boost v1.67
+* Boost v1.71
 * CMake v3.12
 * Emscripten v2.0.10 (only needed for WASM build)
 * Doxygen (only needed for Documentation build)
@@ -238,7 +231,7 @@ API documentation for Malbolge is available [here](https://cmannett85.github.io/
 ## Playground
 You can try out Malbolge programs in your browser using the [Playground](https://cmannett85.github.io/malbolge/playground).  There are a couple of built in presets to get you started.
 
-It also has features that allow you to convert between normalised and denormalised Malbolge.  Normalisation is Malbolge but with the whitespace and [initial mapping](#pre-ciphering) removed leaving only the initial [vCPU instructions](#vcpu-instructions), denormalisation is the reverse.
+It also has features that allow you to convert between normalised and denormalised Malbolge.
 
 ---
 
