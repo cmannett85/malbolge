@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['project_5fversion_470',['project_version',['../namespacemalbolge.html#ada216ef0794366fc2289eec54311a8af',1,'malbolge']]]
+  ['project_5fversion_474',['project_version',['../namespacemalbolge.html#ada216ef0794366fc2289eec54311a8af',1,'malbolge']]]
 ];

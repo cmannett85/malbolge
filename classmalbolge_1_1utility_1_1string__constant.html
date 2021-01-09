@@ -92,6 +92,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a8c0f390e028fb9950a59e0306f0a3b6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abd82f22906bcbafcb25ee1c51cb7abaf"><td class="memItemLeft" align="right" valign="top">constexpr char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1utility_1_1string__constant.html#abd82f22906bcbafcb25ee1c51cb7abaf">operator[]</a> (<a class="el" href="classmalbolge_1_1utility_1_1string__constant.html#a31197d11c5594a2657042a9810ef0e9c">size_type</a> pos) const</td></tr>
 <tr class="separator:abd82f22906bcbafcb25ee1c51cb7abaf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7189a3947304c50e3dda8ba2ba8c2544"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1utility_1_1string__constant.html#a7189a3947304c50e3dda8ba2ba8c2544">operator std::string_view</a> () const</td></tr>
+<tr class="separator:a7189a3947304c50e3dda8ba2ba8c2544"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -237,6 +239,37 @@ template&lt;char... Cs&gt; </div>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="string__constant_8hpp_source.html#l00083">83</a> of file <a class="el" href="string__constant_8hpp_source.html">string_constant.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a7189a3947304c50e3dda8ba2ba8c2544"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7189a3947304c50e3dda8ba2ba8c2544">&#9670;&nbsp;</a></span>operator std::string_view()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;char... Cs&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr <a class="el" href="classmalbolge_1_1utility_1_1string__constant.html">malbolge::utility::string_constant</a>&lt; Cs &gt;::operator std::string_view </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Implicit conversion operator.</p>
+<p>This points to static data. </p><dl class="section return"><dt>Returns</dt><dd>string_view equivalent </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="string__constant_8hpp_source.html#l00105">105</a> of file <a class="el" href="string__constant_8hpp_source.html">string_constant.hpp</a>.</p>
 
 </div>
 </div>

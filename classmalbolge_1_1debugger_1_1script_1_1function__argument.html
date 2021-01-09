@@ -93,8 +93,8 @@ using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a1e2440b13aede53e0ac9a3885b356b5b"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1debugger_1_1script_1_1function__argument.html#a1e2440b13aede53e0ac9a3885b356b5b">function_argument</a> (<a class="el" href="classmalbolge_1_1debugger_1_1script_1_1function__argument.html#a665cfe1a1b82f42221c242d072e61c61">value_type</a> v=DefaultValue{})</td></tr>
-<tr class="separator:a1e2440b13aede53e0ac9a3885b356b5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af20033f5826dc0ddec669be1dc4bdbac"><td class="memItemLeft" align="right" valign="top">constexpr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1debugger_1_1script_1_1function__argument.html#af20033f5826dc0ddec669be1dc4bdbac">function_argument</a> (<a class="el" href="classmalbolge_1_1debugger_1_1script_1_1function__argument.html#a665cfe1a1b82f42221c242d072e61c61">value_type</a> v=static_cast&lt; <a class="el" href="classmalbolge_1_1debugger_1_1script_1_1function__argument.html#a665cfe1a1b82f42221c242d072e61c61">value_type</a> &gt;(DefaultValue{}))</td></tr>
+<tr class="separator:af20033f5826dc0ddec669be1dc4bdbac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac1a94704131bfd7a01cd5e65231b926b"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classmalbolge_1_1debugger_1_1script_1_1function__argument.html#ac1a94704131bfd7a01cd5e65231b926b">operator</a> (const <a class="el" href="classmalbolge_1_1debugger_1_1script_1_1function__argument.html">function_argument</a> &amp;other) const =default</td></tr>
 <tr class="separator:ac1a94704131bfd7a01cd5e65231b926b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -113,7 +113,7 @@ Public Attributes</h2></td></tr>
 class malbolge::debugger::script::function_argument&lt; T, Name, DefaultValue &gt;</h3>
 
 <p>Represents a generic script function argument.</p>
-<dl class="section note"><dt>Note</dt><dd>If T is a string, then DefaultValue cannot be one because a string's value cannot be defined at compile time. In that case use a string_constant</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>If T is a string, then DefaultValue cannot be one because a string's value cannot be defined at compile time. In that case use a string_constant </dd></dl>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">T</td><td>Argument type, must be one of the types in <a class="el" href="namespacemalbolge_1_1debugger_1_1script_1_1type.html">script::type</a> </td></tr>
@@ -123,10 +123,10 @@ class malbolge::debugger::script::function_argument&lt; T, Name, DefaultValue &g
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="script__runner_8hpp_source.html#l00054">54</a> of file <a class="el" href="script__runner_8hpp_source.html">script_runner.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="script__runner_8hpp_source.html#l00053">53</a> of file <a class="el" href="script__runner_8hpp_source.html">script_runner.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a1e2440b13aede53e0ac9a3885b356b5b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1e2440b13aede53e0ac9a3885b356b5b">&#9670;&nbsp;</a></span>function_argument()</h2>
+<a id="af20033f5826dc0ddec669be1dc4bdbac"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af20033f5826dc0ddec669be1dc4bdbac">&#9670;&nbsp;</a></span>function_argument()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -140,7 +140,7 @@ template&lt;typename T , typename Name , typename DefaultValue  = T&gt; </div>
           <td class="memname">constexpr <a class="el" href="classmalbolge_1_1debugger_1_1script_1_1function__argument.html">malbolge::debugger::script::function_argument</a>&lt; T, Name, DefaultValue &gt;::<a class="el" href="classmalbolge_1_1debugger_1_1script_1_1function__argument.html">function_argument</a> </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classmalbolge_1_1debugger_1_1script_1_1function__argument.html#a665cfe1a1b82f42221c242d072e61c61">value_type</a>&#160;</td>
-          <td class="paramname"><em>v</em> = <code>DefaultValue{}</code></td><td>)</td>
+          <td class="paramname"><em>v</em> = <code>static_cast&lt;<a class="el" href="classmalbolge_1_1debugger_1_1script_1_1function__argument.html#a665cfe1a1b82f42221c242d072e61c61">value_type</a>&gt;(DefaultValue{})</code></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -158,7 +158,7 @@ template&lt;typename T , typename Name , typename DefaultValue  = T&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="script__runner_8hpp_source.html#l00073">73</a> of file <a class="el" href="script__runner_8hpp_source.html">script_runner.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="script__runner_8hpp_source.html#l00072">72</a> of file <a class="el" href="script__runner_8hpp_source.html">script_runner.hpp</a>.</p>
 
 </div>
 </div>
@@ -190,7 +190,7 @@ template&lt;typename T , typename Name , typename DefaultValue  = T&gt; </div>
 <p>Returns the name.</p>
 <dl class="section return"><dt>Returns</dt><dd>Argument name </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="script__runner_8hpp_source.html#l00064">64</a> of file <a class="el" href="script__runner_8hpp_source.html">script_runner.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="script__runner_8hpp_source.html#l00063">63</a> of file <a class="el" href="script__runner_8hpp_source.html">script_runner.hpp</a>.</p>
 
 </div>
 </div>
@@ -246,7 +246,7 @@ template&lt;typename T , typename Name , typename DefaultValue  = T&gt; </div>
 </div><div class="memdoc">
 <p>Function value. </p>
 
-<p class="definition">Definition at line <a class="el" href="script__runner_8hpp_source.html#l00086">86</a> of file <a class="el" href="script__runner_8hpp_source.html">script_runner.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="script__runner_8hpp_source.html#l00085">85</a> of file <a class="el" href="script__runner_8hpp_source.html">script_runner.hpp</a>.</p>
 
 </div>
 </div>

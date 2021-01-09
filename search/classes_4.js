@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['is_5fspecialisation_289',['is_specialisation',['../structmalbolge_1_1traits_1_1is__specialisation.html',1,'malbolge::traits']]],
-  ['is_5ftuple_5flike_290',['is_tuple_like',['../structmalbolge_1_1traits_1_1is__tuple__like.html',1,'malbolge::traits']]],
-  ['iterator_5fgeneric_291',['iterator_generic',['../classmalbolge_1_1virtual__memory_1_1iterator__generic.html',1,'malbolge::virtual_memory']]]
+  ['hash_3c_20malbolge_3a_3amath_3a_3aternary_20_3e_291',['hash&lt; malbolge::math::ternary &gt;',['../structstd_1_1hash_3_01malbolge_1_1math_1_1ternary_01_4.html',1,'std']]]
 ];
