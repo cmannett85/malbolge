@@ -29,6 +29,7 @@ BOOST_AUTO_TEST_CASE(unescape_ascii_test)
         {
             // Control characters
             std::tuple{R"(\a\b\t\n\v\f\r)",     "\a\b\t\n\v\f\r"s,  false},
+            std::tuple{R"(\c)",                 ""s,                true},
             // Punctuation characters
             std::tuple{R"(\"\'\?\\)",           "\"\'\?\\"s,        false},
             // Octal
@@ -43,6 +44,7 @@ BOOST_AUTO_TEST_CASE(unescape_ascii_test)
             std::tuple{R"(\x28)",               "("s,               false},
             std::tuple{R"(\x4C)",               "L"s,               false},
             std::tuple{R"(\x4Cf)",              ""s,                true},
+            std::tuple{R"(\x)",                 ""s,                true},
             // Embedded into strings
             std::tuple{R"(\"hello wor\154d\")", "\"hello world\""s, false},
             std::tuple{R"(\"hello worl\x64\")", "\"hello world\""s, false},

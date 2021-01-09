@@ -23,7 +23,7 @@ std::string malbolge::to_string(const optional_source_location& loc)
                ", c:" + std::to_string(loc->column) + "}";
     }
 
-    return "";
+    return "{}";
 }
 
 parse_exception::parse_exception(const std::string& msg,

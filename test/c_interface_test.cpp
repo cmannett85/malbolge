@@ -53,6 +53,7 @@ public:
         stopped = false;
         paused = false;
         waiting = false;
+        running = false;
         bp_hit = false;
         value_query_hit = false;
         expected_states.clear();
@@ -82,6 +83,8 @@ public:
                 stopped = true;
             } else if (state == MALBOLGE_VCPU_PAUSED) {
                 paused = true;
+            } else if (state == MALBOLGE_VCPU_RUNNING) {
+                running = true;
             }
         }
         cv.notify_all();
@@ -143,6 +146,7 @@ public:
     static bool stopped;
     static bool paused;
     static bool waiting;
+    static bool running;
     static bool bp_hit;
     static bool value_query_hit;
 
@@ -160,6 +164,7 @@ malbolge_virtual_cpu fixture::vcpu;
 bool fixture::stopped;
 bool fixture::paused;
 bool fixture::waiting;
+bool fixture::running;
 bool fixture::bp_hit;
 bool fixture::value_query_hit;
 std::mutex fixture::mtx;
@@ -227,6 +232,10 @@ BOOST_AUTO_TEST_CASE(is_likely_normalised_test)
                        1},
         }
     );
+
+    // Null check
+    const auto result = malbolge_is_likely_normalised_source(nullptr, 42);
+    BOOST_CHECK_EQUAL(result, MALBOLGE_ERR_NULL_ARG);
 }
 
 BOOST_AUTO_TEST_CASE(normalise_source_test)
@@ -455,6 +464,12 @@ BOOST_FIXTURE_TEST_CASE(vcpu_nulls, fixture)
 
     result = malbolge_vcpu_remove_breakpoint(nullptr, 0);
     BOOST_CHECK_EQUAL(result, MALBOLGE_ERR_NULL_ARG);
+
+    result = malbolge_vcpu_address_value(nullptr, 0, address_value_cb);
+    BOOST_CHECK_EQUAL(result, MALBOLGE_ERR_NULL_ARG);
+
+    result = malbolge_vcpu_register_value(nullptr, MALBOLGE_VCPU_REGISTER_A, register_value_cb);
+    BOOST_CHECK_EQUAL(result, MALBOLGE_ERR_NULL_ARG);
 }
 
 BOOST_FIXTURE_TEST_CASE(hello_world, fixture)
@@ -493,6 +508,65 @@ BOOST_FIXTURE_TEST_CASE(hello_world, fixture)
         BOOST_CHECK(cv.wait_for(lock, 100ms, [&]() { return stopped; }));
     }
     BOOST_CHECK_EQUAL(output_str, "Hello World!");
+    BOOST_CHECK(expected_states.empty());
+
+    result = malbolge_vcpu_detach_callbacks(vcpu,
+                                            state_cb,
+                                            output_cb,
+                                            breakpoint_cb);
+    BOOST_CHECK_EQUAL(result, MALBOLGE_ERR_SUCCESS);
+
+    // Attempting to run, pause, or step, after it has been stopped should fail
+    result = malbolge_vcpu_run(vcpu);
+    BOOST_CHECK_EQUAL(result, MALBOLGE_ERR_EXECUTION_FAIL);
+    result = malbolge_vcpu_pause(vcpu);
+    BOOST_CHECK_EQUAL(result, MALBOLGE_ERR_EXECUTION_FAIL);
+    result = malbolge_vcpu_step(vcpu);
+    BOOST_CHECK_EQUAL(result, MALBOLGE_ERR_EXECUTION_FAIL);
+}
+
+BOOST_FIXTURE_TEST_CASE(hello_world_detached, fixture)
+{
+    auto buffer = load_program_from_disk(std::filesystem::path{"programs/hello_world.mal"});
+    auto fail_line = 0u;
+    auto fail_column = 0u;
+    auto vmem = malbolge_load_program(buffer.data(),
+                                      buffer.size(),
+                                      MALBOLGE_LOAD_NORMALISED_AUTO,
+                                      &fail_line,
+                                      &fail_column);
+    BOOST_REQUIRE(vmem);
+    BOOST_CHECK_EQUAL(fail_line, 0);
+    BOOST_CHECK_EQUAL(fail_column, 0);
+
+    vcpu = malbolge_create_vcpu(vmem);
+    BOOST_REQUIRE(vcpu);
+
+    auto result = malbolge_vcpu_attach_callbacks(vcpu,
+                                                 state_cb,
+                                                 output_cb,
+                                                 breakpoint_cb);
+    BOOST_CHECK_EQUAL(result, MALBOLGE_ERR_SUCCESS);
+
+    result = malbolge_vcpu_detach_callbacks(vcpu,
+                                            nullptr,
+                                            output_cb,
+                                            nullptr);
+    BOOST_CHECK_EQUAL(result, MALBOLGE_ERR_SUCCESS);
+
+    expected_states = {
+        MALBOLGE_VCPU_RUNNING,
+        MALBOLGE_VCPU_STOPPED
+    };
+
+    result = malbolge_vcpu_run(vcpu);
+    BOOST_CHECK_EQUAL(result, MALBOLGE_ERR_SUCCESS);
+
+    {
+        auto lock = std::unique_lock{mtx};
+        BOOST_CHECK(cv.wait_for(lock, 100ms, [&]() { return stopped; }));
+    }
+    BOOST_CHECK_EQUAL(output_str, "");
     BOOST_CHECK(expected_states.empty());
 }
 
@@ -606,8 +680,14 @@ BOOST_FIXTURE_TEST_CASE(echo, fixture)
         MALBOLGE_VCPU_STOPPED
     };
 
+    // Adding these should NOT automatically start the program
     result = malbolge_vcpu_add_input(vcpu, "Hello!\n", 8);
     BOOST_CHECK_EQUAL(result, MALBOLGE_ERR_SUCCESS);
+    {
+        auto lock = std::unique_lock{mtx};
+        BOOST_CHECK(!cv.wait_for(lock, 100ms, [&]() { return running; }));
+    }
+    BOOST_CHECK(!waiting);
 
     result = malbolge_vcpu_run(vcpu);
     BOOST_CHECK_EQUAL(result, MALBOLGE_ERR_SUCCESS);
@@ -625,6 +705,30 @@ BOOST_FIXTURE_TEST_CASE(echo, fixture)
         BOOST_CHECK(cv.wait_for(lock, 100ms, [&]() { return waiting; }));
     }
 
+    // Attempting to run, pause, or step is a no-op
+    running = false;
+    result = malbolge_vcpu_run(vcpu);
+    BOOST_CHECK_EQUAL(result, MALBOLGE_ERR_SUCCESS);
+    {
+        auto lock = std::unique_lock{mtx};
+        BOOST_CHECK(!cv.wait_for(lock, 100ms, [&]() { return running; }));
+    }
+
+    result = malbolge_vcpu_pause(vcpu);
+    BOOST_CHECK_EQUAL(result, MALBOLGE_ERR_SUCCESS);
+    {
+        auto lock = std::unique_lock{mtx};
+        BOOST_CHECK(!cv.wait_for(lock, 100ms, [&]() { return paused; }));
+    }
+
+    paused = false;
+    result = malbolge_vcpu_step(vcpu);
+    BOOST_CHECK_EQUAL(result, MALBOLGE_ERR_SUCCESS);
+    {
+        auto lock = std::unique_lock{mtx};
+        BOOST_CHECK(!cv.wait_for(lock, 100ms, [&]() { return paused; }));
+    }
+
     malbolge_free_vcpu(vcpu);
     {
         auto lock = std::unique_lock{mtx};
@@ -632,6 +736,65 @@ BOOST_FIXTURE_TEST_CASE(echo, fixture)
     }
 
     BOOST_CHECK_EQUAL(output_str, "Hello!\nGoodbye!");
+    BOOST_CHECK(expected_states.empty());
+}
+
+BOOST_FIXTURE_TEST_CASE(invalid_register_value_query, fixture)
+{
+    auto buffer = load_program_from_disk(std::filesystem::path{"programs/hello_world.mal"});
+    auto fail_line = 0u;
+    auto fail_column = 0u;
+    auto vmem = malbolge_load_program(buffer.data(),
+                                      buffer.size(),
+                                      MALBOLGE_LOAD_NORMALISED_AUTO,
+                                      &fail_line,
+                                      &fail_column);
+    BOOST_REQUIRE(vmem);
+    BOOST_CHECK_EQUAL(fail_line, 0);
+    BOOST_CHECK_EQUAL(fail_column, 0);
+
+    vcpu = malbolge_create_vcpu(vmem);
+    BOOST_REQUIRE(vcpu);
+
+    auto result = malbolge_vcpu_attach_callbacks(vcpu,
+                                                 state_cb,
+                                                 output_cb,
+                                                 breakpoint_cb);
+    BOOST_CHECK_EQUAL(result, MALBOLGE_ERR_SUCCESS);
+
+    expected_address = 0;
+    result = malbolge_vcpu_add_breakpoint(vcpu, expected_address, 0);
+    BOOST_CHECK_EQUAL(result, MALBOLGE_ERR_SUCCESS);
+
+    expected_states = {
+        MALBOLGE_VCPU_RUNNING,
+        MALBOLGE_VCPU_PAUSED,     // BP
+        MALBOLGE_VCPU_STOPPED,    // Stopped
+    };
+
+    result = malbolge_vcpu_run(vcpu);
+    BOOST_CHECK_EQUAL(result, MALBOLGE_ERR_SUCCESS);
+    {
+        auto lock = std::unique_lock{mtx};
+        BOOST_CHECK(cv.wait_for(lock, 100ms, [&]() { return bp_hit; }));
+    }
+
+    value_query_hit = false;
+    expected_ec = MALBOLGE_ERR_EXECUTION_FAIL;
+    result = malbolge_vcpu_register_value(vcpu,
+                                          MALBOLGE_VCPU_REGISTER_MAX,
+                                          register_value_cb);
+    BOOST_CHECK_EQUAL(result, MALBOLGE_ERR_SUCCESS);
+    {
+        auto lock = std::unique_lock{mtx};
+        BOOST_CHECK(!cv.wait_for(lock, 100ms, [&]() { return value_query_hit; }));
+    }
+
+    {
+        auto lock = std::unique_lock{mtx};
+        BOOST_CHECK(cv.wait_for(lock, 100ms, [&]() { return stopped; }));
+    }
+    BOOST_CHECK_EQUAL(output_str, "");
     BOOST_CHECK(expected_states.empty());
 }
 
@@ -659,11 +822,11 @@ BOOST_FIXTURE_TEST_CASE(hello_world_debugger, fixture)
     BOOST_CHECK_EQUAL(result, MALBOLGE_ERR_SUCCESS);
 
     expected_address = 9;
-    result = malbolge_vcpu_add_breakpoint(vcpu, 9, 0);
+    result = malbolge_vcpu_add_breakpoint(vcpu, expected_address, 0);
     BOOST_CHECK_EQUAL(result, MALBOLGE_ERR_SUCCESS);
-    result = malbolge_vcpu_add_breakpoint(vcpu, 19, 0);
+    result = malbolge_vcpu_add_breakpoint(vcpu, expected_address + 10, 0);
     BOOST_CHECK_EQUAL(result, MALBOLGE_ERR_SUCCESS);
-    result = malbolge_vcpu_add_breakpoint(vcpu, 20, 0);
+    result = malbolge_vcpu_add_breakpoint(vcpu, expected_address + 11, 0);
     BOOST_CHECK_EQUAL(result, MALBOLGE_ERR_SUCCESS);
 
     expected_states = {
@@ -688,6 +851,18 @@ BOOST_FIXTURE_TEST_CASE(hello_world_debugger, fixture)
         bp_hit = false;
         paused = false;
 
+        // Callback NULL checks
+        result = malbolge_vcpu_address_value(vcpu, 0, nullptr);
+        BOOST_CHECK_EQUAL(result, MALBOLGE_ERR_NULL_ARG);
+        result = malbolge_vcpu_address_value(nullptr, 0, nullptr);
+        BOOST_CHECK_EQUAL(result, MALBOLGE_ERR_NULL_ARG);
+
+        result = malbolge_vcpu_register_value(vcpu, MALBOLGE_VCPU_REGISTER_A, nullptr);
+        BOOST_CHECK_EQUAL(result, MALBOLGE_ERR_NULL_ARG);
+        result = malbolge_vcpu_register_value(nullptr, MALBOLGE_VCPU_REGISTER_A, nullptr);
+        BOOST_CHECK_EQUAL(result, MALBOLGE_ERR_NULL_ARG);
+
+        // Register and address checks
         expected_value = 125;
         result = malbolge_vcpu_address_value(vcpu, 9, address_value_cb);
         BOOST_CHECK_EQUAL(result, MALBOLGE_ERR_SUCCESS);

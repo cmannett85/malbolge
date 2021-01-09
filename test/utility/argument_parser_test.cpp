@@ -5,6 +5,7 @@
 
 #include "malbolge/utility/argument_parser.hpp"
 #include "malbolge/exception.hpp"
+#include "malbolge/version.hpp"
 
 #include "test_helpers.hpp"
 
@@ -48,7 +49,10 @@ BOOST_AUTO_TEST_CASE(unknown)
     try {
         auto ap = arg_dispatcher({"--hello"});
         BOOST_FAIL("Should have thrown");
-    } catch (system_exception&) {}
+    } catch (system_exception& e) {
+        BOOST_CHECK_EQUAL(e.code().value(),
+                          static_cast<int>(std::errc::invalid_argument));
+    }
 }
 
 BOOST_AUTO_TEST_CASE(help)
@@ -83,12 +87,18 @@ BOOST_AUTO_TEST_CASE(version)
     try {
         auto ap = arg_dispatcher({"-h", "-v"});
         BOOST_FAIL("Should have thrown");
-    } catch (system_exception&) {}
+    } catch (system_exception& e) {
+        BOOST_CHECK_EQUAL(e.code().value(),
+                          static_cast<int>(std::errc::invalid_argument));
+    }
 
     try {
         auto ap = arg_dispatcher({"-v", "-h"});
         BOOST_FAIL("Should have thrown");
-    } catch (system_exception&) {}
+    } catch (system_exception& e) {
+        BOOST_CHECK_EQUAL(e.code().value(),
+                          static_cast<int>(std::errc::invalid_argument));
+    }
 }
 
 BOOST_AUTO_TEST_CASE(log_levels)
@@ -111,17 +121,26 @@ BOOST_AUTO_TEST_CASE(log_levels)
     try {
         auto ap = arg_dispatcher({"-v", "-l"});
         BOOST_FAIL("Should have thrown");
-    } catch (system_exception&) {}
+    } catch (system_exception& e) {
+        BOOST_CHECK_EQUAL(e.code().value(),
+                          static_cast<int>(std::errc::invalid_argument));
+    }
 
     try {
         auto ap = arg_dispatcher({"-llll"});
         BOOST_FAIL("Should have thrown");
-    } catch (system_exception&) {}
+    } catch (system_exception& e) {
+        BOOST_CHECK_EQUAL(e.code().value(),
+                          static_cast<int>(std::errc::invalid_argument));
+    }
 
     try {
         auto ap = arg_dispatcher({"-lab"});
         BOOST_FAIL("Should have thrown");
-    } catch (system_exception&) {}
+    } catch (system_exception& e) {
+        BOOST_CHECK_EQUAL(e.code().value(),
+                          static_cast<int>(std::errc::invalid_argument));
+    }
 }
 
 BOOST_AUTO_TEST_CASE(force_nn)
@@ -152,17 +171,34 @@ BOOST_AUTO_TEST_CASE(file)
     try {
         auto ap = arg_dispatcher({path, "-l"});
         BOOST_FAIL("Should have thrown");
-    } catch (system_exception&) {}
+    } catch (system_exception& e) {
+        BOOST_CHECK_EQUAL(e.code().value(),
+                          static_cast<int>(std::errc::invalid_argument));
+    }
 
     try {
         auto ap = arg_dispatcher({"--string", "This will not compile", path});
         BOOST_FAIL("Should have thrown");
-    } catch (system_exception&) {}
+    } catch (system_exception& e) {
+        BOOST_CHECK_EQUAL(e.code().value(),
+                          static_cast<int>(std::errc::invalid_argument));
+    }
 
     try {
-        auto ap = arg_dispatcher({path, "--string", "This will not compile", });
+        auto ap = arg_dispatcher({path, "--string", "This will not compile"});
         BOOST_FAIL("Should have thrown");
-    } catch (system_exception&) {}
+    } catch (system_exception& e) {
+        BOOST_CHECK_EQUAL(e.code().value(),
+                          static_cast<int>(std::errc::invalid_argument));
+    }
+
+    try {
+        auto ap = arg_dispatcher({path, "/another/path"});
+        BOOST_FAIL("Should have thrown");
+    } catch (system_exception& e) {
+        BOOST_CHECK_EQUAL(e.code().value(),
+                          static_cast<int>(std::errc::invalid_argument));
+    }
 }
 
 BOOST_AUTO_TEST_CASE(string)
@@ -181,7 +217,10 @@ BOOST_AUTO_TEST_CASE(string)
     try {
         auto ap = arg_dispatcher({"--string"});
         BOOST_FAIL("Should have thrown");
-    } catch (system_exception&) {}
+    } catch (system_exception& e) {
+        BOOST_CHECK_EQUAL(e.code().value(),
+                          static_cast<int>(std::errc::invalid_argument));
+    }
 }
 
 BOOST_AUTO_TEST_CASE(logging_and_file)
@@ -224,6 +263,14 @@ BOOST_AUTO_TEST_CASE(debugger_script)
     BOOST_CHECK(!ap.force_non_normalised());
     BOOST_REQUIRE(ap.debugger_script());
     BOOST_CHECK_EQUAL(*(ap.debugger_script()), script);
+
+    try {
+        auto ap = arg_dispatcher({"--debugger-script"});
+        BOOST_FAIL("Should have thrown");
+    } catch (system_exception& e) {
+        BOOST_CHECK_EQUAL(e.code().value(),
+                          static_cast<int>(std::errc::invalid_argument));
+    }
 }
 
 BOOST_AUTO_TEST_CASE(debugger_script_and_file)
@@ -239,6 +286,44 @@ BOOST_AUTO_TEST_CASE(debugger_script_and_file)
     BOOST_CHECK(!ap.force_non_normalised());
     BOOST_REQUIRE(ap.debugger_script());
     BOOST_CHECK_EQUAL(*(ap.debugger_script()), script);
+}
+
+BOOST_AUTO_TEST_CASE(program_source_streaming_operator)
+{
+    auto f = [](auto source, auto expected) {
+        auto ss = std::stringstream{};
+        ss << source;
+        BOOST_CHECK_EQUAL(ss.str(), expected);
+    };
+
+    test::data_set(
+        f,
+        {
+            std::tuple{argument_parser::program_source::DISK,   "DISK"},
+            std::tuple{argument_parser::program_source::STDIN,  "STDIN"},
+            std::tuple{argument_parser::program_source::STRING, "STRING"},
+            std::tuple{argument_parser::program_source::MAX,    "Unknown"},
+        }
+    );
+}
+
+BOOST_AUTO_TEST_CASE(argument_parser_streaming_operator)
+{
+    const auto expected = "Malbolge virtual machine v"s + project_version +
+        "\nUsage:"
+        "\n\tmalbolge [options] <file>\n"
+        "\tcat <file> | malbolge [options]\n\n"
+        "Options:\n"
+        "\t-h --help\t\tDisplay this help message\n"
+        "\t-v --version\t\tDisplay the full application version\n"
+        "\t-l\t\t\tLog level, repeat the l character for higher logging levels\n"
+        "\t--string\t\tPass a string argument as the program to run\n"
+        "\t--debugger-script\tRun the given debugger script on the program\n"
+        "\t--force-non-normalised\tOverride normalised program detection to force to non-normalised";
+
+    auto ss = std::stringstream{};
+    ss << arg_dispatcher({});
+    BOOST_CHECK_EQUAL(ss.str(), expected);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

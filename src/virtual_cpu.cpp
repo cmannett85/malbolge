@@ -13,6 +13,7 @@
 #include <thread>
 #include <deque>
 #include <unordered_map>
+#include <atomic>
 
 using namespace malbolge;
 
@@ -116,6 +117,7 @@ public:
 
     void stopped_check()
     {
+        // Once in a STOPPED state, it cannot change to another
         if (state_ == virtual_cpu::execution_state::STOPPED) {
             throw execution_exception{"vCPU has been stopped", p_counter};
         }
@@ -144,7 +146,7 @@ public:
     breakpoint_hit_signal_type bp_hit_sig;
 
 private:
-    virtual_cpu::execution_state state_;
+    std::atomic<virtual_cpu::execution_state> state_;
 };
 
 virtual_cpu::virtual_cpu(virtual_memory vmem) :
@@ -172,8 +174,8 @@ virtual_cpu::~virtual_cpu()
 void virtual_cpu::run()
 {
     impl_check();
+    impl_->stopped_check();
     boost::asio::post(impl_->ctx, [impl = impl_]() {
-        impl->stopped_check();
         if (impl->state() == execution_state::RUNNING ||
             impl->state() == execution_state::WAITING_FOR_INPUT) {
             return;
@@ -187,8 +189,8 @@ void virtual_cpu::run()
 void virtual_cpu::pause()
 {
     impl_check();
+    impl_->stopped_check();
     boost::asio::post(impl_->ctx, [impl = impl_]() {
-        impl->stopped_check();
         if (impl->state() == execution_state::PAUSED ||
             impl->state() == execution_state::WAITING_FOR_INPUT) {
             return;
@@ -201,8 +203,8 @@ void virtual_cpu::pause()
 void virtual_cpu::step()
 {
     impl_check();
+    impl_->stopped_check();
     boost::asio::post(impl_->ctx, [impl = impl_]() {
-        impl->stopped_check();
         if (impl->state() == execution_state::WAITING_FOR_INPUT) {
             return;
         }
@@ -436,7 +438,8 @@ std::ostream& malbolge::operator<<(std::ostream& stream,
     case virtual_cpu::vcpu_register::D:
         return stream << "D";
     default:
-        return stream << "Unknown register ID: " << register_id;
+        return stream << "Unknown register ID: "
+                      << static_cast<int>(register_id);
     }
 }
 
@@ -458,6 +461,6 @@ std::ostream& malbolge::operator<<(std::ostream& stream,
     case virtual_cpu::execution_state::STOPPED:
         return stream << "STOPPED";
     default:
-        return stream << "Unknown";
+        return stream << "Unknown vCPU state: " << static_cast<int>(state);
     }
 }

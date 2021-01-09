@@ -34,3 +34,12 @@ math::ternary math::ternary::op(const math::ternary& other) const
 
     return result.to_base10();
 }
+
+std::ostream& std::operator<<(std::ostream& stream,
+                              const std::optional<malbolge::math::ternary>& t)
+{
+    if (!t) {
+        return stream << "{}";
+    }
+    return stream << *t;
+}

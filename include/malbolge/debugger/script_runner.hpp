@@ -44,7 +44,6 @@ namespace type
  *
  * @note If T is a string, then DefaultValue cannot be one because a string's
  * value cannot be defined at compile time.  In that case use a string_constant
- *
  * @tparam T Argument type, must be one of the types in script::type
  * @tparam Name Argument name, expected to be a string_constant or equivalent
  * @tparam DefaultValue The argument's value if one is not specified in the
@@ -70,7 +69,7 @@ public:
      *
      * @param v Value to assign
      */
-    constexpr function_argument(value_type v = DefaultValue{}) :
+    constexpr function_argument(value_type v = static_cast<value_type>(DefaultValue{})) :
         value(std::move(v))
     {}
 
@@ -259,7 +258,7 @@ std::ostream& operator<<(std::ostream& stream,
         }
     }, fn.args);
 
-    return stream << ")";
+    return stream << ");";
 }
 
 /** Namespace holding the current script function types.

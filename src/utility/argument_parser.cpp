@@ -134,10 +134,8 @@ argument_parser::argument_parser(int argc, char* argv[]) :
     if (!args.empty()) {
         // Make sure the string flag hadn't already been set
         if (p_.source == program_source::STRING) {
-            throw system_exception{
-                "String flag already set",
-                EINVAL
-            };
+            throw system_exception{"String flag already set",
+                                   std::errc::invalid_argument};
         }
 
         p_.source = program_source::DISK;

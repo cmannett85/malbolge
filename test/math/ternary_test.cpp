@@ -36,6 +36,50 @@ BOOST_AUTO_TEST_CASE(constructor)
     );
 }
 
+BOOST_AUTO_TEST_CASE(streaming_operator)
+{
+    auto f = [](auto input, auto expected) {
+        auto ss = std::stringstream{};
+        ss << input;
+        BOOST_CHECK_EQUAL(ss.str(), expected);
+    };
+
+    test::data_set(
+        f,
+        {
+            std::tuple{math::ternary{0},
+                       "{d:0, t:0000000000}"},
+            std::tuple{math::ternary{42},
+                       "{d:42, t:0000001120}"},
+            std::tuple{math::ternary{math::ternary::max},
+                       "{d:59048, t:2222222222}"},
+        }
+    );
+}
+
+BOOST_AUTO_TEST_CASE(optional_streaming_operator)
+{
+    auto f = [](auto input, auto expected) {
+        auto ss = std::stringstream{};
+        ss << input;
+        BOOST_CHECK_EQUAL(ss.str(), expected);
+    };
+
+    test::data_set(
+        f,
+        {
+            std::tuple{std::optional<math::ternary>{0},
+                       "{d:0, t:0000000000}"},
+            std::tuple{std::optional<math::ternary>{42},
+                       "{d:42, t:0000001120}"},
+            std::tuple{std::optional<math::ternary>{math::ternary::max},
+                       "{d:59048, t:2222222222}"},
+            std::tuple{std::optional<math::ternary>{},
+                       "{}"},
+        }
+    );
+}
+
 BOOST_AUTO_TEST_CASE(comparisons)
 {
     using cmp_sig = std::function<bool (math::ternary, math::ternary)>;

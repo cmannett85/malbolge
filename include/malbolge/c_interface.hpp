@@ -318,6 +318,7 @@ int malbolge_vcpu_detach_callbacks(malbolge_virtual_cpu vcpu,
  * @return
  * - MALBOLGE_ERR_SUCCESS for success
  * - MALBOLGE_ERR_NULL_ARG if @a vcpu is NULL
+ * - MALBOLGE_ERR_EXECUTION_FAIL if the vCPU is already in a stopped state
  * - MALBOLGE_ERR_UNKNOWN if an unknown failure occurs
  */
 int malbolge_vcpu_run(malbolge_virtual_cpu vcpu);
@@ -329,6 +330,7 @@ int malbolge_vcpu_run(malbolge_virtual_cpu vcpu);
  * @return
  * - MALBOLGE_ERR_SUCCESS for success
  * - MALBOLGE_ERR_NULL_ARG if @a vcpu is NULL
+ * - MALBOLGE_ERR_EXECUTION_FAIL if the vCPU is already in a stopped state
  * - MALBOLGE_ERR_UNKNOWN if an unknown failure occurs
  */
 int malbolge_vcpu_pause(malbolge_virtual_cpu vcpu);
@@ -340,6 +342,7 @@ int malbolge_vcpu_pause(malbolge_virtual_cpu vcpu);
  * @return
  * - MALBOLGE_ERR_SUCCESS for success
  * - MALBOLGE_ERR_NULL_ARG if @a vcpu is NULL
+ * - MALBOLGE_ERR_EXECUTION_FAIL if the vCPU is already in a stopped state
  * - MALBOLGE_ERR_UNKNOWN if an unknown failure occurs
  */
 int malbolge_vcpu_step(malbolge_virtual_cpu vcpu);

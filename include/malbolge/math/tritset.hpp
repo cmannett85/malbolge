@@ -58,7 +58,7 @@ public:
     using type = decltype(calculate_type());
 };
 
-/** Hepler type for min_width_type.
+/** Helper type for min_width_type.
  *
  * @tparam N Number of digits
  */

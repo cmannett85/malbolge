@@ -121,6 +121,7 @@ std::optional<char> is_hex_character(Iter& it, Iter end)
  * @return Unescaped equivalent
  * @exception std::out_of_range Thrown if a hex value in @a str is not
  * representable by char
+ * @exception std::invalid_argument Thrown if an escaped character is malformed
  */
 template <typename Traits = std::char_traits<char>,
           typename Allocator = std::allocator<char>>
@@ -157,6 +158,8 @@ unescape_ascii(std::basic_string_view<char, Traits>& str)
                 unescaped += *result;
                 continue;
             }
+
+            throw std::invalid_argument{"Cannot parse escape character"};
         } else {
             unescaped.push_back(*it);
         }

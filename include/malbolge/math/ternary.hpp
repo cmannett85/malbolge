@@ -229,18 +229,30 @@ inline std::ostream& operator<<(std::ostream& stream, const ternary& t)
 }
 }
 
+/** Additions to the std namespace.
+ *
+ * Normally this is frowned upon, but we are only adding
+ * specialisations/overloads for our own types.
+ */
 namespace std
 {
+/** Hash specialisation for math::ternary.
+ */
 template <>
 struct hash<malbolge::math::ternary>
 {
+    /** Returns the decimal version of @a t.
+     *
+     * Hash function is just the identity, useful for unordered containers.
+     * @warning DO NOT USE FOR CRYPTOGRAPHIC FUNCTIONALITY
+     * @param t Input instance
+     * @return Hash of @a t
+     */
     std::size_t operator()(const malbolge::math::ternary& t) const
     {
         static_assert(sizeof(std::size_t) >= sizeof(malbolge::math::ternary::underlying_type),
                       "std::size_t must be the same or larger than ternay underlying type");
 
-        // Hash function is just the identity, useful for unordered containers
-        // DO NOT USE FOR CRYPTOGRAPHIC FUNCTIONALITY!
         return static_cast<std::size_t>(t);
     }
 };
@@ -251,12 +263,6 @@ struct hash<malbolge::math::ternary>
  * @param t Value to write
  * @return @a stream
  */
-inline std::ostream& operator<<(std::ostream& stream,
-                                const std::optional<malbolge::math::ternary>& t)
-{
-    if (!t) {
-        return stream << "{}";
-    }
-    return stream << *t;
-}
+std::ostream& operator<<(std::ostream& stream,
+                         const std::optional<malbolge::math::ternary>& t);
 }

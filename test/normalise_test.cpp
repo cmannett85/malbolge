@@ -104,6 +104,8 @@ BOOST_AUTO_TEST_CASE(normalise_invalid_test)
             std::tuple{R"_(('&%$#"!~}|{z
 yxwvuysrqpnKmlkjihgfedcba`_^]\[ZYXWVT1|)_"s,
                        source_location{2, 6}},
+            std::tuple{"\x18"s,
+                       source_location{1, 1}},
         }
     );
 }
