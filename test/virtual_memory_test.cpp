@@ -88,7 +88,9 @@ BOOST_AUTO_TEST_CASE(iterator_arithmetic)
 
     it += 5;
     BOOST_CHECK_EQUAL(*it, vmem[5]);
-    it -= 10;
+    it += -5;
+    BOOST_CHECK_EQUAL(*it, vmem[0]);
+    it -= 5;
     BOOST_CHECK_EQUAL(*it, vmem[math::ternary::max-4]);
     it += 5;
     BOOST_CHECK_EQUAL(*it, vmem[0]);

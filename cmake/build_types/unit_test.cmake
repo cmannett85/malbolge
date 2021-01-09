@@ -21,11 +21,13 @@ set(TEST_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/debugger/script_parser_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/debugger/script_runner_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/loader_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/log_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/main_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/math/ipow_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/math/tritset_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/math/ternary_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/normalise_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/source_location_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/traits_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/argument_parser_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/from_chars_test.cpp

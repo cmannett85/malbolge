@@ -61,6 +61,8 @@ virtual_memory malbolge::load(const std::filesystem::path& path,
         log::print(log::INFO, "File loaded");
 
         return load(data.begin(), data.end(), mode);
+    } catch (parse_exception& e) {
+        throw;
     } catch (std::exception& e) {
         throw parse_exception{"Failed to load program: "s + e.what()};
     }

@@ -97,6 +97,16 @@ public:
         return data_[pos];
     }
 
+    /** Implicit conversion operator.
+     *
+     * This points to static data.
+     * @return string_view equivalent
+     */
+    constexpr operator std::string_view() const
+    {
+        return value();
+    }
+
 private:
     static constexpr auto data_ = std::array<value_type, size()>{Cs...};
 };

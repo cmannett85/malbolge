@@ -115,6 +115,8 @@ public:
      * no-op.
      * @exception execution_exception Thrown if backend has been destroyed,
      * usually as a result of use-after-move
+     * @exception execution_exception Thrown if the vCPU ha already been
+     * stopped
      */
     void run();
 
@@ -124,6 +126,8 @@ public:
      * no-op.
      * @exception execution_exception Thrown if backend has been destroyed,
      * usually as a result of use-after-move
+     * @exception execution_exception Thrown if the vCPU ha already been
+     * stopped
      */
     void pause();
 
@@ -134,6 +138,8 @@ public:
      * no-op.
      * @exception execution_exception Thrown if backend has been destroyed,
      * usually as a result of use-after-move
+     * @exception execution_exception Thrown if the vCPU ha already been
+     * stopped
      */
     void step();
 

@@ -99,7 +99,7 @@ public:
         default:
             // Will never get here due to the strong enum typing and the
             // static_assert check below
-            break;;
+            break;
         }
     }
 
@@ -139,7 +139,7 @@ public:
         default:
             // Will never get here due to the strong enum typing and the
             // static_assert check below
-            break;;
+            break;
         }
     }
 
@@ -387,9 +387,10 @@ int malbolge_vcpu_run(malbolge_virtual_cpu vcpu)
         return MALBOLGE_ERR_NULL_ARG;
     }
 
-    auto vcpu_ptr = static_cast<virtual_cpu*>(vcpu);
+
     auto err = static_cast<int>(MALBOLGE_ERR_UNKNOWN);
     try {
+        auto vcpu_ptr = static_cast<virtual_cpu*>(vcpu);
         vcpu_ptr->run();
         return MALBOLGE_ERR_SUCCESS;
     } catch (std::exception& e) {
@@ -409,17 +410,19 @@ int malbolge_vcpu_pause(malbolge_virtual_cpu vcpu)
         return MALBOLGE_ERR_NULL_ARG;
     }
 
+    auto err = static_cast<int>(MALBOLGE_ERR_UNKNOWN);
     try {
         auto vcpu_ptr = static_cast<virtual_cpu*>(vcpu);
         vcpu_ptr->pause();
         return MALBOLGE_ERR_SUCCESS;
     } catch (std::exception& e) {
         log::print(log::ERROR, e.what());
+        err = MALBOLGE_ERR_EXECUTION_FAIL;
     } catch (...) {
         log::print(log::ERROR, "Unknown exception");
     }
 
-    return MALBOLGE_ERR_UNKNOWN;
+    return err;
 }
 
 int malbolge_vcpu_step(malbolge_virtual_cpu vcpu)
@@ -429,17 +432,19 @@ int malbolge_vcpu_step(malbolge_virtual_cpu vcpu)
         return MALBOLGE_ERR_NULL_ARG;
     }
 
+    auto err = static_cast<int>(MALBOLGE_ERR_UNKNOWN);
     try {
         auto vcpu_ptr = static_cast<virtual_cpu*>(vcpu);
         vcpu_ptr->step();
         return MALBOLGE_ERR_SUCCESS;
     } catch (std::exception& e) {
         log::print(log::ERROR, e.what());
+        err = MALBOLGE_ERR_EXECUTION_FAIL;
     } catch (...) {
         log::print(log::ERROR, "Unknown exception");
     }
 
-    return MALBOLGE_ERR_UNKNOWN;
+    return err;
 }
 
 int malbolge_vcpu_add_input(malbolge_virtual_cpu vcpu,
@@ -520,6 +525,10 @@ int malbolge_vcpu_address_value(malbolge_virtual_cpu vcpu,
         log::print(log::ERROR, "NULL virtual CPU pointer");
         return MALBOLGE_ERR_NULL_ARG;
     }
+    if (!cb) {
+        log::print(log::ERROR, "NULL callback");
+        return MALBOLGE_ERR_NULL_ARG;
+    }
 
     try {
         auto vcpu_ptr = static_cast<virtual_cpu*>(vcpu);
@@ -546,6 +555,10 @@ int malbolge_vcpu_register_value(malbolge_virtual_cpu vcpu,
 {
     if (!vcpu) {
         log::print(log::ERROR, "NULL virtual CPU pointer");
+        return MALBOLGE_ERR_NULL_ARG;
+    }
+    if (!cb) {
+        log::print(log::ERROR, "NULL callback");
         return MALBOLGE_ERR_NULL_ARG;
     }
 
