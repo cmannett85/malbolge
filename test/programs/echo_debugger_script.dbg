@@ -1,3 +1,6 @@
+// Preload the input data
 on_input(data="Hello!");
 on_input(data="Goodbye!");
+
+// Execute
 run(max_runtime_ms=100);

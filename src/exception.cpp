@@ -26,9 +26,10 @@ std::string malbolge::to_string(const optional_source_location& loc)
     return "{}";
 }
 
-parse_exception::parse_exception(const std::string& msg,
+parse_exception::parse_exception(std::string msg,
                                  optional_source_location loc) :
     basic_exception{"Parse error " + to_string(loc) + ": " + msg},
+    msg_{std::move(msg)},
     loc_{loc}
 {}
 

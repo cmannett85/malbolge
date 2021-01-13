@@ -70,6 +70,7 @@ The file extension is not relevant, it can be anything (or nothing).  The script
 * Arguments that have default values do not need to be specified
 * Arguments are separated by `,`
 * Return values are printed to the error stream (same as logging), but prefixed with `<Timestamp>[DBGR]: `
+* Comments can start anywhere, signified by `//`, and continue until the end of the line
 
 <a name="argument-types"></a>
 #### Argument types
