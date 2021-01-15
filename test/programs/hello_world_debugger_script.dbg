@@ -1,24 +1,32 @@
+// Add two breakpoints and start running
 add_breakpoint(address=9);
 add_breakpoint(address=19);
 run();
+
+// BP@9
 address_value(address=9);
 register_value(reg=A);
 register_value(reg=C);
 register_value(reg=D);
 
+// Address: 10
 step();
 address_value(address=10);
 register_value(reg=A);
 register_value(reg=C);
 register_value(reg=D);
 
+// Resume which will break at 19
 resume();
 address_value(address=19);
 register_value(reg=A);
 register_value(reg=C);
 register_value(reg=D);
 
+// Add and then remove at 20
 add_breakpoint(address=20);
 remove_breakpoint(address=20);
+
+// Since we removed the BP at 20, this will continue until program end
 resume();
 address_value(address=20);

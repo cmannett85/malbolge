@@ -25,6 +25,7 @@ const auto all_valid_expected = script::functions::sequence{
     script::functions::add_breakpoint{9, 2},
     script::functions::add_breakpoint{42, 2},
     script::functions::add_breakpoint{422343, 2},
+    script::functions::add_breakpoint{422344, 2},
     script::functions::add_breakpoint{12012_trit},
     script::functions::add_breakpoint{0x42},
     script::functions::remove_breakpoint{9},
@@ -53,21 +54,28 @@ const auto all_valid_expected = script::functions::sequence{
 
 void all_valid_script(std::ostream& stream)
 {
-    stream << "add_breakpoint(address=9,  ignore_count=2);" << std::endl
+    stream << "// Breakpoint commands" << std::endl
+           << "add_breakpoint(address=9,  ignore_count=2);" << std::endl
            << "add_breakpoint(address=42, ignore_count=0x2);" << std::endl
            << "add_breakpoint(address=422343, ignore_count=0x2);" << std::endl
+           << "add_breakpoint(" << std::endl
+           << "\taddress=422344, // comment" << std::endl
+           << "\tignore_count=0x2 // Another comment" << std::endl
+           << ");" << std::endl
            << "add_breakpoint(address=t12012);" << std::endl
            << "add_breakpoint(address=0x42);" << std::endl
            << "remove_breakpoint(address=9);" << std::endl
            << "remove_breakpoint(address=42);" << std::endl
            << "remove_breakpoint(address=422343);" << std::endl
            << "remove_breakpoint(address=t12012);" << std::endl
-           << "remove_breakpoint(address=0x42);" << std::endl
+           << "remove_breakpoint(address=0x42); // End of breakpoint commands" << std::endl
            << "run();" << std::endl
            << "run(max_runtime_ms=1);" << std::endl
            << "run(max_runtime_ms=10);" << std::endl
            << "run(max_runtime_ms=0x1);" << std::endl
            << "run(max_runtime_ms=021);" << std::endl
+           << "// Data getters" << std::endl
+           << "//" << std::endl
            << "address_value(address=9);" << std::endl
            << "address_value(address=42);" << std::endl
            << "address_value(address=422343);" << std::endl
@@ -136,38 +144,43 @@ BOOST_AUTO_TEST_CASE(single_invalid)
         f,
         {
             // Function name extraction
-            std::tuple{"a",                     source_location{1, 1}},
-            std::tuple{"  a",                   source_location{1, 3}},
-            std::tuple{"\n\n   a",              source_location{3, 4}},
+            std::tuple{"a",                     source_location{1, 2}},
+            std::tuple{"  a",                   source_location{1, 4}},
+            std::tuple{"\n\n   a",              source_location{3, 5}},
             std::tuple{"  a()",                 source_location{1, 3}},
-            std::tuple{"  a\n\t()",             source_location{2, 1}},
+            std::tuple{"  a\n\t()",             source_location{1, 3}},
             std::tuple{"()",                    source_location{1, 1}},
-            std::tuple{"  ()",                  source_location{1, 2}},
+            std::tuple{"  ()",                  source_location{1, 3}},
             // Argument extraction
-            std::tuple{"run(",                  source_location{1, 4}},
-            std::tuple{"run(   ",               source_location{1, 7}},
-            std::tuple{"run(  \n ",             source_location{2, 1}},
+            std::tuple{"run(",                  source_location{1, 5}},
+            std::tuple{"run(   ",               source_location{1, 8}},
+            std::tuple{"run(  \n ",             source_location{2, 2}},
             std::tuple{"run(=9)",               source_location{1, 5}},
             std::tuple{"run( =9)",              source_location{1, 6}},
-            std::tuple{"run(max_runtime_ms)",   source_location{1, 18}},
+            std::tuple{"run(max_runtime_ms)",   source_location{1, 19}},
             std::tuple{"run(max_runtime_ms,)",  source_location{1, 19}},
             std::tuple{"run(max_runtime_ms=,)", source_location{1, 20}},
             std::tuple{"add_breakpoint(address=4, ignore_count)",
-                       source_location{1, 38}},
+                       source_location{1, 39}},
             std::tuple{"add_breakpoint(address=4, ignore_count,)",
                        source_location{1, 39}},
             std::tuple{"add_breakpoint(address=4, ignore_count =,)",
                        source_location{1, 41}},
             std::tuple{"on_input(data =\n\t\")",
-                       source_location{2, 2}},
+                       source_location{2, 4}},
             // Function creation
-            std::tuple{"run(wrong=100)",        source_location{1, 10}},
+            std::tuple{"run(wrong=100)",        source_location{1, 4}},
             std::tuple{"run(max_runtime_ms=\"hello\")",
                        source_location{1, 19}},
             std::tuple{"add_breakpoint(address=\"hello\")",
                        source_location{1, 23}},
             std::tuple{"register_value(reg=42)",
                        source_location{1, 19}},
+            // With comments
+            std::tuple{"// comment a",          source_location{1, 13}},
+            std::tuple{"a// comment",           source_location{1, 12}},
+            std::tuple{"\n// comment\n   a",    source_location{3, 5}},
+            std::tuple{"run(// comment)",       source_location{1, 16}},
         }
     );
 }

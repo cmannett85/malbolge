@@ -84,12 +84,22 @@ public:
      * @param msg Message
      * @param loc Source location of the error
      */
-    explicit parse_exception(const std::string& msg,
+    explicit parse_exception(std::string msg,
                              optional_source_location loc = {});
 
     /** Destructor.
      */
     virtual ~parse_exception() = default;
+
+    /** The message passed into the constructor.
+     *
+     * This is used for rethrowing with an updated source location
+     * @return Constructor message
+     */
+    const std::string& message() const
+    {
+        return msg_;
+    }
 
     /** Returns true if a location has been set.
      *
@@ -110,6 +120,7 @@ public:
     }
 
 private:
+    std::string msg_;
     optional_source_location loc_;
 };
 

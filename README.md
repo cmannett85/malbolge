@@ -1,4 +1,4 @@
-![Documentation Generator](https://github.com/cmannett85/malbolge/workflows/Documentation%20Generator/badge.svg) ![Release Builder](https://github.com/cmannett85/malbolge/workflows/Release%20Builder/badge.svg) ![Unit test coverage](https://img.shields.io/badge/Unit_Test_Coverage-96.3%25-brightgreen)
+![Documentation Generator](https://github.com/cmannett85/malbolge/workflows/Documentation%20Generator/badge.svg) ![Release Builder](https://github.com/cmannett85/malbolge/workflows/Release%20Builder/badge.svg) ![Unit test coverage](https://img.shields.io/badge/Unit_Test_Coverage-96.2%25-brightgreen)
 
 <img src="./playground/logo.svg" alt="Malbolge Logo" width="250"/>
 
@@ -70,6 +70,7 @@ The file extension is not relevant, it can be anything (or nothing).  The script
 * Arguments that have default values do not need to be specified
 * Arguments are separated by `,`
 * Return values are printed to the error stream (same as logging), but prefixed with `<Timestamp>[DBGR]: `
+* Comments can start anywhere, signified by `//`, and continue until the end of the line
 
 <a name="argument-types"></a>
 #### Argument types
