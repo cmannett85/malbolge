@@ -114,7 +114,7 @@ Typedefs</h2></td></tr>
 <p>Script function type for adding a breakpoint.</p>
 <p>Allows the adding of a breakpoint at any point during script execution. The breakpoint address is specified using the address argument (required); the ignore count can be specified, otherwise it defaults to zero. </p>
 
-<p class="definition">Definition at line <a class="el" href="script__runner_8hpp_source.html#l00279">279</a> of file <a class="el" href="script__runner_8hpp_source.html">script_runner.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="script__runner_8hpp_source.html#l00282">282</a> of file <a class="el" href="script__runner_8hpp_source.html">script_runner.hpp</a>.</p>
 
 </div>
 </div>
@@ -131,7 +131,7 @@ Typedefs</h2></td></tr>
 </div><div class="memdoc">
 <p>Script function type querying the value in vmem at a particular address. </p>
 
-<p class="definition">Definition at line <a class="el" href="script__runner_8hpp_source.html#l00309">309</a> of file <a class="el" href="script__runner_8hpp_source.html">script_runner.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="script__runner_8hpp_source.html#l00312">312</a> of file <a class="el" href="script__runner_8hpp_source.html">script_runner.hpp</a>.</p>
 
 </div>
 </div>
@@ -148,7 +148,7 @@ Typedefs</h2></td></tr>
 </div><div class="memdoc">
 <p>A variant of all the known functions. </p>
 
-<p class="definition">Definition at line <a class="el" href="script__runner_8hpp_source.html#l00358">358</a> of file <a class="el" href="script__runner_8hpp_source.html">script_runner.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="script__runner_8hpp_source.html#l00361">361</a> of file <a class="el" href="script__runner_8hpp_source.html">script_runner.hpp</a>.</p>
 
 </div>
 </div>
@@ -166,7 +166,7 @@ Typedefs</h2></td></tr>
 <p>Script function type for passing a string for the program to accept as input.</p>
 <p>The argument is added to an input queue, so this may be called multiple times to 'pre-load' input. </p>
 
-<p class="definition">Definition at line <a class="el" href="script__runner_8hpp_source.html#l00345">345</a> of file <a class="el" href="script__runner_8hpp_source.html">script_runner.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="script__runner_8hpp_source.html#l00348">348</a> of file <a class="el" href="script__runner_8hpp_source.html">script_runner.hpp</a>.</p>
 
 </div>
 </div>
@@ -184,7 +184,7 @@ Typedefs</h2></td></tr>
 <p>Script function type querying the value in at the given register.</p>
 <p>If the register is C or D, then the register contains an address - this is printed along with the value at the address in vmem. </p>
 
-<p class="definition">Definition at line <a class="el" href="script__runner_8hpp_source.html#l00319">319</a> of file <a class="el" href="script__runner_8hpp_source.html">script_runner.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="script__runner_8hpp_source.html#l00322">322</a> of file <a class="el" href="script__runner_8hpp_source.html">script_runner.hpp</a>.</p>
 
 </div>
 </div>
@@ -202,7 +202,7 @@ Typedefs</h2></td></tr>
 <p>Script function type for removing a breakpoint.</p>
 <p>Allows the removal of a breakpoint at any point during script execution. The breakpoint address is specified using the address argument (required). </p>
 
-<p class="definition">Definition at line <a class="el" href="script__runner_8hpp_source.html#l00289">289</a> of file <a class="el" href="script__runner_8hpp_source.html">script_runner.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="script__runner_8hpp_source.html#l00292">292</a> of file <a class="el" href="script__runner_8hpp_source.html">script_runner.hpp</a>.</p>
 
 </div>
 </div>
@@ -220,7 +220,7 @@ Typedefs</h2></td></tr>
 <p>Script function type for resuming a paused program.</p>
 <p>Once this is called in the sequence, subsequent functions are called once a breakpoint hits. </p>
 
-<p class="definition">Definition at line <a class="el" href="script__runner_8hpp_source.html#l00334">334</a> of file <a class="el" href="script__runner_8hpp_source.html">script_runner.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="script__runner_8hpp_source.html#l00337">337</a> of file <a class="el" href="script__runner_8hpp_source.html">script_runner.hpp</a>.</p>
 
 </div>
 </div>
@@ -238,7 +238,7 @@ Typedefs</h2></td></tr>
 <p>Script function type for running the program.</p>
 <p>Once this is called in the sequence, subsequent functions are called once a breakpoint hits. The optional max_runtime argument puts an upperbound on how long the program can run (in milliseconds) without a breakpoint being hit. The timeout will trigger virtual_cpu::stop() being called. </p>
 
-<p class="definition">Definition at line <a class="el" href="script__runner_8hpp_source.html#l00302">302</a> of file <a class="el" href="script__runner_8hpp_source.html">script_runner.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="script__runner_8hpp_source.html#l00305">305</a> of file <a class="el" href="script__runner_8hpp_source.html">script_runner.hpp</a>.</p>
 
 </div>
 </div>
@@ -260,7 +260,7 @@ Typedefs</h2></td></tr>
 <li>If there are any add_breakpoint functions, at least one must appear before a run </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="script__runner_8hpp_source.html#l00369">369</a> of file <a class="el" href="script__runner_8hpp_source.html">script_runner.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="script__runner_8hpp_source.html#l00372">372</a> of file <a class="el" href="script__runner_8hpp_source.html">script_runner.hpp</a>.</p>
 
 </div>
 </div>
@@ -277,7 +277,7 @@ Typedefs</h2></td></tr>
 </div><div class="memdoc">
 <p>Script function type for stepping the program a single instruction. </p>
 
-<p class="definition">Definition at line <a class="el" href="script__runner_8hpp_source.html#l00325">325</a> of file <a class="el" href="script__runner_8hpp_source.html">script_runner.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="script__runner_8hpp_source.html#l00328">328</a> of file <a class="el" href="script__runner_8hpp_source.html">script_runner.hpp</a>.</p>
 
 </div>
 </div>

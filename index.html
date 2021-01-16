@@ -73,15 +73,7 @@ $(function() {
 <h2>Contents</h2>
 <ul>
 <li><a href="#usage">Usage</a></li>
-<li><a href="#debugging">Debugging</a><ul>
-<li><a href="#syntax">Syntax</a><ul>
-<li><a href="#argument-types">Argument Types</a></li>
-<li><a href="#functions">Functions</a></li>
-</ul>
-</li>
-<li><a href="#examples">Examples</a></li>
-</ul>
-</li>
+<li><a href="#debugging">Debugging</a></li>
 <li><a href="#api-documentation">API Documentation</a></li>
 <li><a href="#dependencies">Dependencies</a></li>
 <li><a href="#playground">Playground</a></li>
@@ -109,91 +101,9 @@ $(function() {
 <div class="line">Hello World!</div>
 </div><!-- fragment --><p>The application will automatically detect if the program is normalised, and denormalise it accordingly. Normalisation is the whitespace and <a href="#pre-ciphering">initial mapping</a> removed leaving only the initial <a href="#vcpu-instructions">vCPU instructions</a>, denormalisation is the reverse.</p>
 <p><a class="anchor" id="debugging"></a> </p><h2>Debugging</h2>
-<p>Primitive debugging is supported through the use of a debugging script specified by the <code>--debugger-script</code> flag, for example: </p><div class="fragment"><div class="line">malbolge -ll --debugger-script my_prog.dbg my_prog.mal</div>
-</div><!-- fragment --><p>The file extension is not relevant, it can be anything (or nothing). The script is essentially a list of commands for the debugger, it's syntax and supported functions are listed below.</p>
-<p><a class="anchor" id="syntax"></a> </p><h3>Syntax</h3>
-<ul>
-<li>Whitespace is ignored, commands are ended by a `<code></code></li>
-<li><code>Arguments are held within brackets and are named, bound by</code>=`</li>
-<li>Arguments that have default values do not need to be specified</li>
-<li>Arguments are separated by <code>,</code></li>
-<li>Return values are printed to the error stream (same as logging), but prefixed with <code>&lt;Timestamp&gt;[DBGR]:</code></li>
-<li>Comments can start anywhere, signified by <code>//</code>, and continue until the end of the line</li>
-</ul>
-<p><a class="anchor" id="argument-types"></a> </p><h4>Argument types</h4>
-<ul>
-<li><code>uint</code> Unsigned integer. Base-10 unless prefixed with <code>0x</code> which means base-16, or <code>0</code> which means octal</li>
-<li><code>ternary</code> 10-trit unsigned ternary. Base-10 input unless prefixed with <code>t</code> which means base-3</li>
-<li><code>reg</code> vCPU register, <code>A</code>, <code>C</code>, or <code>D</code> (case-sensitive)</li>
-<li><code>string</code> ACSII string, must be surrounded by <code>""</code> and standard escaping rules apply. Hex and octal escaping supported too</li>
-</ul>
-<p><a class="anchor" id="functions"></a> </p><h4>Functions</h4>
-<h5>add_breakpoint</h5>
-<p>Adds a breakpoint at the given address. If one already exists at <code>address</code> then the previous one is replaced. If there are any breakpoints listed in a script, then at least one must appear before the <code>run</code> command. </p><h6>Arguments:</h6>
-<p><code>address = uint/ternary [Required]</code> Memory location in the virtual memory block to attach the breakpoint <code>ignore_count [Defaults to 0]</code> Number of times <code>address</code> is hit before execution is paused </p><div class="fragment"><div class="line">add_breakpoint(address=9, ignore_count=2)</div>
-</div><!-- fragment --><hr  />
-<h5>remove_breakpoint</h5>
-<p>Removes a breakpoint at the given address. If no breakpoint exists at <code>address</code> then it is a no-op. </p><h6>Arguments:</h6>
-<p><code>address = uint/ternary [Required]</code> Memory location in the virtual memory block to remove a breakpoint from </p><div class="fragment"><div class="line">remove_breakpoint(address=9)</div>
-</div><!-- fragment --><hr  />
-<h5>run</h5>
-<p>Begins execution of the program. If <code>max_runtime_ms</code> is non-zero then program execution is stopped (<em>stopped</em>, not paused) after the number of milliseconds requested unless a breakpoint is hit first. Subsequent commands in the script are not read until a breakpoint is hit or the program ends.</p>
-<p>There can only be a single <code>run</code> command in a script, use <code>resume</code> to continue execution after a breakpoint is hit.</p>
-<h6>Arguments:</h6>
-<p><code>max_runtime_ms = uint/ternary [Defaults to 0, which represents infinite runtime]</code> Number of milliseconds the program is allowed to run without hitting a breakpoint. </p><div class="fragment"><div class="line">run()</div>
-</div><!-- fragment --><hr  />
-<h5>address_value</h5>
-<p>Returns the value at the given address. Although not a requirement, it is generally only meaningful to call this function when the program is paused. </p><h6>Arguments:</h6>
-<p><code>address = uint/ternary [Required]</code> Memory location in the virtual memory block to read. </p><div class="fragment"><div class="line">address_value(address=9)</div>
-</div><!-- fragment --><p>Example output: </p><div class="fragment"><div class="line">2020-12-19 11:40:58.696620673[DBGR]: address_value(address={d:9, t:0000000100}) = {d:125, t:0000011122}</div>
-</div><!-- fragment --><hr  />
-<h5>register_value</h5>
-<p>Returns the value at the given register. Although not a requirement, it is generally only meaningful to call this function when the program is paused.</p>
-<p>If the register is C or D, then the register contains an address - this is printed along with the value at the address in virtual memory. </p><h6>Arguments:</h6>
-<p><code>reg = reg [Required]</code> Memory location in the virtual memory block to read. </p><div class="fragment"><div class="line">register_value(reg=A)</div>
-</div><!-- fragment --><p>Example output: </p><div class="fragment"><div class="line">2020-12-19 11:40:58.696758245[DBGR]: register_value(reg=C) = {{d:9, t:0000000100}, {d:125, t:0000011122}}</div>
-</div><!-- fragment --><hr  />
-<h5>step</h5>
-<p>In a paused state, this will advance program execution by a single instruction. Script parsing will fail if this function is before a <code>run</code>.</p>
-<div class="fragment"><div class="line">step()</div>
-</div><!-- fragment --><hr  />
-<h5>resume</h5>
-<p>In a paused state, this will resume program execution. Script parsing will fail if this function is before a <code>run</code>.</p>
-<div class="fragment"><div class="line">resume()</div>
-</div><!-- fragment --><hr  />
-<h5>on_input</h5>
-<p>Adds a string onto the input data queue. When the program requests input data (i.e. from <code>cin</code>), then the next string in this queue is passed to it or the program will block waiting for input. This allows you to 'pre-load' input data before starting program execution. </p><h6>Arguments:</h6>
-<p><code>data = string [Required]</code> Program input. </p><div class="fragment"><div class="line">on_input(data=&quot;Hello world!&quot;)</div>
-</div><!-- fragment --><hr  />
-<p><a class="anchor" id="examples"></a> </p><h3>Examples</h3>
-<p>This script is used inside the unit tests on the <code>hello_world</code> program. </p><div class="fragment"><div class="line">add_breakpoint(address=9)</div>
-<div class="line">add_breakpoint(address=19)</div>
-<div class="line">run()</div>
-<div class="line">address_value(address=9)</div>
-<div class="line">register_value(reg=A)</div>
-<div class="line">register_value(reg=C)</div>
-<div class="line">register_value(reg=D)</div>
-<div class="line"> </div>
-<div class="line">step()</div>
-<div class="line">address_value(address=10)</div>
-<div class="line">register_value(reg=A)</div>
-<div class="line">register_value(reg=C)</div>
-<div class="line">register_value(reg=D)</div>
-<div class="line"> </div>
-<div class="line">resume()</div>
-<div class="line">address_value(address=19)</div>
-<div class="line">register_value(reg=A)</div>
-<div class="line">register_value(reg=C)</div>
-<div class="line">register_value(reg=D)</div>
-<div class="line"> </div>
-<div class="line">add_breakpoint(address=20)</div>
-<div class="line">remove_breakpoint(address=20)</div>
-<div class="line">resume()</div>
-<div class="line">address_value(address=20)</div>
-</div><!-- fragment --><p>This script is used inside the unit tests on the <code>echo</code> program. </p><div class="fragment"><div class="line">on_input(data=&quot;Hello!&quot;)</div>
-<div class="line">on_input(data=&quot;Goodbye!&quot;)</div>
-<div class="line">run(max_runtime_ms=100)</div>
-</div><!-- fragment --><p><a class="anchor" id="api-documentation"></a> </p><h2>API Documentation</h2>
+<p>Debugging is supported via running a program through a debugger script specified by the <code>--debugger-script</code> flag. The syntax documentation is available in the 'Related Pages' part of the <a href="#api-documentation">API Documentation</a>.</p>
+<p>Interactive debugging coming soon!</p>
+<p><a class="anchor" id="api-documentation"></a> </p><h2>API Documentation</h2>
 <p>API documentation for Malbolge is available <a href="https://cmannett85.github.io/malbolge">here</a>.</p>
 <p><b>Note</b> API stability/backwards compatibility not guaranteed until v1.0 reached.</p>
 <p><a class="anchor" id="dependencies"></a> </p><h2>Dependencies</h2>
