@@ -43,6 +43,7 @@ set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/algorithm/trim.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/c_interface.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/cpu_instruction.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/debugger/debugger_script_syntax_doc.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/debugger/script_parser.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/debugger/script_runner.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/exception.hpp
