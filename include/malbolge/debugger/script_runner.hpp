@@ -18,6 +18,9 @@ namespace malbolge
 namespace debugger
 {
 /** Namespace for debugger scripting functions and types.
+ * 
+ * If any data in this changes, be sure to update the documentation in
+ * debugger_script_syntax_doc.hpp.
  */
 namespace script
 {
