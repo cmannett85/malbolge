@@ -3,8 +3,6 @@
  * See LICENSE file
  */
 
-#pragma once
-
 /** @page debugger_script_syntax Debugger Script Syntax
  * @tableofcontents
  * 
