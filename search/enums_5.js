@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['type_543',['type',['../namespacemalbolge_1_1cpu__instruction.html#a0f9eeaa34725e4d574bfb4240a5322ef',1,'malbolge::cpu_instruction']]]
+  ['type_544',['type',['../namespacemalbolge_1_1cpu__instruction.html#a0f9eeaa34725e4d574bfb4240a5322ef',1,'malbolge::cpu_instruction']]]
 ];

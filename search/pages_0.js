@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['debugger_20script_20syntax_605',['Debugger Script Syntax',['../debugger_script_syntax.html',1,'']]]
+  ['architectural_20design_20and_20considerations_606',['Architectural Design and Considerations',['../architecture.html',1,'']]]
 ];
