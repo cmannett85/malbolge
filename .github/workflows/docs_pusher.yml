@@ -43,8 +43,9 @@ jobs:
         make -j4 malbolge_test_coverage
         cd ./test
         ./malbolge_test_coverage -l test_suite
-        cd ..
-        ${GITHUB_WORKSPACE}/test/calculate_test_coverage.sh .
+        cd ${GITHUB_WORKSPACE}/test
+        ./calculate_test_coverage.sh ${GITHUB_WORKSPACE}/../build_unit_tests
+        cd ${GITHUB_WORKSPACE}/../build_unit_tests
         genhtml malbolge.info --no-function-coverage --title "Malbolge Unit Test Code Coverage" --legend --highlight --output-directory gcov_html
         cp -rf ./gcov_html ${GITHUB_WORKSPACE}/docs/doxygen/html/
 
