@@ -9,6 +9,7 @@ A virtual machine to execute Malbolge programs, written in C++20.
 * [Usage](#usage)
 * [Debugging](#debugging)
 * [API Documentation](#api-documentation)
+  * [Unit Test Coverage Report](#coverage-report)
 * [Dependencies](#dependencies)
 * [Playground](#playground)
 * [What is Malbolge?](#what-is-malbolge)
@@ -62,6 +63,10 @@ Interactive debugging coming soon!
 API documentation for Malbolge is available [here](https://cmannett85.github.io/malbolge).
 
 **Note** API stability/backwards compatibility not guaranteed until v1.0 reached.
+
+<a name="coverage-report"></a>
+### Unit Test Coverage Report
+A coverage report of the latest master commit is available [here](https://cmannett85.github.io/malbolge/gcov_html).
 
 <a name="dependencies"></a>
 ## Dependencies
