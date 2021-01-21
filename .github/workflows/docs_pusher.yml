@@ -41,7 +41,9 @@ jobs:
         cd ${GITHUB_WORKSPACE}/../build_unit_tests
         cmake -DCMAKE_CXX_COMPILER=g++-10 -DCMAKE_BUILD_TYPE=Debug ${GITHUB_WORKSPACE}
         make -j4 malbolge_test_coverage
-        ./test/malbolge_test_coverage -l test_suite
+        cd ./test
+        ./malbolge_test_coverage -l test_suite
+        cd ..
         ${GITHUB_WORKSPACE}/test/calculate_test_coverage.sh .
         genhtml malbolge.info --no-function-coverage --title "Malbolge Unit Test Code Coverage" --legend --highlight --output-directory gcov_html
         cp -rf ./gcov_html ${GITHUB_WORKSPACE}/docs/doxygen/html/
