@@ -66,7 +66,7 @@ API documentation for Malbolge is available [here](https://cmannett85.github.io/
 
 <a name="coverage-report"></a>
 ### Unit Test Coverage Report
-A coverage report of the latest master commit is available [here](https://cmannett85.github.io/malbolge/gcov_html).
+A coverage report of the latest master commit is available [here](https://cmannett85.github.io/malbolge/master/gcov_html).
 
 <a name="dependencies"></a>
 ## Dependencies
