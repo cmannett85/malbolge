@@ -13,7 +13,7 @@ on:
 
 env:
   BASE_DIR: ${GITHUB_WORKSPACE}/..
-  STAGING_DIR: ${{ env.BASE_DIR }}/doc_staging
+  STAGING_DIR: ${GITHUB_WORKSPACE}/../doc_staging
 
 jobs:
   documentation:
@@ -34,22 +34,22 @@ jobs:
 
     - name: Generate API documentation
       run: |
-        mkdir ${{ env.BASE_DIR }}/docs
-        cd ${{ env.BASE_DIR }}/docs
+        mkdir ${{env.BASE_DIR}}/docs
+        cd ${{env.BASE_DIR}}/docs
         cmake -DDOCS_ONLY=ON ${GITHUB_WORKSPACE}
         make -j4 documentation
 
     - name: Generate Unit Test Coverage Report
       run: |
-        mkdir ${{ env.BASE_DIR }}/build_unit_tests
-        cd ${{ env.BASE_DIR }}/build_unit_tests
+        mkdir ${{env.BASE_DIR}}/build_unit_tests
+        cd ${{env.BASE_DIR}}/build_unit_tests
         cmake -DCMAKE_CXX_COMPILER=g++-10 -DCMAKE_BUILD_TYPE=Debug ${GITHUB_WORKSPACE}
         make -j4 malbolge_test_coverage
         cd ./test
         ./malbolge_test_coverage -l test_suite
         cd ${GITHUB_WORKSPACE}/test
-        ./calculate_test_coverage.sh ${{ env.BASE_DIR }}/build_unit_tests
-        cd ${{ env.BASE_DIR }}/build_unit_tests
+        ./calculate_test_coverage.sh ${{env.BASE_DIR}}/build_unit_tests
+        cd ${{env.BASE_DIR}}/build_unit_tests
         genhtml malbolge.info --no-function-coverage --title "Malbolge Unit Test Code Coverage" --legend --highlight --output-directory gcov_html
         cp -rf ./gcov_html ${GITHUB_WORKSPACE}/docs/doxygen/html/
 
@@ -57,12 +57,12 @@ jobs:
       run: |
         mkdir -p ${STAGING_DIR}/master
         cp -rf ${GITHUB_WORKSPACE}/docs/doxygen/html/* ${STAGING_DIR}/master
-        ${GITHUB_WORKSPACE}/docs/landing_page/build_versioned_docs.sh ${GITHUB_WORKSPACE} ${{ env.BASE_DIR }} ${{ env.STAGING_DIR }}
-        cp ${GITHUB_WORKSPACE}/docs/landing_page/index.html ${GITHUB_WORKSPACE}/docs/landing_page/style.css ${{ env.STAGING_DIR }}/
+        ${GITHUB_WORKSPACE}/docs/landing_page/build_versioned_docs.sh ${GITHUB_WORKSPACE} ${{env.BASE_DIR}} ${{env.STAGING_DIR}}
+        cp ${GITHUB_WORKSPACE}/docs/landing_page/index.html ${GITHUB_WORKSPACE}/docs/landing_page/style.css ${{env.STAGING_DIR}}/
 
     - name: Install Emscripten
       run: |
-        cd ${{ env.BASE_DIR }}
+        cd ${{env.BASE_DIR}}
         git clone --depth 1 --single-branch --branch 2.0.10 https://github.com/emscripten-core/emsdk.git
         cd ./emsdk/
         ./emsdk install latest-upstream
@@ -70,20 +70,20 @@ jobs:
 
     - name: WASM Build
       run: |
-        source ${{ env.BASE_DIR }}/emsdk/emsdk_env.sh
-        mkdir ${{ env.BASE_DIR }}/wasm
-        cd ${{ env.BASE_DIR }}/wasm
+        source ${{env.BASE_DIR}}/emsdk/emsdk_env.sh
+        mkdir ${{env.BASE_DIR}}/wasm
+        cd ${{env.BASE_DIR}}/wasm
         emcmake cmake -DWASM_BUILD=ON -DCMAKE_BUILD_TYPE=Release -DBoost_INCLUDE_DIR=/usr/include ${GITHUB_WORKSPACE}
         emmake make -j4 malbolge_wasm
 
     - name: Copy over WASM playground
       run: |
-        cd ${{ env.BASE_DIR }}/wasm
+        cd ${{env.BASE_DIR}}/wasm
         cp ./malbolge.js ./malbolge.wasm ./malbolge.worker.js ${GITHUB_WORKSPACE}/playground/
-        cp -rf ${GITHUB_WORKSPACE}/playground ${{ env.STAGING_DIR }}/
+        cp -rf ${GITHUB_WORKSPACE}/playground ${{env.STAGING_DIR}}/
 
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ${{ env.STAGING_DIR }}
+        github_token: ${{secrets.GITHUB_TOKEN}}
+        publish_dir: ${{env.STAGING_DIR}}
