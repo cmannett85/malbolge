@@ -27,7 +27,7 @@ BASE_DIR=$2
 STAGING_DIR=$3
 
 build_from_cmake() {
-    TAG=$1
+    local TAG=$1
 
     cd ${BASE_DIR}/docs
     cmake -DDOCS_ONLY=ON ../${TAG}
@@ -36,14 +36,17 @@ build_from_cmake() {
 }
 
 build_manually() {
-    TAG=$1
+    local TAG=$1
 
     cd ${BASE_DIR}/${TAG}/docs
     doxygen ./Doxyfile
 }
 
 cd ${GITHUB_WORKSPACE}
-for TAG in $(git tag); do
+TAGS=$(git tag)
+echo "Versions to generate for: $TAGS"
+
+for TAG in $TAGS; do
     # Check out the tag
     mkdir -p ${BASE_DIR}/docs
     cd ${BASE_DIR}
