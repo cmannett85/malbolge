@@ -33,7 +33,7 @@ string(
 string(
     REGEX REPLACE
     "img src=\".\\/playground\\/logo.svg\""
-    "img src=\"../../../playground/logo.svg\""
+    "img src=\"https://cmannett85.github.io/malbolge/playground/logo.svg\""
     UPDATED_MD_DATA
     "${UPDATED_MD_DATA}"
 )
