@@ -44,7 +44,7 @@ build_manually() {
 
 cd ${GITHUB_WORKSPACE}
 TAGS=$(git tag)
-echo "Versions to generate for: $TAGS"
+echo "${GITHUB_WORKSPACE}: Versions to generate for: $TAGS"
 
 for TAG in $TAGS; do
     # Check out the tag
