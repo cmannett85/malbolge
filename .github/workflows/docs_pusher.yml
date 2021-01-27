@@ -55,8 +55,8 @@ jobs:
 
     - name: Generate previous version API documentation, and landing page
       run: |
-        mkdir -p ${STAGING_DIR}/master
-        cp -rf ${GITHUB_WORKSPACE}/docs/doxygen/html/* ${STAGING_DIR}/master
+        mkdir -p ${{env.STAGING_DIR}}/master
+        cp -rf ${GITHUB_WORKSPACE}/docs/doxygen/html/* ${{env.STAGING_DIR}}/master
         ${GITHUB_WORKSPACE}/docs/landing_page/build_versioned_docs.sh ${GITHUB_WORKSPACE} ${{env.BASE_DIR}} ${{env.STAGING_DIR}}
         cp ${GITHUB_WORKSPACE}/docs/landing_page/index.html ${GITHUB_WORKSPACE}/docs/landing_page/style.css ${{env.STAGING_DIR}}/
 
