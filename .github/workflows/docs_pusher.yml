@@ -38,6 +38,7 @@ jobs:
         cd ${{env.BASE_DIR}}/docs
         cmake -DDOCS_ONLY=ON ${GITHUB_WORKSPACE}
         make -j4 documentation
+        rm -rf ${{env.BASE_DIR}}/docs
 
     - name: Generate Unit Test Coverage Report
       run: |

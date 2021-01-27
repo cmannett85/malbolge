@@ -29,8 +29,9 @@ STAGING_DIR=$3
 build_from_cmake() {
     local TAG=$1
 
+    mkdir ${BASE_DIR}/docs
     cd ${BASE_DIR}/docs
-    cmake -DDOCS_ONLY=ON ../${TAG}
+    cmake -DDOCS_ONLY=ON ${BASE_DIR}/${TAG}
     make -j4 documentation
     rm -rf ${BASE_DIR}/docs
 }
@@ -47,7 +48,6 @@ TAGS=$(git tag)
 
 for TAG in $TAGS; do
     # Check out the tag
-    mkdir -p ${BASE_DIR}/docs
     cd ${BASE_DIR}
     git clone https://github.com/cmannett85/malbolge.git -b $TAG --depth 1 $TAG
 
@@ -59,7 +59,8 @@ for TAG in $TAGS; do
         build_manually $TAG
     fi
 
-    mkdir -p ${STAGING_DIR}/${TAG}
+    echo "Copying $TAG documentation to staging area"
+    mkdir ${STAGING_DIR}/${TAG}
     cp -rf ${BASE_DIR}/${TAG}/docs/doxygen/html/* ${STAGING_DIR}/${TAG}
     rm -rf ${BASE_DIR}/${TAG}
 
