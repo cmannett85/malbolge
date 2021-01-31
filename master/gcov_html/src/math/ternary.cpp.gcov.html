@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-01-27 18:16:12</td>
+            <td class="headerValue">2021-01-31 09:30:39</td>
             <td></td>
           </tr>
           <tr>
@@ -82,13 +82,13 @@
 <a name="16"><span class="lineNum">      16 </span>            : };</a>
 <a name="17"><span class="lineNum">      17 </span>            : }</a>
 <a name="18"><span class="lineNum">      18 </span>            : </a>
-<a name="19"><span class="lineNum">      19 </span><span class="lineCov">        124 : math::ternary&amp; math::ternary::rotate(std::size_t i)</span></a>
+<a name="19"><span class="lineNum">      19 </span><span class="lineCov">        124 : math::ternary&amp; math::ternary::rotate(std::size_t i) noexcept</span></a>
 <a name="20"><span class="lineNum">      20 </span>            : {</a>
 <a name="21"><span class="lineNum">      21 </span><span class="lineCov">        124 :     v_ = to_tritset().rotate(i).to_base10();</span></a>
 <a name="22"><span class="lineNum">      22 </span><span class="lineCov">        124 :     return *this;</span></a>
 <a name="23"><span class="lineNum">      23 </span>            : }</a>
 <a name="24"><span class="lineNum">      24 </span>            : </a>
-<a name="25"><span class="lineNum">      25 </span><span class="lineCov">    2476834 : math::ternary math::ternary::op(const math::ternary&amp; other) const</span></a>
+<a name="25"><span class="lineNum">      25 </span><span class="lineCov">    2476834 : math::ternary math::ternary::op(const math::ternary&amp; other) const noexcept</span></a>
 <a name="26"><span class="lineNum">      26 </span>            : {</a>
 <a name="27"><span class="lineNum">      27 </span><span class="lineCov">    2476834 :     const auto a = to_tritset();</span></a>
 <a name="28"><span class="lineNum">      28 </span><span class="lineCov">    2476834 :     const auto b = other.to_tritset();</span></a>

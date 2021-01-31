@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-01-27 18:16:12</td>
+            <td class="headerValue">2021-01-31 09:30:39</td>
             <td></td>
           </tr>
           <tr>
@@ -91,7 +91,7 @@
 <a name="25"><span class="lineNum">      25 </span>            : </a>
 <a name="26"><span class="lineNum">      26 </span>            : /** Number of bits required to represent a trit.</a>
 <a name="27"><span class="lineNum">      27 </span>            :  */</a>
-<a name="28"><span class="lineNum">      28 </span>            : static constexpr auto bits_per_trit = std::uint8_t{2};</a>
+<a name="28"><span class="lineNum">      28 </span>            : constexpr auto bits_per_trit = std::uint8_t{2};</a>
 <a name="29"><span class="lineNum">      29 </span>            : </a>
 <a name="30"><span class="lineNum">      30 </span>            : /** A trait that returns the minimum binary integral type required to represent</a>
 <a name="31"><span class="lineNum">      31 </span>            :  * a ternary type.</a>
@@ -168,7 +168,7 @@
 <a name="102"><span class="lineNum">     102 </span>            :      * @a value is modulo-ed with max before processing</a>
 <a name="103"><span class="lineNum">     103 </span>            :      * @param value Decimal value to initialise with</a>
 <a name="104"><span class="lineNum">     104 </span>            :      */</a>
-<a name="105"><span class="lineNum">     105 </span><span class="lineCov">    4953862 :     constexpr explicit tritset(T value = 0) :</span></a>
+<a name="105"><span class="lineNum">     105 </span><span class="lineCov">    4953862 :     constexpr explicit tritset(T value = 0) noexcept :</span></a>
 <a name="106"><span class="lineNum">     106 </span><span class="lineCov">    4953862 :         v_{0}</span></a>
 <a name="107"><span class="lineNum">     107 </span>            :     {</a>
 <a name="108"><span class="lineNum">     108 </span><span class="lineCov">    4953862 :         auto q = value % (max+1);</span></a>
@@ -190,7 +190,7 @@
 <a name="124"><span class="lineNum">     124 </span>            :      * @exception std::invalid_argument Thrown if str contains invalid</a>
 <a name="125"><span class="lineNum">     125 </span>            :      * characters, or contains more characters than width</a>
 <a name="126"><span class="lineNum">     126 </span>            :      */</a>
-<a name="127"><span class="lineNum">     127 </span><span class="lineCov">         19 :     explicit tritset(std::string_view str) :</span></a>
+<a name="127"><span class="lineNum">     127 </span><span class="lineCov">         19 :     constexpr explicit tritset(std::string_view str) :</span></a>
 <a name="128"><span class="lineNum">     128 </span><span class="lineCov">         19 :         v_{0}</span></a>
 <a name="129"><span class="lineNum">     129 </span>            :     {</a>
 <a name="130"><span class="lineNum">     130 </span><span class="lineCov">         19 :         if (str.size() &gt; width) {</span></a>
@@ -211,145 +211,148 @@
 <a name="145"><span class="lineNum">     145 </span>            :      *</a>
 <a name="146"><span class="lineNum">     146 </span>            :      * @param other Instance to copy from</a>
 <a name="147"><span class="lineNum">     147 </span>            :      */</a>
-<a name="148"><span class="lineNum">     148 </span>            :     tritset(const tritset&amp; other) = default;</a>
+<a name="148"><span class="lineNum">     148 </span>            :     constexpr tritset(const tritset&amp; other) noexcept = default;</a>
 <a name="149"><span class="lineNum">     149 </span>            : </a>
 <a name="150"><span class="lineNum">     150 </span>            :     /** Assignment operator.</a>
 <a name="151"><span class="lineNum">     151 </span>            :      *</a>
 <a name="152"><span class="lineNum">     152 </span>            :      * @param other Instance to copy from</a>
 <a name="153"><span class="lineNum">     153 </span>            :      * @return A reference to this</a>
 <a name="154"><span class="lineNum">     154 </span>            :      */</a>
-<a name="155"><span class="lineNum">     155 </span>            :     tritset&amp; operator=(const tritset&amp; other) = default;</a>
+<a name="155"><span class="lineNum">     155 </span>            :     constexpr tritset&amp; operator=(const tritset&amp; other) noexcept = default;</a>
 <a name="156"><span class="lineNum">     156 </span>            : </a>
 <a name="157"><span class="lineNum">     157 </span>            :     /** Comparison operator.</a>
 <a name="158"><span class="lineNum">     158 </span>            :      *</a>
 <a name="159"><span class="lineNum">     159 </span>            :      * @param other Instance to copy from</a>
 <a name="160"><span class="lineNum">     160 </span>            :      * @return Ordering type</a>
 <a name="161"><span class="lineNum">     161 </span>            :      */</a>
-<a name="162"><span class="lineNum">     162 </span><span class="lineCov">         16 :     auto operator&lt;=&gt;(const tritset&amp; other) const = default;</span></a>
-<a name="163"><span class="lineNum">     163 </span>            : </a>
-<a name="164"><span class="lineNum">     164 </span>            :     /** Return a decimal representation of the current value.</a>
-<a name="165"><span class="lineNum">     165 </span>            :      *</a>
-<a name="166"><span class="lineNum">     166 </span>            :      * @return Decimal</a>
-<a name="167"><span class="lineNum">     167 </span>            :      */</a>
-<a name="168"><span class="lineNum">     168 </span><span class="lineCov">    2477037 :     constexpr T to_base10() const</span></a>
-<a name="169"><span class="lineNum">     169 </span>            :     {</a>
-<a name="170"><span class="lineNum">     170 </span><span class="lineCov">    2477037 :         auto result = T{0};</span></a>
-<a name="171"><span class="lineNum">     171 </span><span class="lineCov">   52017553 :         boost::mp11::mp_for_each&lt;boost::mp11::mp_iota_c&lt;width&gt;&gt;([&amp;](auto i) {</span></a>
-<a name="172"><span class="lineNum">     172 </span><span class="lineCov">   24770258 :             const auto p = ipow&lt;T, trit::base, decltype(i)::value&gt;();</span></a>
-<a name="173"><span class="lineNum">     173 </span><span class="lineCov">   24770258 :             result += (*this)[i] * p;</span></a>
-<a name="174"><span class="lineNum">     174 </span>            :         });</a>
-<a name="175"><span class="lineNum">     175 </span>            : </a>
-<a name="176"><span class="lineNum">     176 </span><span class="lineCov">    2477037 :         return result;</span></a>
-<a name="177"><span class="lineNum">     177 </span>            :     }</a>
-<a name="178"><span class="lineNum">     178 </span>            : </a>
-<a name="179"><span class="lineNum">     179 </span>            :     /** Trit accessor.</a>
-<a name="180"><span class="lineNum">     180 </span>            :      *</a>
-<a name="181"><span class="lineNum">     181 </span>            :      * @param i Trit index to return</a>
-<a name="182"><span class="lineNum">     182 </span>            :      * @return Trit at index @a i</a>
-<a name="183"><span class="lineNum">     183 </span>            :      */</a>
-<a name="184"><span class="lineNum">     184 </span><span class="lineCov">   74307303 :     constexpr std::uint8_t operator[](std::size_t i) const</span></a>
-<a name="185"><span class="lineNum">     185 </span>            :     {</a>
-<a name="186"><span class="lineNum">     186 </span><span class="lineCov">   74307303 :         return (v_ &gt;&gt; (i*trit::bits_per_trit)) &amp; bmask;</span></a>
-<a name="187"><span class="lineNum">     187 </span>            :     }</a>
-<a name="188"><span class="lineNum">     188 </span>            : </a>
-<a name="189"><span class="lineNum">     189 </span>            :     /** Sets the trit at @a i with @a value.</a>
-<a name="190"><span class="lineNum">     190 </span>            :      *</a>
-<a name="191"><span class="lineNum">     191 </span>            :      * Only the first two bits of @a value are used.</a>
-<a name="192"><span class="lineNum">     192 </span>            :      * @param i Trit index</a>
-<a name="193"><span class="lineNum">     193 </span>            :      * @param value New value</a>
-<a name="194"><span class="lineNum">     194 </span>            :      * @return A reference to this</a>
-<a name="195"><span class="lineNum">     195 </span>            :      */</a>
-<a name="196"><span class="lineNum">     196 </span><span class="lineCov">   24768452 :     constexpr tritset&amp; set(std::size_t i, std::uint8_t value)</span></a>
-<a name="197"><span class="lineNum">     197 </span>            :     {</a>
-<a name="198"><span class="lineNum">     198 </span><span class="lineCov">   24768452 :         const auto bits = (value &amp; bmask) &lt;&lt; (i*trit::bits_per_trit);</span></a>
-<a name="199"><span class="lineNum">     199 </span><span class="lineCov">   24768452 :         v_ |= bits;</span></a>
-<a name="200"><span class="lineNum">     200 </span>            : </a>
-<a name="201"><span class="lineNum">     201 </span><span class="lineCov">   24768452 :         return *this;</span></a>
-<a name="202"><span class="lineNum">     202 </span>            :     }</a>
+<a name="162"><span class="lineNum">     162 </span>            :     [[nodiscard]]</a>
+<a name="163"><span class="lineNum">     163 </span><span class="lineCov">         16 :     constexpr auto operator&lt;=&gt;(const tritset&amp; other) const noexcept = default;</span></a>
+<a name="164"><span class="lineNum">     164 </span>            : </a>
+<a name="165"><span class="lineNum">     165 </span>            :     /** Return a decimal representation of the current value.</a>
+<a name="166"><span class="lineNum">     166 </span>            :      *</a>
+<a name="167"><span class="lineNum">     167 </span>            :      * @return Decimal</a>
+<a name="168"><span class="lineNum">     168 </span>            :      */</a>
+<a name="169"><span class="lineNum">     169 </span>            :     [[nodiscard]]</a>
+<a name="170"><span class="lineNum">     170 </span><span class="lineCov">    2477037 :     constexpr T to_base10() const noexcept</span></a>
+<a name="171"><span class="lineNum">     171 </span>            :     {</a>
+<a name="172"><span class="lineNum">     172 </span><span class="lineCov">    2477037 :         auto result = T{0};</span></a>
+<a name="173"><span class="lineNum">     173 </span><span class="lineCov">   52017553 :         boost::mp11::mp_for_each&lt;boost::mp11::mp_iota_c&lt;width&gt;&gt;([&amp;](auto i) {</span></a>
+<a name="174"><span class="lineNum">     174 </span><span class="lineCov">   24770258 :             const auto p = ipow&lt;T, trit::base, decltype(i)::value&gt;();</span></a>
+<a name="175"><span class="lineNum">     175 </span><span class="lineCov">   24770258 :             result += (*this)[i] * p;</span></a>
+<a name="176"><span class="lineNum">     176 </span>            :         });</a>
+<a name="177"><span class="lineNum">     177 </span>            : </a>
+<a name="178"><span class="lineNum">     178 </span><span class="lineCov">    2477037 :         return result;</span></a>
+<a name="179"><span class="lineNum">     179 </span>            :     }</a>
+<a name="180"><span class="lineNum">     180 </span>            : </a>
+<a name="181"><span class="lineNum">     181 </span>            :     /** Trit accessor.</a>
+<a name="182"><span class="lineNum">     182 </span>            :      *</a>
+<a name="183"><span class="lineNum">     183 </span>            :      * @param i Trit index to return</a>
+<a name="184"><span class="lineNum">     184 </span>            :      * @return Trit at index @a i</a>
+<a name="185"><span class="lineNum">     185 </span>            :      */</a>
+<a name="186"><span class="lineNum">     186 </span>            :     [[nodiscard]]</a>
+<a name="187"><span class="lineNum">     187 </span><span class="lineCov">   74307303 :     constexpr std::uint8_t operator[](std::size_t i) const noexcept</span></a>
+<a name="188"><span class="lineNum">     188 </span>            :     {</a>
+<a name="189"><span class="lineNum">     189 </span><span class="lineCov">   74307303 :         return (v_ &gt;&gt; (i*trit::bits_per_trit)) &amp; bmask;</span></a>
+<a name="190"><span class="lineNum">     190 </span>            :     }</a>
+<a name="191"><span class="lineNum">     191 </span>            : </a>
+<a name="192"><span class="lineNum">     192 </span>            :     /** Sets the trit at @a i with @a value.</a>
+<a name="193"><span class="lineNum">     193 </span>            :      *</a>
+<a name="194"><span class="lineNum">     194 </span>            :      * Only the first two bits of @a value are used.</a>
+<a name="195"><span class="lineNum">     195 </span>            :      * @param i Trit index</a>
+<a name="196"><span class="lineNum">     196 </span>            :      * @param value New value</a>
+<a name="197"><span class="lineNum">     197 </span>            :      * @return A reference to this</a>
+<a name="198"><span class="lineNum">     198 </span>            :      */</a>
+<a name="199"><span class="lineNum">     199 </span><span class="lineCov">   24768452 :     constexpr tritset&amp; set(std::size_t i, std::uint8_t value) noexcept</span></a>
+<a name="200"><span class="lineNum">     200 </span>            :     {</a>
+<a name="201"><span class="lineNum">     201 </span><span class="lineCov">   24768452 :         const auto bits = (value &amp; bmask) &lt;&lt; (i*trit::bits_per_trit);</span></a>
+<a name="202"><span class="lineNum">     202 </span><span class="lineCov">   24768452 :         v_ |= bits;</span></a>
 <a name="203"><span class="lineNum">     203 </span>            : </a>
-<a name="204"><span class="lineNum">     204 </span>            :     /** Rotates the trits to the right (i.e. least-significant).</a>
-<a name="205"><span class="lineNum">     205 </span>            :      *</a>
-<a name="206"><span class="lineNum">     206 </span>            :      * @param i Number of positions to rotate, modulo-ed to width before use</a>
-<a name="207"><span class="lineNum">     207 </span>            :      * @return A reference to this</a>
-<a name="208"><span class="lineNum">     208 </span>            :      */</a>
-<a name="209"><span class="lineNum">     209 </span><span class="lineCov">        131 :     constexpr tritset&amp; rotate(std::size_t i = 0u)</span></a>
-<a name="210"><span class="lineNum">     210 </span>            :     {</a>
-<a name="211"><span class="lineNum">     211 </span><span class="lineCov">        131 :         i %= width;</span></a>
-<a name="212"><span class="lineNum">     212 </span><span class="lineCov">        131 :         if (i != 0u) {</span></a>
-<a name="213"><span class="lineNum">     213 </span><span class="lineCov">        130 :             const auto mask = ipow&lt;T&gt;(2u, i*trit::bits_per_trit)-1;</span></a>
-<a name="214"><span class="lineNum">     214 </span><span class="lineCov">        130 :             const auto shift =(width*trit::bits_per_trit) - (i*trit::bits_per_trit);</span></a>
-<a name="215"><span class="lineNum">     215 </span><span class="lineCov">        130 :             const auto prefix = (v_ &amp; mask) &lt;&lt; shift;</span></a>
-<a name="216"><span class="lineNum">     216 </span>            : </a>
-<a name="217"><span class="lineNum">     217 </span><span class="lineCov">        130 :             v_ &gt;&gt;= i*trit::bits_per_trit;</span></a>
-<a name="218"><span class="lineNum">     218 </span><span class="lineCov">        130 :             v_ |= prefix;</span></a>
-<a name="219"><span class="lineNum">     219 </span>            :         }</a>
-<a name="220"><span class="lineNum">     220 </span>            : </a>
-<a name="221"><span class="lineNum">     221 </span><span class="lineCov">        131 :         return *this;</span></a>
-<a name="222"><span class="lineNum">     222 </span>            :     }</a>
+<a name="204"><span class="lineNum">     204 </span><span class="lineCov">   24768452 :         return *this;</span></a>
+<a name="205"><span class="lineNum">     205 </span>            :     }</a>
+<a name="206"><span class="lineNum">     206 </span>            : </a>
+<a name="207"><span class="lineNum">     207 </span>            :     /** Rotates the trits to the right (i.e. least-significant).</a>
+<a name="208"><span class="lineNum">     208 </span>            :      *</a>
+<a name="209"><span class="lineNum">     209 </span>            :      * @param i Number of positions to rotate, modulo-ed to width before use</a>
+<a name="210"><span class="lineNum">     210 </span>            :      * @return A reference to this</a>
+<a name="211"><span class="lineNum">     211 </span>            :      */</a>
+<a name="212"><span class="lineNum">     212 </span><span class="lineCov">        131 :     constexpr tritset&amp; rotate(std::size_t i = 0u) noexcept</span></a>
+<a name="213"><span class="lineNum">     213 </span>            :     {</a>
+<a name="214"><span class="lineNum">     214 </span><span class="lineCov">        131 :         i %= width;</span></a>
+<a name="215"><span class="lineNum">     215 </span><span class="lineCov">        131 :         if (i != 0u) {</span></a>
+<a name="216"><span class="lineNum">     216 </span><span class="lineCov">        130 :             const auto mask = ipow&lt;T&gt;(2u, i*trit::bits_per_trit)-1;</span></a>
+<a name="217"><span class="lineNum">     217 </span><span class="lineCov">        130 :             const auto shift =(width*trit::bits_per_trit) - (i*trit::bits_per_trit);</span></a>
+<a name="218"><span class="lineNum">     218 </span><span class="lineCov">        130 :             const auto prefix = (v_ &amp; mask) &lt;&lt; shift;</span></a>
+<a name="219"><span class="lineNum">     219 </span>            : </a>
+<a name="220"><span class="lineNum">     220 </span><span class="lineCov">        130 :             v_ &gt;&gt;= i*trit::bits_per_trit;</span></a>
+<a name="221"><span class="lineNum">     221 </span><span class="lineCov">        130 :             v_ |= prefix;</span></a>
+<a name="222"><span class="lineNum">     222 </span>            :         }</a>
 <a name="223"><span class="lineNum">     223 </span>            : </a>
-<a name="224"><span class="lineNum">     224 </span>            : private:</a>
-<a name="225"><span class="lineNum">     225 </span>            :     T v_;</a>
-<a name="226"><span class="lineNum">     226 </span>            : };</a>
-<a name="227"><span class="lineNum">     227 </span>            : </a>
-<a name="228"><span class="lineNum">     228 </span>            : /** Textual streaming operator.</a>
-<a name="229"><span class="lineNum">     229 </span>            :  *</a>
-<a name="230"><span class="lineNum">     230 </span>            :  * @tparam N Number of trits in set</a>
-<a name="231"><span class="lineNum">     231 </span>            :  * @tparam T Underlying integer storage type</a>
-<a name="232"><span class="lineNum">     232 </span>            :  * @param stream Stream to write to</a>
-<a name="233"><span class="lineNum">     233 </span>            :  * @param t Tritset to write</a>
-<a name="234"><span class="lineNum">     234 </span>            :  * @return @a stream</a>
-<a name="235"><span class="lineNum">     235 </span>            :  */</a>
-<a name="236"><span class="lineNum">     236 </span>            : template &lt;std::size_t N, typename T&gt;</a>
-<a name="237"><span class="lineNum">     237 </span><span class="lineCov">         12 : inline std::ostream&amp; operator&lt;&lt;(std::ostream&amp; stream, const tritset&lt;N, T&gt;&amp; t)</span></a>
-<a name="238"><span class="lineNum">     238 </span>            : {</a>
-<a name="239"><span class="lineNum">     239 </span><span class="lineCov">         12 :     stream &lt;&lt; &quot;{d:&quot; &lt;&lt; std::dec &lt;&lt; t.to_base10() &lt;&lt; &quot;, t:&quot;;</span></a>
-<a name="240"><span class="lineNum">     240 </span>            : </a>
-<a name="241"><span class="lineNum">     241 </span><span class="lineCov">        132 :     for (auto i = static_cast&lt;int&gt;(N-1); i &gt;= 0; --i) {</span></a>
-<a name="242"><span class="lineNum">     242 </span><span class="lineCov">        120 :         stream &lt;&lt; std::dec &lt;&lt; static_cast&lt;int&gt;(t[i]);</span></a>
-<a name="243"><span class="lineNum">     243 </span>            :     }</a>
-<a name="244"><span class="lineNum">     244 </span>            : </a>
-<a name="245"><span class="lineNum">     245 </span><span class="lineCov">         12 :     return stream &lt;&lt; &quot;}&quot;;</span></a>
-<a name="246"><span class="lineNum">     246 </span>            : }</a>
-<a name="247"><span class="lineNum">     247 </span>            : }</a>
-<a name="248"><span class="lineNum">     248 </span>            : </a>
-<a name="249"><span class="lineNum">     249 </span>            : /** Namespace for Malbolge literals.</a>
-<a name="250"><span class="lineNum">     250 </span>            :  */</a>
-<a name="251"><span class="lineNum">     251 </span>            : namespace literals</a>
-<a name="252"><span class="lineNum">     252 </span>            : {</a>
-<a name="253"><span class="lineNum">     253 </span>            : /** Creates a tritset from a literal representation of a ternary value.</a>
-<a name="254"><span class="lineNum">     254 </span>            :  *</a>
-<a name="255"><span class="lineNum">     255 </span>            :  * The most-significant trit is first</a>
-<a name="256"><span class="lineNum">     256 </span>            :  * @code</a>
-<a name="257"><span class="lineNum">     257 </span>            :  * const auto t = 222_trit; // t == 26u</a>
-<a name="258"><span class="lineNum">     258 </span>            :  * @endcode</a>
-<a name="259"><span class="lineNum">     259 </span>            :  *</a>
-<a name="260"><span class="lineNum">     260 </span>            :  * The number of provided digits defines the number of digits in the return</a>
-<a name="261"><span class="lineNum">     261 </span>            :  * type i.e.:</a>
-<a name="262"><span class="lineNum">     262 </span>            :  * @code</a>
-<a name="263"><span class="lineNum">     263 </span>            :  * std::is_same_v&lt;decltype(222_trit), tritset&lt;3&gt;&gt; // true</a>
-<a name="264"><span class="lineNum">     264 </span>            :  * @endcode</a>
-<a name="265"><span class="lineNum">     265 </span>            :  * @tparam Cs Char array</a>
-<a name="266"><span class="lineNum">     266 </span>            :  * @return Tritset instance</a>
-<a name="267"><span class="lineNum">     267 </span>            :  */</a>
-<a name="268"><span class="lineNum">     268 </span>            : template &lt;char... Cs&gt;</a>
-<a name="269"><span class="lineNum">     269 </span><span class="lineCov">          1 : constexpr auto operator&quot;&quot; _trit()</span></a>
-<a name="270"><span class="lineNum">     270 </span>            : {</a>
-<a name="271"><span class="lineNum">     271 </span>            :     static_assert(((Cs == '0' || Cs == '1' || Cs == '2') &amp;&amp; ...),</a>
-<a name="272"><span class="lineNum">     272 </span>            :                   &quot;All digits must be ternary (i.e. [0-3))&quot;);</a>
-<a name="273"><span class="lineNum">     273 </span>            : </a>
-<a name="274"><span class="lineNum">     274 </span>            :     using chars = boost::mp11::mp_reverse&lt;</a>
-<a name="275"><span class="lineNum">     275 </span>            :                     std::tuple&lt;traits::integral_constant&lt;Cs-'0'&gt;...&gt;&gt;;</a>
-<a name="276"><span class="lineNum">     276 </span><span class="lineCov">          1 :     constexpr auto digits = sizeof...(Cs);</span></a>
-<a name="277"><span class="lineNum">     277 </span>            : </a>
-<a name="278"><span class="lineNum">     278 </span><span class="lineCov">          1 :     auto t = math::tritset&lt;digits&gt;{};</span></a>
-<a name="279"><span class="lineNum">     279 </span><span class="lineCov">          7 :     boost::mp11::mp_for_each&lt;boost::mp11::mp_iota_c&lt;digits&gt;&gt;([&amp;](auto i) {</span></a>
-<a name="280"><span class="lineNum">     280 </span><span class="lineCov">          3 :         t.set(i, std::tuple_element_t&lt;decltype(i)::value, chars&gt;::value);</span></a>
-<a name="281"><span class="lineNum">     281 </span>            :     });</a>
-<a name="282"><span class="lineNum">     282 </span>            : </a>
-<a name="283"><span class="lineNum">     283 </span><span class="lineCov">          1 :     return t;</span></a>
-<a name="284"><span class="lineNum">     284 </span>            : }</a>
-<a name="285"><span class="lineNum">     285 </span>            : }</a>
-<a name="286"><span class="lineNum">     286 </span>            : }</a>
+<a name="224"><span class="lineNum">     224 </span><span class="lineCov">        131 :         return *this;</span></a>
+<a name="225"><span class="lineNum">     225 </span>            :     }</a>
+<a name="226"><span class="lineNum">     226 </span>            : </a>
+<a name="227"><span class="lineNum">     227 </span>            : private:</a>
+<a name="228"><span class="lineNum">     228 </span>            :     T v_;</a>
+<a name="229"><span class="lineNum">     229 </span>            : };</a>
+<a name="230"><span class="lineNum">     230 </span>            : </a>
+<a name="231"><span class="lineNum">     231 </span>            : /** Textual streaming operator.</a>
+<a name="232"><span class="lineNum">     232 </span>            :  *</a>
+<a name="233"><span class="lineNum">     233 </span>            :  * @tparam N Number of trits in set</a>
+<a name="234"><span class="lineNum">     234 </span>            :  * @tparam T Underlying integer storage type</a>
+<a name="235"><span class="lineNum">     235 </span>            :  * @param stream Stream to write to</a>
+<a name="236"><span class="lineNum">     236 </span>            :  * @param t Tritset to write</a>
+<a name="237"><span class="lineNum">     237 </span>            :  * @return @a stream</a>
+<a name="238"><span class="lineNum">     238 </span>            :  */</a>
+<a name="239"><span class="lineNum">     239 </span>            : template &lt;std::size_t N, typename T&gt;</a>
+<a name="240"><span class="lineNum">     240 </span><span class="lineCov">         12 : inline std::ostream&amp; operator&lt;&lt;(std::ostream&amp; stream, const tritset&lt;N, T&gt;&amp; t)</span></a>
+<a name="241"><span class="lineNum">     241 </span>            : {</a>
+<a name="242"><span class="lineNum">     242 </span><span class="lineCov">         12 :     stream &lt;&lt; &quot;{d:&quot; &lt;&lt; std::dec &lt;&lt; t.to_base10() &lt;&lt; &quot;, t:&quot;;</span></a>
+<a name="243"><span class="lineNum">     243 </span>            : </a>
+<a name="244"><span class="lineNum">     244 </span><span class="lineCov">        132 :     for (auto i = static_cast&lt;int&gt;(N-1); i &gt;= 0; --i) {</span></a>
+<a name="245"><span class="lineNum">     245 </span><span class="lineCov">        120 :         stream &lt;&lt; std::dec &lt;&lt; static_cast&lt;int&gt;(t[i]);</span></a>
+<a name="246"><span class="lineNum">     246 </span>            :     }</a>
+<a name="247"><span class="lineNum">     247 </span>            : </a>
+<a name="248"><span class="lineNum">     248 </span><span class="lineCov">         12 :     return stream &lt;&lt; &quot;}&quot;;</span></a>
+<a name="249"><span class="lineNum">     249 </span>            : }</a>
+<a name="250"><span class="lineNum">     250 </span>            : }</a>
+<a name="251"><span class="lineNum">     251 </span>            : </a>
+<a name="252"><span class="lineNum">     252 </span>            : /** Namespace for Malbolge literals.</a>
+<a name="253"><span class="lineNum">     253 </span>            :  */</a>
+<a name="254"><span class="lineNum">     254 </span>            : namespace literals</a>
+<a name="255"><span class="lineNum">     255 </span>            : {</a>
+<a name="256"><span class="lineNum">     256 </span>            : /** Creates a tritset from a literal representation of a ternary value.</a>
+<a name="257"><span class="lineNum">     257 </span>            :  *</a>
+<a name="258"><span class="lineNum">     258 </span>            :  * The most-significant trit is first</a>
+<a name="259"><span class="lineNum">     259 </span>            :  * @code</a>
+<a name="260"><span class="lineNum">     260 </span>            :  * const auto t = 222_trit; // t == 26u</a>
+<a name="261"><span class="lineNum">     261 </span>            :  * @endcode</a>
+<a name="262"><span class="lineNum">     262 </span>            :  *</a>
+<a name="263"><span class="lineNum">     263 </span>            :  * The number of provided digits defines the number of digits in the return</a>
+<a name="264"><span class="lineNum">     264 </span>            :  * type i.e.:</a>
+<a name="265"><span class="lineNum">     265 </span>            :  * @code</a>
+<a name="266"><span class="lineNum">     266 </span>            :  * std::is_same_v&lt;decltype(222_trit), tritset&lt;3&gt;&gt; // true</a>
+<a name="267"><span class="lineNum">     267 </span>            :  * @endcode</a>
+<a name="268"><span class="lineNum">     268 </span>            :  * @tparam Cs Char array</a>
+<a name="269"><span class="lineNum">     269 </span>            :  * @return Tritset instance</a>
+<a name="270"><span class="lineNum">     270 </span>            :  */</a>
+<a name="271"><span class="lineNum">     271 </span>            : template &lt;char... Cs&gt;</a>
+<a name="272"><span class="lineNum">     272 </span><span class="lineCov">          1 : constexpr auto operator&quot;&quot; _trit() noexcept</span></a>
+<a name="273"><span class="lineNum">     273 </span>            : {</a>
+<a name="274"><span class="lineNum">     274 </span>            :     static_assert(((Cs == '0' || Cs == '1' || Cs == '2') &amp;&amp; ...),</a>
+<a name="275"><span class="lineNum">     275 </span>            :                   &quot;All digits must be ternary (i.e. [0-3))&quot;);</a>
+<a name="276"><span class="lineNum">     276 </span>            : </a>
+<a name="277"><span class="lineNum">     277 </span>            :     using chars = boost::mp11::mp_reverse&lt;</a>
+<a name="278"><span class="lineNum">     278 </span>            :                     std::tuple&lt;traits::integral_constant&lt;Cs-'0'&gt;...&gt;&gt;;</a>
+<a name="279"><span class="lineNum">     279 </span><span class="lineCov">          1 :     constexpr auto digits = sizeof...(Cs);</span></a>
+<a name="280"><span class="lineNum">     280 </span>            : </a>
+<a name="281"><span class="lineNum">     281 </span><span class="lineCov">          1 :     auto t = math::tritset&lt;digits&gt;{};</span></a>
+<a name="282"><span class="lineNum">     282 </span><span class="lineCov">          7 :     boost::mp11::mp_for_each&lt;boost::mp11::mp_iota_c&lt;digits&gt;&gt;([&amp;](auto i) {</span></a>
+<a name="283"><span class="lineNum">     283 </span><span class="lineCov">          3 :         t.set(i, std::tuple_element_t&lt;decltype(i)::value, chars&gt;::value);</span></a>
+<a name="284"><span class="lineNum">     284 </span>            :     });</a>
+<a name="285"><span class="lineNum">     285 </span>            : </a>
+<a name="286"><span class="lineNum">     286 </span><span class="lineCov">          1 :     return t;</span></a>
+<a name="287"><span class="lineNum">     287 </span>            : }</a>
+<a name="288"><span class="lineNum">     288 </span>            : }</a>
+<a name="289"><span class="lineNum">     289 </span>            : }</a>
 </pre>
       </td>
     </tr>

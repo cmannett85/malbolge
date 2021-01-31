@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['ipow_363',['ipow',['../namespacemalbolge_1_1math.html#ab48d98e37a7a64ead0a280ab480006d5',1,'malbolge::math::ipow()'],['../namespacemalbolge_1_1math.html#aa346ee50bbb55f818000c45c59328f7e',1,'malbolge::math::ipow(B &amp;&amp;base, E &amp;&amp;expo)']]],
-  ['is_5fcpu_5finstruction_364',['is_cpu_instruction',['../namespacemalbolge.html#a060ef80ddffa3b90eeb312383f8e25eb',1,'malbolge']]],
-  ['is_5fgraphical_5fascii_365',['is_graphical_ascii',['../namespacemalbolge.html#a842edbfeba136252eb64b737306456e4',1,'malbolge']]],
-  ['is_5flikely_5fnormalised_5fsource_366',['is_likely_normalised_source',['../namespacemalbolge.html#a03e3a97cf70022393465f73d9060d46f',1,'malbolge::is_likely_normalised_source(InputIt first, InputIt last)'],['../namespacemalbolge.html#a08ec0efc79e052aac6437856987d20f6',1,'malbolge::is_likely_normalised_source(InputRange &amp;&amp;source)']]],
-  ['iterator_5fgeneric_367',['iterator_generic',['../classmalbolge_1_1virtual__memory_1_1iterator__generic.html#ae54fad58aab4cfada8faedcafb3ed15b',1,'malbolge::virtual_memory::iterator_generic']]]
+  ['ipow_364',['ipow',['../namespacemalbolge_1_1math.html#a6fd8e29955d7368b6775de1c3e57d660',1,'malbolge::math::ipow() noexcept'],['../namespacemalbolge_1_1math.html#a7f7a1e11d4f621b3d92e907ba6c76fb3',1,'malbolge::math::ipow(B &amp;&amp;base, E &amp;&amp;expo) noexcept']]],
+  ['is_5fcpu_5finstruction_365',['is_cpu_instruction',['../namespacemalbolge.html#a79cc8490ebf7de1b56f0daf0015b0077',1,'malbolge']]],
+  ['is_5fgraphical_5fascii_366',['is_graphical_ascii',['../namespacemalbolge.html#afabdce3a6c53375672a68c34ad318d7c',1,'malbolge']]],
+  ['is_5flikely_5fnormalised_5fsource_367',['is_likely_normalised_source',['../namespacemalbolge.html#a3546614f77e5100f5d42ab7741915f49',1,'malbolge::is_likely_normalised_source(InputIt first, InputIt last) noexcept'],['../namespacemalbolge.html#a868043f044031967cd7db0374ca3bfdf',1,'malbolge::is_likely_normalised_source(InputRange &amp;&amp;source) noexcept']]],
+  ['iterator_5fgeneric_368',['iterator_generic',['../classmalbolge_1_1virtual__memory_1_1iterator__generic.html#a73d13ef7b666d8e31e901ec4ace2e2d1',1,'malbolge::virtual_memory::iterator_generic']]]
 ];

@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-01-27 18:16:12</td>
+            <td class="headerValue">2021-01-31 09:30:39</td>
             <td></td>
           </tr>
           <tr>
@@ -87,7 +87,7 @@
 <a name="21"><span class="lineNum">      21 </span>            :  * @return The updated @a last</a>
 <a name="22"><span class="lineNum">      22 </span>            :  */</a>
 <a name="23"><span class="lineNum">      23 </span>            : template &lt;typename ForwardIt&gt;</a>
-<a name="24"><span class="lineNum">      24 </span><span class="lineCov">         80 : ForwardIt remove_from_range(ForwardIt it, ForwardIt last)</span></a>
+<a name="24"><span class="lineNum">      24 </span><span class="lineCov">         80 : constexpr ForwardIt remove_from_range(ForwardIt it, ForwardIt last)</span></a>
 <a name="25"><span class="lineNum">      25 </span>            : {</a>
 <a name="26"><span class="lineNum">      26 </span><span class="lineCov">         80 :     auto first = it;</span></a>
 <a name="27"><span class="lineNum">      27 </span><span class="lineCov">        138 :     return std::move(++first, last, it);</span></a>

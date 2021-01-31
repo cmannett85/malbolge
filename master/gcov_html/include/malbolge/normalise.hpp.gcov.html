@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-01-27 18:16:12</td>
+            <td class="headerValue">2021-01-31 09:30:39</td>
             <td></td>
           </tr>
           <tr>
@@ -296,34 +296,36 @@
 <a name="230"><span class="lineNum">     230 </span>            :  * @return True if the input source is likely to be normalised</a>
 <a name="231"><span class="lineNum">     231 </span>            :  */</a>
 <a name="232"><span class="lineNum">     232 </span>            : template &lt;typename InputIt&gt;</a>
-<a name="233"><span class="lineNum">     233 </span><span class="lineCov">         47 : bool is_likely_normalised_source(InputIt first, InputIt last)</span></a>
-<a name="234"><span class="lineNum">     234 </span>            : {</a>
-<a name="235"><span class="lineNum">     235 </span><span class="lineCov">        122 :     algorithm::trim_right(first, last, [](auto c) { return std::isspace(c); });</span></a>
-<a name="236"><span class="lineNum">     236 </span><span class="lineCov">        825 :     for (; first != last; ++first) {</span></a>
-<a name="237"><span class="lineNum">     237 </span><span class="lineCov">        812 :         if (!is_cpu_instruction(*first)) {</span></a>
-<a name="238"><span class="lineNum">     238 </span><span class="lineCov">         34 :             return false;</span></a>
-<a name="239"><span class="lineNum">     239 </span>            :         }</a>
-<a name="240"><span class="lineNum">     240 </span>            :     }</a>
-<a name="241"><span class="lineNum">     241 </span>            : </a>
-<a name="242"><span class="lineNum">     242 </span><span class="lineCov">         13 :     return true;</span></a>
-<a name="243"><span class="lineNum">     243 </span>            : }</a>
-<a name="244"><span class="lineNum">     244 </span>            : </a>
-<a name="245"><span class="lineNum">     245 </span>            : /** Range-based overload.</a>
-<a name="246"><span class="lineNum">     246 </span>            :  *</a>
-<a name="247"><span class="lineNum">     247 </span>            :  * @note Will return true on an empty input</a>
-<a name="248"><span class="lineNum">     248 </span>            :  * @tparam InputRange Input range type</a>
-<a name="249"><span class="lineNum">     249 </span>            :  * @param source Source input range</a>
-<a name="250"><span class="lineNum">     250 </span>            :  * @return True if the input source is likely to be normalised</a>
-<a name="251"><span class="lineNum">     251 </span>            :  */</a>
-<a name="252"><span class="lineNum">     252 </span>            : template &lt;typename InputRange&gt;</a>
-<a name="253"><span class="lineNum">     253 </span><span class="lineCov">          5 : bool is_likely_normalised_source(InputRange&amp;&amp; source)</span></a>
-<a name="254"><span class="lineNum">     254 </span>            : {</a>
-<a name="255"><span class="lineNum">     255 </span>            :     using std::begin;</a>
-<a name="256"><span class="lineNum">     256 </span>            :     using std::end;</a>
-<a name="257"><span class="lineNum">     257 </span>            : </a>
-<a name="258"><span class="lineNum">     258 </span><span class="lineCov">          5 :     return is_likely_normalised_source(begin(source), end(source));</span></a>
-<a name="259"><span class="lineNum">     259 </span>            : }</a>
-<a name="260"><span class="lineNum">     260 </span>            : }</a>
+<a name="233"><span class="lineNum">     233 </span>            : [[nodiscard]]</a>
+<a name="234"><span class="lineNum">     234 </span><span class="lineCov">         47 : constexpr bool is_likely_normalised_source(InputIt first, InputIt last) noexcept</span></a>
+<a name="235"><span class="lineNum">     235 </span>            : {</a>
+<a name="236"><span class="lineNum">     236 </span><span class="lineCov">        122 :     algorithm::trim_right(first, last, [](auto c) { return std::isspace(c); });</span></a>
+<a name="237"><span class="lineNum">     237 </span><span class="lineCov">        825 :     for (; first != last; ++first) {</span></a>
+<a name="238"><span class="lineNum">     238 </span><span class="lineCov">        812 :         if (!is_cpu_instruction(*first)) {</span></a>
+<a name="239"><span class="lineNum">     239 </span><span class="lineCov">         34 :             return false;</span></a>
+<a name="240"><span class="lineNum">     240 </span>            :         }</a>
+<a name="241"><span class="lineNum">     241 </span>            :     }</a>
+<a name="242"><span class="lineNum">     242 </span>            : </a>
+<a name="243"><span class="lineNum">     243 </span><span class="lineCov">         13 :     return true;</span></a>
+<a name="244"><span class="lineNum">     244 </span>            : }</a>
+<a name="245"><span class="lineNum">     245 </span>            : </a>
+<a name="246"><span class="lineNum">     246 </span>            : /** Range-based overload.</a>
+<a name="247"><span class="lineNum">     247 </span>            :  *</a>
+<a name="248"><span class="lineNum">     248 </span>            :  * @note Will return true on an empty input</a>
+<a name="249"><span class="lineNum">     249 </span>            :  * @tparam InputRange Input range type</a>
+<a name="250"><span class="lineNum">     250 </span>            :  * @param source Source input range</a>
+<a name="251"><span class="lineNum">     251 </span>            :  * @return True if the input source is likely to be normalised</a>
+<a name="252"><span class="lineNum">     252 </span>            :  */</a>
+<a name="253"><span class="lineNum">     253 </span>            : template &lt;typename InputRange&gt;</a>
+<a name="254"><span class="lineNum">     254 </span>            : [[nodiscard]]</a>
+<a name="255"><span class="lineNum">     255 </span><span class="lineCov">          5 : constexpr bool is_likely_normalised_source(InputRange&amp;&amp; source) noexcept</span></a>
+<a name="256"><span class="lineNum">     256 </span>            : {</a>
+<a name="257"><span class="lineNum">     257 </span>            :     using std::begin;</a>
+<a name="258"><span class="lineNum">     258 </span>            :     using std::end;</a>
+<a name="259"><span class="lineNum">     259 </span>            : </a>
+<a name="260"><span class="lineNum">     260 </span><span class="lineCov">          5 :     return is_likely_normalised_source(begin(source), end(source));</span></a>
+<a name="261"><span class="lineNum">     261 </span>            : }</a>
+<a name="262"><span class="lineNum">     262 </span>            : }</a>
 </pre>
       </td>
     </tr>
