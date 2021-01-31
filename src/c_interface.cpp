@@ -42,7 +42,7 @@ public:
 
     void connect(malbolge_virtual_cpu vcpu,
                  signal_type signal,
-                 callback_address cb_address)
+                 callback_address cb_address) noexcept
     {
         auto vcpu_ptr = static_cast<virtual_cpu*>(vcpu);
 
@@ -105,7 +105,7 @@ public:
 
     void disconnect(malbolge_virtual_cpu vcpu,
                     signal_type signal,
-                    callback_address cb_address)
+                    callback_address cb_address) noexcept
     {
         auto simple_remover = [&](auto& map) {
             auto vcpu_it = map.find(vcpu);
@@ -184,7 +184,7 @@ const char *malbolge_version()
 int malbolge_is_likely_normalised_source(const char *buffer,
                                          unsigned long size)
 {
-    if (!buffer) {
+    if (!buffer) [[unlikely]] {
         log::print(log::ERROR, "NULL program source pointer");
         return MALBOLGE_ERR_NULL_ARG;
     }
@@ -198,11 +198,11 @@ int malbolge_normalise_source(char *buffer,
                               unsigned int *fail_line,
                               unsigned int *fail_column)
 {
-    if (!buffer) {
+    if (!buffer) [[unlikely]] {
         log::print(log::ERROR, "NULL program source pointer");
         return MALBOLGE_ERR_NULL_ARG;
     }
-    if (!new_size) {
+    if (!new_size) [[unlikely]] {
         log::print(log::ERROR, "NULL normalised program size pointer");
         return MALBOLGE_ERR_NULL_ARG;
     }
@@ -239,7 +239,7 @@ int malbolge_denormalise_source(char *buffer,
                                 unsigned long size,
                                 unsigned int *fail_column)
 {
-    if (!buffer) {
+    if (!buffer) [[unlikely]] {
         log::print(log::ERROR, "NULL program source pointer");
         return MALBOLGE_ERR_NULL_ARG;
     }
@@ -269,7 +269,7 @@ malbolge_virtual_memory malbolge_load_program(char *buffer,
                                               unsigned int *fail_line,
                                               unsigned int *fail_column)
 {
-    if (!buffer) {
+    if (!buffer) [[unlikely]] {
         log::print(log::ERROR, "NULL program source pointer");
         return nullptr;
     }
@@ -306,7 +306,7 @@ void malbolge_free_virtual_memory(malbolge_virtual_memory vmem)
 
 malbolge_virtual_cpu malbolge_create_vcpu(malbolge_virtual_memory vmem)
 {
-    if (!vmem) {
+    if (!vmem) [[unlikely]] {
         log::print(log::ERROR, "NULL virtual memory pointer");
         return nullptr;
     }
@@ -327,7 +327,7 @@ int malbolge_vcpu_attach_callbacks(malbolge_virtual_cpu vcpu,
                                    malbolge_vcpu_output_callback output_cb,
                                    malbolge_vcpu_breakpoint_hit_callback bp_cb)
 {
-    if (!vcpu) {
+    if (!vcpu) [[unlikely]] {
         log::print(log::ERROR, "NULL virtual CPU pointer");
         return MALBOLGE_ERR_NULL_ARG;
     }
@@ -356,7 +356,7 @@ int malbolge_vcpu_detach_callbacks(malbolge_virtual_cpu vcpu,
                                    malbolge_vcpu_output_callback output_cb,
                                    malbolge_vcpu_breakpoint_hit_callback bp_cb)
 {
-    if (!vcpu) {
+    if (!vcpu) [[unlikely]] {
         log::print(log::ERROR, "NULL virtual CPU pointer");
         return MALBOLGE_ERR_NULL_ARG;
     }
@@ -382,7 +382,7 @@ int malbolge_vcpu_detach_callbacks(malbolge_virtual_cpu vcpu,
 
 int malbolge_vcpu_run(malbolge_virtual_cpu vcpu)
 {
-    if (!vcpu) {
+    if (!vcpu) [[unlikely]] {
         log::print(log::ERROR, "NULL virtual CPU pointer");
         return MALBOLGE_ERR_NULL_ARG;
     }
@@ -405,7 +405,7 @@ int malbolge_vcpu_run(malbolge_virtual_cpu vcpu)
 
 int malbolge_vcpu_pause(malbolge_virtual_cpu vcpu)
 {
-    if (!vcpu) {
+    if (!vcpu) [[unlikely]] {
         log::print(log::ERROR, "NULL virtual CPU pointer");
         return MALBOLGE_ERR_NULL_ARG;
     }
@@ -427,7 +427,7 @@ int malbolge_vcpu_pause(malbolge_virtual_cpu vcpu)
 
 int malbolge_vcpu_step(malbolge_virtual_cpu vcpu)
 {
-    if (!vcpu) {
+    if (!vcpu) [[unlikely]] {
         log::print(log::ERROR, "NULL virtual CPU pointer");
         return MALBOLGE_ERR_NULL_ARG;
     }
@@ -451,12 +451,11 @@ int malbolge_vcpu_add_input(malbolge_virtual_cpu vcpu,
                             const char* buffer,
                             unsigned int size)
 {
-    if (!vcpu) {
+    if (!vcpu) [[unlikely]] {
         log::print(log::ERROR, "NULL virtual CPU pointer");
         return MALBOLGE_ERR_NULL_ARG;
     }
-
-    if (!buffer) {
+    if (!buffer) [[unlikely]] {
         log::print(log::ERROR, "NULL buffer pointer");
         return MALBOLGE_ERR_NULL_ARG;
     }
@@ -478,7 +477,7 @@ int malbolge_vcpu_add_breakpoint(malbolge_virtual_cpu vcpu,
                                  unsigned int address,
                                  unsigned int ignore_count)
 {
-    if (!vcpu) {
+    if (!vcpu) [[unlikely]] {
         log::print(log::ERROR, "NULL virtual CPU pointer");
         return MALBOLGE_ERR_NULL_ARG;
     }
@@ -499,7 +498,7 @@ int malbolge_vcpu_add_breakpoint(malbolge_virtual_cpu vcpu,
 int malbolge_vcpu_remove_breakpoint(malbolge_virtual_cpu vcpu,
                                     unsigned int address)
 {
-    if (!vcpu) {
+    if (!vcpu) [[unlikely]] {
         log::print(log::ERROR, "NULL virtual CPU pointer");
         return MALBOLGE_ERR_NULL_ARG;
     }
@@ -521,11 +520,11 @@ int malbolge_vcpu_address_value(malbolge_virtual_cpu vcpu,
                                 unsigned int address,
                                 malbolge_vcpu_address_value_callback cb)
 {
-    if (!vcpu) {
+    if (!vcpu) [[unlikely]] {
         log::print(log::ERROR, "NULL virtual CPU pointer");
         return MALBOLGE_ERR_NULL_ARG;
     }
-    if (!cb) {
+    if (!cb) [[unlikely]] {
         log::print(log::ERROR, "NULL callback");
         return MALBOLGE_ERR_NULL_ARG;
     }
@@ -553,11 +552,11 @@ int malbolge_vcpu_register_value(malbolge_virtual_cpu vcpu,
                                  enum malbolge_vcpu_register reg,
                                  malbolge_vcpu_register_value_callback cb)
 {
-    if (!vcpu) {
+    if (!vcpu) [[unlikely]] {
         log::print(log::ERROR, "NULL virtual CPU pointer");
         return MALBOLGE_ERR_NULL_ARG;
     }
-    if (!cb) {
+    if (!cb) [[unlikely]] {
         log::print(log::ERROR, "NULL callback");
         return MALBOLGE_ERR_NULL_ARG;
     }
@@ -616,7 +615,7 @@ int malbolge_vcpu_run_wasm(malbolge_virtual_cpu vcpu)
 {
     constexpr static auto max_buf_size = std::size_t{10};
 
-    if (!vcpu) {
+    if (!vcpu) [[unlikely]] {
         log::print(log::ERROR, "NULL virtual CPU pointer");
         return MALBOLGE_ERR_NULL_ARG;
     }

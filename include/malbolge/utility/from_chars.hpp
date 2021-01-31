@@ -30,11 +30,12 @@ namespace utility
  * @exception std::runtime_error Thrown if an unknown conversion error occurred
  */
 template <typename T>
+[[nodiscard]]
 T from_chars_with_base(std::string_view str, std::uint8_t base)
 {
     static_assert(std::is_integral_v<T>, "T must be an integral type");
 
-    if (str.empty()) {
+    if (str.empty()) [[unlikely]] {
         throw std::invalid_argument{"Empty from_chars input string"};
     }
 
@@ -82,7 +83,7 @@ T from_chars_with_base(std::string_view str, std::uint8_t base)
 template <typename T>
 T from_chars(std::string_view str)
 {
-    if (str.empty()) {
+    if (str.empty()) [[unlikely]] {
         throw std::invalid_argument{"Empty from_chars input string"};
     }
 

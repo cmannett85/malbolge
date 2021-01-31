@@ -46,7 +46,8 @@ public:
      *
      * @return Number of characters
      */
-    static constexpr size_type size()
+    [[nodiscard]]
+    static constexpr size_type size() noexcept
     {
         return traits::integral_constant<sizeof...(Cs)>::value;
     }
@@ -56,7 +57,8 @@ public:
      * This points to static data.
      * @return string_view equivalent
      */
-    static constexpr std::string_view value()
+    [[nodiscard]]
+    static constexpr std::string_view value() noexcept
     {
         return {data_.data(), data_.size()};
     }
@@ -68,7 +70,8 @@ public:
      * @return Character at @a Pos
      */
     template <size_type Pos>
-    static constexpr char at()
+    [[nodiscard]]
+    static constexpr char at() noexcept
     {
         return std::get<Pos>(data_);
     }
@@ -80,6 +83,7 @@ public:
      * @return Character at @a pos
      * @exception std::out_of_range Thrown if a runtime range check fails
      */
+    [[nodiscard]]
     constexpr char at(size_type pos) const
     {
         return data_.at(pos);
@@ -92,7 +96,8 @@ public:
      * @param pos Position/index to retrieve
      * @return Character at @a pos
      */
-    constexpr char operator[](size_type pos) const
+    [[nodiscard]]
+    constexpr char operator[](size_type pos) const noexcept
     {
         return data_[pos];
     }
@@ -102,7 +107,7 @@ public:
      * This points to static data.
      * @return string_view equivalent
      */
-    constexpr operator std::string_view() const
+    constexpr operator std::string_view() const noexcept
     {
         return value();
     }
@@ -114,7 +119,8 @@ private:
 namespace detail
 {
 template <int N>
-constexpr char get(const char(&str)[N], int i)
+[[nodiscard]]
+constexpr char get(const char(&str)[N], int i) noexcept
 {
     return i < N ? str[i] : '\0';
 }
@@ -134,7 +140,8 @@ class builder
     >;
 
     template <char... Stripped>
-    static constexpr auto list_to_string(boost::mp11::mp_list_c<char, Stripped...>)
+    [[nodiscard]]
+    static constexpr auto list_to_string(boost::mp11::mp_list_c<char, Stripped...>) noexcept
     {
         return string_constant<Stripped...>{};
     }

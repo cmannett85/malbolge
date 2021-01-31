@@ -83,7 +83,8 @@ constexpr auto all = std::array{
  * @return True if valid
  */
 template <typename T>
-inline constexpr bool is_cpu_instruction(T instruction)
+[[nodiscard]]
+constexpr bool is_cpu_instruction(T instruction) noexcept
 {
     return std::any_of(cpu_instruction::all.begin(),
                        cpu_instruction::all.end(),
@@ -103,7 +104,8 @@ constexpr auto graphical_ascii_range = std::pair<char, char>{33, 126};
  * @return True if graphical ASCII
  */
 template <typename T>
-inline constexpr bool is_graphical_ascii(T c)
+[[nodiscard]]
+constexpr bool is_graphical_ascii(T c) noexcept
 {
     return c >= graphical_ascii_range.first &&
            c <= graphical_ascii_range.second;
@@ -124,7 +126,8 @@ constexpr auto size = (graphical_ascii_range.second -
  * @return Character in the pre-cipher at @a index, or an empty optional if
  * @a index is out of range
  */
-std::optional<char> pre(std::size_t index);
+[[nodiscard]]
+std::optional<char> pre(std::size_t index) noexcept;
 
 /** Returns the post-ciphered character at @a index.
  *
@@ -132,7 +135,8 @@ std::optional<char> pre(std::size_t index);
  * @return Character in the post-cipher at @a index, or an empty optional if
  * @a index is out of range
  */
-std::optional<char> post(std::size_t index);
+[[nodiscard]]
+std::optional<char> post(std::size_t index) noexcept;
 }
 
 /** Performs a pre-instruction cipher on @a input.
@@ -144,7 +148,8 @@ std::optional<char> post(std::size_t index);
  * within in the graphical ASCII range
  */
 template <typename T>
-std::optional<char> pre_cipher_instruction(T input, std::size_t index)
+[[nodiscard]]
+std::optional<char> pre_cipher_instruction(T input, std::size_t index) noexcept
 {
     if (!is_graphical_ascii(input)) {
         return {};
@@ -162,7 +167,8 @@ std::optional<char> pre_cipher_instruction(T input, std::size_t index)
  * within in the graphical ASCII range
  */
 template <typename T>
-std::optional<char> post_cipher_instruction(T input)
+[[nodiscard]]
+std::optional<char> post_cipher_instruction(T input) noexcept
 {
     if (!is_graphical_ascii(input)) {
         return {};

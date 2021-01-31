@@ -13,7 +13,7 @@ using namespace malbolge;
 template <>
 float utility::from_chars<float>(std::string_view str)
 {
-    if (str.empty()) {
+    if (str.empty()) [[unlikely]] {
         throw std::invalid_argument{"Empty from_chars input string"};
     }
 
@@ -31,7 +31,7 @@ float utility::from_chars<float>(std::string_view str)
 template <>
 double utility::from_chars<double>(std::string_view str)
 {
-    if (str.empty()) {
+    if (str.empty()) [[unlikely]] {
         throw std::invalid_argument{"Empty from_chars input string"};
     }
 

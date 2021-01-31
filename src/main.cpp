@@ -26,6 +26,7 @@ namespace
 {
 constexpr auto dbgr_colour = log::colour::BLUE;
 
+[[nodiscard]]
 virtual_memory load_program(argument_parser& parser)
 {
     auto mode = load_normalised_mode::AUTO;

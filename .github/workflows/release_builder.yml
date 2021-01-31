@@ -30,12 +30,15 @@ jobs:
         MSG="${MSG//$'\r'/'%0D'}"
         echo "::set-output name=commit_msg::${MSG}"
 
+    # Due to https://github.com/doxygen/doxygen/issues/7411, we have to use
+    # Doxygen 1.8.18
     - name: Update packages
       run: |
         wget http://mirrors.kernel.org/ubuntu/pool/main/b/boost1.71/libboost1.71-dev_1.71.0-6ubuntu6_amd64.deb
         wget http://mirrors.kernel.org/ubuntu/pool/universe/b/boost1.71/libboost-test1.71-dev_1.71.0-6ubuntu6_amd64.deb
         wget http://mirrors.kernel.org/ubuntu/pool/universe/b/boost1.71/libboost-test1.71.0_1.71.0-6ubuntu6_amd64.deb
-        sudo apt install doxygen graphviz g++-10 ./libboost1.71-dev_1.71.0-6ubuntu6_amd64.deb ./libboost-test1.71.0_1.71.0-6ubuntu6_amd64.deb ./libboost-test1.71-dev_1.71.0-6ubuntu6_amd64.deb
+        wget http://mirrors.kernel.org/ubuntu/pool/universe/d/doxygen/doxygen_1.8.18-1ubuntu3_amd64.deb
+        sudo apt install ./doxygen_1.8.18-1ubuntu3_amd64.deb graphviz g++-10 ./libboost1.71-dev_1.71.0-6ubuntu6_amd64.deb ./libboost-test1.71.0_1.71.0-6ubuntu6_amd64.deb ./libboost-test1.71-dev_1.71.0-6ubuntu6_amd64.deb
 
     - name: Build
       id: build

@@ -61,20 +61,21 @@ public:
          *
          * @param other Instance to copy from
          */
-        iterator_generic(const iterator_generic& other)  = default;
+        constexpr iterator_generic(const iterator_generic& other) noexcept = default;
 
         /** Assignment operator.
          *
          * @param other Instance to copy from
          * @return A reference to this
          */
-        iterator_generic& operator=(const iterator_generic& other) = default;
+        constexpr iterator_generic& operator=(const iterator_generic& other) noexcept = default;
 
         /** Dereference operator.
          *
          * @return A reference to the element the iterator points to
          */
-        reference operator*() const
+        [[nodiscard]]
+        constexpr reference operator*() const noexcept
         {
             return *current_;
         }
@@ -83,7 +84,7 @@ public:
          *
          * @return Pointer to the element the iterator points to
          */
-        pointer operator->() const
+        constexpr pointer operator->() const noexcept
         {
             return &(*current_);
         }
@@ -94,7 +95,7 @@ public:
          * <TT>end()</TT>, then the iterator is set to <TT>begin()</TT>.
          * @return A reference to this
          */
-        iterator_generic& operator++()
+        constexpr iterator_generic& operator++() noexcept
         {
             current_ = current_ == (data_.end()-1) ? data_.begin() : ++current_;
             return *this;
@@ -106,7 +107,7 @@ public:
          * <TT>end()</TT>, then the iterator is set to <TT>begin()</TT>.
          * @return A copy of the iterator before the increment
          */
-        iterator_generic operator++(int)
+        constexpr iterator_generic operator++(int) noexcept
         {
             auto tmp = *this;
             ++(*this);
@@ -118,7 +119,8 @@ public:
          * @param other Instance to compare against
          * @return Ordering
          */
-        auto operator<=>(const iterator_generic& other) const
+        [[nodiscard]]
+        constexpr auto operator<=>(const iterator_generic& other) const noexcept
         {
             return current_ <=> other.current_;
         }
@@ -129,7 +131,7 @@ public:
          * <TT>begin()-1</TT>, then the iterator is set to <TT>end()-1</TT>.
          * @return A reference to this
          */
-        iterator_generic& operator--()
+        constexpr iterator_generic& operator--() noexcept
         {
             current_ = current_ == data_.begin() ? (data_.end()-1) : --current_;
             return *this;
@@ -141,7 +143,7 @@ public:
          * <TT>begin()-1</TT>, then the iterator is set to <TT>end()-1</TT>.
          * @return A copy of the iterator before the decrement
          */
-        iterator_generic operator--(int)
+        constexpr iterator_generic operator--(int) noexcept
         {
             auto tmp = *this;
             --(*this);
@@ -155,7 +157,7 @@ public:
          * @param offset Element offset, may be negative
          * @return A reference to this
          */
-        iterator_generic& operator+=(difference_type offset)
+        constexpr iterator_generic& operator+=(difference_type offset) noexcept
         {
             const auto positive = offset >= 0;
             offset = std::abs(offset) % data_.size();
@@ -187,7 +189,8 @@ public:
          * @param offset Element offset, may be negative
          * @return A copy of this iterator incremented by @a offset elements
          */
-        iterator_generic operator+(difference_type offset) const
+        [[nodiscard]]
+        constexpr iterator_generic operator+(difference_type offset) const noexcept
         {
             auto tmp = *this;
             return tmp += offset;
@@ -200,7 +203,7 @@ public:
          * @param offset Element offset, may be negative
          * @return A reference to this
          */
-        iterator_generic& operator-=(difference_type offset)
+        constexpr iterator_generic& operator-=(difference_type offset) noexcept
         {
             return (*this) += -offset;
         }
@@ -212,7 +215,8 @@ public:
          * @param offset Element offset, may be negative
          * @return A copy of this iterator decremented by @a offset elements
          */
-        iterator_generic operator-(difference_type offset) const
+        [[nodiscard]]
+        constexpr iterator_generic operator-(difference_type offset) const noexcept
         {
             auto tmp = *this;
             return tmp -= offset;
@@ -225,7 +229,8 @@ public:
          * @param offset Element offset, may be negative
          * @return A reference to the element the iterator points to
          */
-        reference operator[](difference_type offset) const
+        [[nodiscard]]
+        constexpr reference operator[](difference_type offset) const noexcept
         {
             return *(*this + offset);
         }
@@ -235,7 +240,8 @@ public:
          * @param other Interator to count against
          * @return Difference count between this iterator and @a other
          */
-        difference_type operator-(const iterator_generic& other) const
+        [[nodiscard]]
+        constexpr difference_type operator-(const iterator_generic& other) const noexcept
         {
             return current_ - other.current_;
         }
@@ -246,7 +252,7 @@ public:
         using span = std::span<value_type,
                                std::tuple_size<virtual_memory::base::element_type>::value>;
 
-        explicit iterator_generic(span data, bool is_end = false) :
+        constexpr explicit iterator_generic(span data, bool is_end = false) noexcept :
             data_{data},
             current_{is_end ? data.end() : data.begin()}
         {}
@@ -341,14 +347,14 @@ public:
      *
      * @param other Instance to move from
      */
-    virtual_memory(virtual_memory&& other)  = default;
+    virtual_memory(virtual_memory&& other) noexcept = default;
 
     /** Move assignment operator.
      *
      * @param other Instance to move from
      * @return A reference to this
      */
-    virtual_memory& operator=(virtual_memory&& other) = default;
+    virtual_memory& operator=(virtual_memory&& other) noexcept = default;
 
     virtual_memory(const virtual_memory& other) = delete;
     virtual_memory& operator=(const virtual_memory& other) = delete;
@@ -359,7 +365,8 @@ public:
      * @param pos Offset from start of memory space
      * @return Reference to the element at @a pos (or equivalent wrapped)
      */
-    reference operator[](size_type pos)
+    [[nodiscard]]
+    reference operator[](size_type pos) noexcept
     {
         return iterator{*mem_}[pos];
     }
@@ -369,7 +376,8 @@ public:
      * @param pos Offset from start of memory space
      * @return Reference to the element at @a pos
      */
-    reference operator[](math::ternary pos)
+    [[nodiscard]]
+    reference operator[](math::ternary pos) noexcept
     {
         return (*this)[static_cast<size_type>(pos)];
     }
@@ -380,7 +388,8 @@ public:
      * @param pos Offset from start of memory space
      * @return Reference to the element at @a pos (or equivalent wrapped)
      */
-    const_reference operator[](size_type pos) const
+    [[nodiscard]]
+    const_reference operator[](size_type pos) const noexcept
     {
         return const_iterator{*mem_}[pos];
     }
@@ -390,7 +399,8 @@ public:
      * @param pos Offset from start of memory space
      * @return Reference to the element at @a pos
      */
-    const_reference operator[](math::ternary pos) const
+    [[nodiscard]]
+    const_reference operator[](math::ternary pos) const noexcept
     {
         return (*this)[static_cast<size_type>(pos)];
     }
@@ -402,7 +412,8 @@ public:
      * @param pos Offset from start of memory space
      * @return Reference to the element at @a pos (or equivalent wrapped)
      */
-    reference at(size_type pos)
+    [[nodiscard]]
+    reference at(size_type pos) noexcept
     {
         return (*this)[pos];
     }
@@ -412,7 +423,8 @@ public:
      * @param pos Offset from start of memory space
      * @return Reference to the element at @a pos
      */
-    reference at(math::ternary pos)
+    [[nodiscard]]
+    reference at(math::ternary pos) noexcept
     {
         return at(static_cast<size_type>(pos));
     }
@@ -424,7 +436,8 @@ public:
      * @param pos Offset from start of memory space
      * @return Reference to the element at @a pos (or equivalent wrapped)
      */
-    const_reference at(size_type pos) const
+    [[nodiscard]]
+    const_reference at(size_type pos) const noexcept
     {
         return (*this)[pos];
     }
@@ -434,7 +447,8 @@ public:
      * @param pos Offset from start of memory space
      * @return Reference to the element at @a pos
      */
-    const_reference at(math::ternary pos) const
+    [[nodiscard]]
+    const_reference at(math::ternary pos) const noexcept
     {
         return at(static_cast<size_type>(pos));
     }
@@ -443,6 +457,7 @@ public:
      *
      * @return Beginning iterator
      */
+    [[nodiscard]]
     iterator begin() noexcept
     {
         return iterator{*mem_};
@@ -452,6 +467,7 @@ public:
      *
      * @return Beginning iterator
      */
+    [[nodiscard]]
     const_iterator begin() const noexcept
     {
         return const_iterator{*mem_};
@@ -461,6 +477,7 @@ public:
      *
      * @return Beginning iterator
      */
+    [[nodiscard]]
     const_iterator cbegin() const noexcept
     {
         return begin();
@@ -471,6 +488,7 @@ public:
      * @note This iterator is @b never reached
      * @return One-past-the-end iterator
      */
+    [[nodiscard]]
     iterator end() noexcept
     {
         return iterator{*mem_, true};
@@ -481,6 +499,7 @@ public:
      * @note This iterator is @b never reached
      * @return One-past-the-end iterator
      */
+    [[nodiscard]]
     const_iterator end() const noexcept
     {
         return const_iterator{*mem_, true};
@@ -491,6 +510,7 @@ public:
      * @note This iterator is @b never reached
      * @return One-past-the-end iterator
      */
+    [[nodiscard]]
     const_iterator cend() const noexcept
     {
         return end();
@@ -500,6 +520,7 @@ public:
      *
      * @return Reverse iterator
      */
+    [[nodiscard]]
     reverse_iterator rbegin() noexcept
     {
         return std::reverse_iterator{end()};
@@ -509,6 +530,7 @@ public:
      *
      * @return Reverse iterator
      */
+    [[nodiscard]]
     const_reverse_iterator rbegin() const noexcept
     {
         return std::reverse_iterator{end()};
@@ -518,6 +540,7 @@ public:
      *
      * @return Reverse iterator
      */
+    [[nodiscard]]
     const_reverse_iterator crbegin() const noexcept
     {
         return rbegin();
@@ -528,6 +551,7 @@ public:
      * @note This iterator is @b never reached
      * @return Reverse iterator
      */
+    [[nodiscard]]
     reverse_iterator rend() noexcept
     {
         return std::reverse_iterator{begin()};
@@ -538,6 +562,7 @@ public:
      * @note This iterator is @b never reached
      * @return Reverse iterator
      */
+    [[nodiscard]]
     const_reverse_iterator rend() const noexcept
     {
         return std::reverse_iterator{begin()};
@@ -549,6 +574,7 @@ public:
      * @note This iterator is @b never reached
      * @return Reverse iterator
      */
+    [[nodiscard]]
     const_reverse_iterator crend() const noexcept
     {
         return rend();
@@ -559,7 +585,8 @@ public:
      * The memory space is a fixed size, so this @b always returns false.
      * @return False
      */
-    [[nodiscard]] constexpr bool empty() const noexcept
+    [[nodiscard]]
+    constexpr bool empty() const noexcept
     {
         return false;
     }
@@ -570,6 +597,7 @@ public:
      * math::ternary::max.
      * @return Size
      */
+    [[nodiscard]]
     constexpr size_type size() const noexcept
     {
         return std::tuple_size<base::element_type>::value;
@@ -581,6 +609,7 @@ public:
      * math::ternary::max.
      * @return Size
      */
+    [[nodiscard]]
     constexpr size_type max_size() const noexcept
     {
         return size();

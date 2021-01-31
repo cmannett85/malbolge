@@ -35,7 +35,8 @@ enum level {
  * @param lvl Log level
  * @return String version
  */
-const char* to_string(level lvl);
+[[nodiscard]]
+const char* to_string(level lvl) noexcept;
 
 /** Textual streaming operator for level.
  *
@@ -52,13 +53,14 @@ inline std::ostream& operator<<(std::ostream& stream, level lvl)
  *
  * @return Minimum logging level
  */
-level log_level();
+[[nodiscard]]
+level log_level() noexcept;
 
 /** Set the minimum logging level.
  *
  * @param lvl New minimum log level
  */
-void set_log_level(level lvl);
+void set_log_level(level lvl) noexcept;
 
 /** ANSI terminal colour constants.
  */
@@ -74,8 +76,11 @@ enum class colour
 
 namespace detail
 {
-std::string_view colour_to_ansi(colour c = colour::DEFAULT);
-colour log_level_to_colour(level lvl);
+[[nodiscard]]
+std::string_view colour_to_ansi(colour c = colour::DEFAULT) noexcept;
+
+[[nodiscard]]
+colour log_level_to_colour(level lvl) noexcept;
 }
 
 /** Basic log print functionality that rights the standard prefix into

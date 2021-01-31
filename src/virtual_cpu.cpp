@@ -29,7 +29,8 @@ public:
             pre_{false}
         {}
 
-        bool operator()()
+        [[nodiscard]]
+        bool operator()() noexcept
         {
             if (pre_) {
                 pre_ = false;
@@ -60,12 +61,13 @@ public:
     class input
     {
     public:
-        input(std::string p) :
+        input(std::string p) noexcept :
             phrase_{std::move(p)},
             view_{phrase_.data()}
         {}
 
-        char get()
+        [[nodiscard]]
+        char get() noexcept
         {
             if (view_.empty()) {
                 return 0;
@@ -90,7 +92,8 @@ public:
         state_{virtual_cpu::execution_state::READY}
     {}
 
-    virtual_cpu::execution_state state() const
+    [[nodiscard]]
+    virtual_cpu::execution_state state() const noexcept
     {
         return state_;
     }
@@ -165,7 +168,7 @@ virtual_cpu::virtual_cpu(virtual_memory vmem) :
 
 virtual_cpu::~virtual_cpu()
 {
-    if (!impl_) {
+    if (!impl_) [[unlikely]] {
         return;
     }
     impl_->stop();
@@ -308,7 +311,7 @@ virtual_cpu::register_for_breakpoint_hit_signal(breakpoint_hit_signal_type::slot
 
 void virtual_cpu::impl_check() const
 {
-    if (!impl_) {
+    if (!impl_) [[unlikely]] {
         throw execution_exception{"vCPU backend destroyed, use-after-move?", 0};
     }
 }

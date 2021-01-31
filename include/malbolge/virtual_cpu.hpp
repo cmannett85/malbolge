@@ -93,14 +93,14 @@ public:
      *
      * @param other Instance to move from
      */
-    virtual_cpu(virtual_cpu&& other) = default;
+    virtual_cpu(virtual_cpu&& other) noexcept = default;
 
     /** Move assignment operator.
      *
      * @param other Instance to move from
      * @return A reference to this
      */
-    virtual_cpu& operator=(virtual_cpu&& other) = default;
+    virtual_cpu& operator=(virtual_cpu&& other) noexcept = default;
 
     virtual_cpu(const virtual_cpu&) = delete;
     virtual_cpu& operator=(const virtual_cpu&) = delete;

@@ -25,7 +25,7 @@ namespace algorithm
  * @param p Predicate instance
  */
 template <typename Iter, typename Predicate>
-void trim_left(Iter& begin, Iter end, Predicate&& p)
+constexpr void trim_left(Iter& begin, Iter end, Predicate p)
 {
     for ( ; begin != end; ++begin) {
         if (!p(*begin)) {
@@ -48,7 +48,7 @@ void trim_left(Iter& begin, Iter end, Predicate&& p)
  * @param p Predicate instance
  */
 template <typename Iter, typename Predicate>
-void trim_right(Iter begin, Iter& end, Predicate&& p)
+constexpr void trim_right(Iter begin, Iter& end, Predicate p)
 {
     for ( ; begin != end; --end) {
         if (!p(*(end-1))) {
@@ -70,7 +70,7 @@ void trim_right(Iter begin, Iter& end, Predicate&& p)
  * @param p Predicate instance
  */
 template <typename Iter, typename Predicate>
-void trim(Iter& begin, Iter& end, Predicate p)
+constexpr void trim(Iter& begin, Iter& end, Predicate p)
 {
     trim_left(begin, end, p);
     trim_right(begin, end, p);
@@ -85,7 +85,7 @@ void trim(Iter& begin, Iter& end, Predicate p)
  * @param p Predicate instances
  */
 template <typename Predicate, typename CharT, typename Traits>
-void trim_left(std::basic_string_view<CharT, Traits>& str, Predicate&& p)
+constexpr void trim_left(std::basic_string_view<CharT, Traits>& str, Predicate&& p)
 {
     auto begin = str.begin();
     auto end = str.end();
@@ -103,7 +103,7 @@ void trim_left(std::basic_string_view<CharT, Traits>& str, Predicate&& p)
  * @param p Predicate instances
  */
 template <typename Predicate, typename CharT, typename Traits>
-void trim_right(std::basic_string_view<CharT, Traits>& str, Predicate&& p)
+constexpr void trim_right(std::basic_string_view<CharT, Traits>& str, Predicate&& p)
 {
     auto begin = str.begin();
     auto end = str.end();
@@ -121,7 +121,7 @@ void trim_right(std::basic_string_view<CharT, Traits>& str, Predicate&& p)
  * @param p Predicate instances
  */
 template <typename Predicate, typename CharT, typename Traits>
-void trim(std::basic_string_view<CharT, Traits>& str, Predicate&& p)
+constexpr void trim(std::basic_string_view<CharT, Traits>& str, Predicate&& p)
 {
     auto begin = str.begin();
     auto end = str.end();

@@ -45,7 +45,7 @@ public:
      * If @a value exceeds max, then it is wrapped.
      * @param value Value to initialise with
      */
-    constexpr ternary(underlying_type value = 0) :
+    constexpr ternary(underlying_type value = 0) noexcept :
         v_{value % (max+1)}
     {}
 
@@ -58,7 +58,7 @@ public:
      * @param value Tritset instance
      */
     template <std::size_t N, typename T>
-    constexpr ternary(const tritset<N, T>& value) :
+    constexpr ternary(const tritset<N, T>& value) noexcept :
         ternary{value.to_base10()}
     {
         static_assert(N <= tritset_type::width,
@@ -69,21 +69,22 @@ public:
      *
      * @param other Instance to copy
      */
-    ternary(const ternary& other) = default;
+    constexpr ternary(const ternary& other) noexcept = default;
 
     /** Assignment operator.
      *
      * @param other Instance to copy
      * @return A reference to this
      */
-    ternary& operator=(const ternary& other) = default;
+    constexpr ternary& operator=(const ternary& other) noexcept = default;
 
     /** Comparison operator.
      *
      * @param other Instance to compare against
      * @return Ordering
      */
-    auto operator<=>(const ternary& other) const = default;
+    [[nodiscard]]
+    constexpr auto operator<=>(const ternary& other) const noexcept = default;
 
     /** Explicit conversion operator for the decimal value.
      *
@@ -91,7 +92,8 @@ public:
      * @return Decimal value converted to T
      */
     template <typename T>
-    explicit operator T() const
+    [[nodiscard]]
+    constexpr explicit operator T() const noexcept
     {
         return static_cast<T>(v_);
     }
@@ -100,7 +102,8 @@ public:
      *
      * @return Tritset
      */
-    tritset_type to_tritset() const
+    [[nodiscard]]
+    constexpr tritset_type to_tritset() const noexcept
     {
         return tritset_type{v_};
     }
@@ -110,7 +113,8 @@ public:
      * @param other Instance to add
      * @return A copy of this summed with @a other
      */
-    ternary operator+(const ternary& other) const
+    [[nodiscard]]
+    constexpr ternary operator+(const ternary& other) const noexcept
     {
         return v_ + other.v_;
     }
@@ -120,7 +124,7 @@ public:
      * @param other Instance to add
      * @return A reference to this
      */
-    ternary& operator+=(const ternary& other)
+    constexpr ternary& operator+=(const ternary& other) noexcept
     {
         return *this = *this + other;
     }
@@ -130,7 +134,8 @@ public:
      * @param other Instance to subtract
      * @return A copy of @a other subtracted from this
      */
-    ternary operator-(const ternary& other) const
+    [[nodiscard]]
+    constexpr ternary operator-(const ternary& other) const noexcept
     {
         return other.v_ > v_ ? max - (other.v_ - v_) : v_ - other.v_;
     }
@@ -140,7 +145,7 @@ public:
      * @param other Instance to subtract
      * @return A reference to this
      */
-    ternary& operator-=(const ternary& other)
+    constexpr ternary& operator-=(const ternary& other) noexcept
     {
         return *this = *this - other;
     }
@@ -150,7 +155,8 @@ public:
      * @param other Instance to calculate the remainder of
      * @return The remainder of *this divided by @a other
      */
-    ternary operator%(const ternary& other) const
+    [[nodiscard]]
+    constexpr ternary operator%(const ternary& other) const noexcept
     {
         return v_ % other.v_;
     }
@@ -160,7 +166,7 @@ public:
      * @param other Instance to calculate the remainder of
      * @return A reference to this
      */
-    ternary& operator%=(const ternary& other)
+    constexpr ternary& operator%=(const ternary& other) noexcept
     {
         return *this = *this % other;
     }
@@ -171,7 +177,7 @@ public:
      * @param i Number of positions to rotate, modulo-ed to width before use
      * @return A reference to this
      */
-    ternary& rotate(std::size_t i = 1);
+    ternary& rotate(std::size_t i = 1) noexcept;
 
     /** @em The operation.
      *
@@ -210,7 +216,8 @@ public:
      * @param other Instance to operate against
      * @return Operation result
      */
-    ternary op(const ternary& other) const;
+    [[nodiscard]]
+    ternary op(const ternary& other) const noexcept;
 
 private:
     underlying_type v_;

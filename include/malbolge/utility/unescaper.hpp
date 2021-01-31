@@ -20,7 +20,8 @@ namespace detail
 // These functions are derived from the escape list detailed here:
 // https://stackoverflow.com/questions/10220401/rules-for-c-string-literals-escape-character
 template <typename Iter>
-std::optional<char> is_control_character(Iter it)
+[[nodiscard]]
+std::optional<char> is_control_character(Iter it) noexcept
 {
     static const auto mapper = std::unordered_map<char, char>{
         {'a', '\a'},
@@ -40,7 +41,8 @@ std::optional<char> is_control_character(Iter it)
 }
 
 template <typename Iter>
-std::optional<char> is_punctuation_character(Iter it)
+[[nodiscard]]
+std::optional<char> is_punctuation_character(Iter it) noexcept
 {
     static const auto mapper = std::array<char, 4>{'\"', '\'', '\?', '\\'};
     if (std::find(mapper.begin(), mapper.end(), *it) != mapper.end()) {
@@ -52,6 +54,7 @@ std::optional<char> is_punctuation_character(Iter it)
 
 // The octal and hex functions are 'greedy' i.e. they move the iterator along
 template <typename Iter>
+[[nodiscard]]
 std::optional<char> is_octal_character(Iter& it, Iter end)
 {
     static constexpr auto base_8 = 8u;
@@ -76,6 +79,7 @@ std::optional<char> is_octal_character(Iter& it, Iter end)
 }
 
 template <typename Iter>
+[[nodiscard]]
 std::optional<char> is_hex_character(Iter& it, Iter end)
 {
     static constexpr auto base_16 = 16u;
@@ -125,6 +129,7 @@ std::optional<char> is_hex_character(Iter& it, Iter end)
  */
 template <typename Traits = std::char_traits<char>,
           typename Allocator = std::allocator<char>>
+[[nodiscard]]
 std::basic_string<char, Traits, Allocator>
 unescape_ascii(std::basic_string_view<char, Traits>& str)
 {

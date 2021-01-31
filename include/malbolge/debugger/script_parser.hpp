@@ -24,6 +24,7 @@ namespace script
  * @return Function sequence
  * @exception parse_exception Thrown if the parsing failed
  */
+[[nodiscard]]
 functions::sequence parse(std::istream& stream);
 
 /** Parse a debugger script loaded from @a path.
@@ -35,6 +36,7 @@ functions::sequence parse(std::istream& stream);
  * @exception parse_exception Thrown if the parsing failed
  * @exception system_exception Thrown if @a path could not be opened
  */
+[[nodiscard]]
 functions::sequence parse(const std::filesystem::path& path);
 }
 }

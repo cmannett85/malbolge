@@ -31,8 +31,8 @@ struct source_location
      * @param l Line number
      * @param c Column number
      */
-    source_location(math::ternary::underlying_type l = 1,
-                    math::ternary::underlying_type c = 1) :
+    constexpr source_location(math::ternary::underlying_type l = 1,
+                              math::ternary::underlying_type c = 1) noexcept:
         line{l},
         column{c}
     {}
@@ -42,7 +42,9 @@ struct source_location
      * @param other Instance to compare against
      * @return Ordering
      */
-    auto operator<=>(const source_location& other) const = default;
+    [[nodiscard]]
+    constexpr auto
+    operator<=>(const source_location& other) const noexcept = default;
 
     math::ternary::underlying_type line;    ///< Line number
     math::ternary::underlying_type column;  ///< Column number
@@ -58,6 +60,7 @@ using optional_source_location = std::optional<source_location>;
  * @param loc Source location
  * @return String equivalent to it
  */
+[[nodiscard]]
 std::string to_string(const optional_source_location& loc);
 
 /** Textual streaming operator for optional_source_location.
@@ -96,7 +99,8 @@ public:
      * This is used for rethrowing with an updated source location
      * @return Constructor message
      */
-    const std::string& message() const
+    [[nodiscard]]
+    const std::string& message() const noexcept
     {
         return msg_;
     }
@@ -105,6 +109,7 @@ public:
      *
      * @return Location set
      */
+    [[nodiscard]]
     bool has_location() const noexcept
     {
         return !!loc_;
@@ -114,6 +119,7 @@ public:
      *
      * @return The location, may be empty
      */
+    [[nodiscard]]
     optional_source_location location() const noexcept
     {
         return loc_;
@@ -145,6 +151,7 @@ public:
      *
      * @return Execution step
      */
+    [[nodiscard]]
     std::size_t step() const noexcept
     {
         return step_;
@@ -186,6 +193,7 @@ public:
      *
      * @return Error code
      */
+    [[nodiscard]]
     const std::error_code& code() const noexcept
     {
         return code_;

@@ -52,7 +52,7 @@ public:
          *  using this is a no-op.  This is only provided so that a connection
          *  instance can more easily be used a member.
          */
-        connection() = default;
+        connection() noexcept = default;
 
         /** Disconnects the slot from the signal.
          *
@@ -69,7 +69,8 @@ public:
         }
 
     private:
-        connection(std::weak_ptr<typename signal::impl_t> owner, std::size_t id) :
+        connection(std::weak_ptr<typename signal::impl_t> owner,
+                   std::size_t id) noexcept :
             owner_{std::move(owner)},
             id_{id}
         {}
@@ -107,7 +108,7 @@ public:
     {}
 
     signal& operator=(const signal& other) = default;
-    signal& operator=(signal&& other) = default;
+    signal& operator=(signal&& other) noexcept = default;
 
     /** Connect @a slot to this signal.
      *

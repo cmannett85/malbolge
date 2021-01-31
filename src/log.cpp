@@ -42,7 +42,7 @@ std::mutex& log::detail::log_lock()
     return mtx;
 }
 
-const char* log::to_string(level lvl)
+const char* log::to_string(level lvl) noexcept
 {
     static_assert(NUM_LOG_LEVELS == 4, "Log levels have changed, update this");
 
@@ -60,17 +60,17 @@ const char* log::to_string(level lvl)
     }
 }
 
-log::level log::log_level()
+log::level log::log_level() noexcept
 {
     return filter_level;
 }
 
-void log::set_log_level(level lvl)
+void log::set_log_level(level lvl) noexcept
 {
     filter_level = lvl;
 }
 
-std::string_view log::detail::colour_to_ansi(colour c)
+std::string_view log::detail::colour_to_ansi(colour c) noexcept
 {
     static_assert(static_cast<int>(colour::NUM_COLOURS) == 5,
                   "Colours have changed, update this");
@@ -89,7 +89,7 @@ std::string_view log::detail::colour_to_ansi(colour c)
     }
 }
 
-log::colour log::detail::log_level_to_colour(level lvl)
+log::colour log::detail::log_level_to_colour(level lvl) noexcept
 {
     switch (lvl) {
     case ERROR:
