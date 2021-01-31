@@ -16,13 +16,13 @@ constexpr auto op_cipher = std::array{
 };
 }
 
-math::ternary& math::ternary::rotate(std::size_t i)
+math::ternary& math::ternary::rotate(std::size_t i) noexcept
 {
     v_ = to_tritset().rotate(i).to_base10();
     return *this;
 }
 
-math::ternary math::ternary::op(const math::ternary& other) const
+math::ternary math::ternary::op(const math::ternary& other) const noexcept
 {
     const auto a = to_tritset();
     const auto b = other.to_tritset();

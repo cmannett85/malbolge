@@ -230,7 +230,8 @@ void denormalise_source_resize(InputRange& source)
  * @return True if the input source is likely to be normalised
  */
 template <typename InputIt>
-bool is_likely_normalised_source(InputIt first, InputIt last)
+[[nodiscard]]
+constexpr bool is_likely_normalised_source(InputIt first, InputIt last) noexcept
 {
     algorithm::trim_right(first, last, [](auto c) { return std::isspace(c); });
     for (; first != last; ++first) {
@@ -250,7 +251,8 @@ bool is_likely_normalised_source(InputIt first, InputIt last)
  * @return True if the input source is likely to be normalised
  */
 template <typename InputRange>
-bool is_likely_normalised_source(InputRange&& source)
+[[nodiscard]]
+constexpr bool is_likely_normalised_source(InputRange&& source) noexcept
 {
     using std::begin;
     using std::end;

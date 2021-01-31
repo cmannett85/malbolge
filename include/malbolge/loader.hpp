@@ -46,6 +46,7 @@ std::ostream& operator<<(std::ostream& stream, load_normalised_mode mode);
  * @exception parse_exception Thrown if the program contains errors
  */
 template <typename InputIt>
+[[nodiscard]]
 virtual_memory load(InputIt first,
                     InputIt last,
                     load_normalised_mode mode = load_normalised_mode::AUTO)
@@ -135,6 +136,7 @@ template <typename R,
           std::enable_if_t<!std::is_same_v<std::decay_t<R>,
                                            std::filesystem::path>,
                            int> = 0>
+[[nodiscard]]
 virtual_memory load(R&& range,
                     load_normalised_mode mode = load_normalised_mode::AUTO)
 {
@@ -153,6 +155,7 @@ virtual_memory load(R&& range,
  * @exception parse_exception Thrown if the program cannot be read or contains
  * errors
  */
+[[nodiscard]]
 virtual_memory load(const std::filesystem::path& path,
                     load_normalised_mode mode = load_normalised_mode::AUTO);
 
@@ -163,5 +166,6 @@ virtual_memory load(const std::filesystem::path& path,
  * @return Virtual memory image with the program at the start
  * @exception parse_exception Thrown if the program contains errors
  */
+[[nodiscard]]
 virtual_memory load_from_cin(load_normalised_mode mode = load_normalised_mode::AUTO);
 }

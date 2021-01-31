@@ -14,6 +14,8 @@ namespace malbolge
 namespace utility
 {
 /** A wrapper over a Callable instance that is executed upon destruction.
+ *
+ *  This class can be copied and moved.
  */
 class raii
 {
@@ -26,7 +28,7 @@ public:
      *
      * @param f Callable instance to execute upon destruction
      */
-    explicit raii(callable_type f) :
+    explicit raii(callable_type f) noexcept :
         f_{std::move(f)}
     {}
 

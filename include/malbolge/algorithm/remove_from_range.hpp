@@ -21,7 +21,7 @@ namespace algorithm
  * @return The updated @a last
  */
 template <typename ForwardIt>
-ForwardIt remove_from_range(ForwardIt it, ForwardIt last)
+constexpr ForwardIt remove_from_range(ForwardIt it, ForwardIt last)
 {
     auto first = it;
     return std::move(++first, last, it);

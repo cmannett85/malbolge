@@ -39,11 +39,13 @@ struct argument_string
 class trimmed_command
 {
 public:
+    [[nodiscard]]
     std::string_view string() const
     {
         return s_;
     }
 
+    [[nodiscard]]
     source_location map(std::size_t cmd_index) const
     {
         if (cmd_index > m_.back().index) {
@@ -65,6 +67,7 @@ public:
         return src_loc;
     }
 
+    [[nodiscard]]
     source_location end_source_location() const
     {
         // There will always be at least one element in m_ because the we start
@@ -154,7 +157,7 @@ public:
             }
         }
 
-        if (s_.empty()) {
+        if (s_.empty()) [[unlikely]] {
             throw parse_exception{"Empty command", src_loc};
         }
 
@@ -202,7 +205,8 @@ void update_source_location(source_location& script_src_loc,
     }
 }
 
-bool only_whitespace(std::string_view str)
+[[nodiscard]]
+bool only_whitespace(std::string_view str) noexcept
 {
     return std::all_of(str.begin(), str.end(), [](auto c) { return std::isspace(c); });
 }
@@ -218,20 +222,21 @@ void check_fn_name(std::string_view fn_name, const trimmed_command& trimmed)
         }
     });
 
-    if (!result) {
+    if (!result) [[unlikely]] {
         throw parse_exception{"Unrecognised function name: "s + fn_name,
                               trimmed.map(fn_name.size()-1)};
     }
 }
 
+[[nodiscard]]
 std::string_view extract_fn_name(const trimmed_command& trimmed)
 {
     // Read up to the first bracket
     const auto first_bracket_index = trimmed.string().find_first_of('(');
-    if (first_bracket_index == std::string_view::npos) {
+    if (first_bracket_index == std::string_view::npos) [[unlikely]] {
         throw parse_exception{"No open bracket in function",
                               trimmed.map(first_bracket_index)};
-    } else if (first_bracket_index == 0) {
+    } else if (first_bracket_index == 0) [[unlikely]] {
         throw parse_exception{"No function name",
                               trimmed.map(first_bracket_index)};
     }
@@ -242,12 +247,13 @@ std::string_view extract_fn_name(const trimmed_command& trimmed)
     return fn_name;
 }
 
+[[nodiscard]]
 std::vector<argument_string> extract_fn_args(std::size_t open_bracket_offset,
                                              const trimmed_command& trimmed)
 {
     // Pull just the arg string out of the command string
     const auto cmd = trimmed.string();
-    if (cmd.back() != ')') {
+    if (cmd.back() != ')') [[unlikely]] {
         throw parse_exception{"No close bracket in function",
                               trimmed.map(cmd.size())};
     }
@@ -279,7 +285,7 @@ std::vector<argument_string> extract_fn_args(std::size_t open_bracket_offset,
             if (inside_string) {
                 break;
             }
-            if (word.empty()) {
+            if (word.empty()) [[unlikely]] {
                 throw parse_exception{"Missing argument name",
                                       trimmed.map(std::distance(cmd.begin(), it))};
             }
@@ -295,7 +301,7 @@ std::vector<argument_string> extract_fn_args(std::size_t open_bracket_offset,
             if (inside_string) {
                 break;
             }
-            if (result.empty() || !result.back().value.empty()) {
+            if (result.empty() || !result.back().value.empty()) [[unlikely]] {
                 throw parse_exception{"Missing argument value",
                                       trimmed.map(std::distance(cmd.begin(), it))};
             }
@@ -329,7 +335,7 @@ std::vector<argument_string> extract_fn_args(std::size_t open_bracket_offset,
         word = std::string_view{word.data(), word.size() + 1};
     }
 
-    if (inside_string) {
+    if (inside_string) [[unlikely]] {
         throw parse_exception{"Unterminated string", trimmed.map(cmd.size())};
     }
 
@@ -337,6 +343,7 @@ std::vector<argument_string> extract_fn_args(std::size_t open_bracket_offset,
 }
 
 template <typename Arg>
+[[nodiscard]]
 auto create_arg_value(const argument_string& arg_str,
                       const trimmed_command& trimmed)
 {
@@ -375,6 +382,7 @@ auto create_arg_value(const argument_string& arg_str,
     }
 }
 
+[[nodiscard]]
 script::functions::function_variant
 create_fn(std::string_view fn_name,
           const std::vector<argument_string>& fn_args,
@@ -399,7 +407,7 @@ create_fn(std::string_view fn_name,
                     }
                 });
 
-                if (!found) {
+                if (!found) [[unlikely]] {
                     throw parse_exception{"Unrecognised argument name: "s + arg.name,
                                           trimmed.map(arg.name_index)};
                 }
@@ -409,7 +417,7 @@ create_fn(std::string_view fn_name,
         }
     });
 
-    if (!result) {
+    if (!result) [[unlikely]] {
         // Should never get here as the function names have already been checked
         throw parse_exception{"DEV_ERROR: Unrecognised function name: "s + fn_name};
     }

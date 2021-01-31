@@ -20,7 +20,8 @@ namespace math
  * @return @a Base raised to the power @a Expo
  */
 template <typename R, auto Base, auto Expo>
-constexpr R ipow()
+[[nodiscard]]
+constexpr R ipow() noexcept
 {
     static_assert(std::is_unsigned_v<R> &&
                   std::is_unsigned_v<decltype(Base)> &&
@@ -48,7 +49,8 @@ constexpr R ipow()
  * @return @a base raised to the power @a expo
  */
 template <typename R, typename B, typename E>
-constexpr R ipow(B&& base, E&& expo)
+[[nodiscard]]
+constexpr R ipow(B&& base, E&& expo) noexcept
 {
     static_assert(std::is_unsigned_v<std::decay_t<R>> &&
                   std::is_unsigned_v<std::decay_t<B>> &&

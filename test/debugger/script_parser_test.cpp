@@ -128,7 +128,7 @@ BOOST_AUTO_TEST_CASE(single_invalid)
         stream << input;
 
         try {
-            script::parse(stream);
+            auto seq = script::parse(stream);
             BOOST_CHECK_MESSAGE(false, "Should have thrown");
         } catch (parse_exception& e) {
             BOOST_TEST_MESSAGE(e.what());
@@ -189,7 +189,7 @@ BOOST_AUTO_TEST_CASE(valid_from_file)
 {
     // Try loading a non-existent path
     try {
-        script::parse(invalid_tmp_path);
+        auto seq = script::parse(invalid_tmp_path);
         BOOST_CHECK_MESSAGE(false, "Should have thrown");
     }  catch (basic_exception& e) {
         BOOST_TEST_MESSAGE(e.what());

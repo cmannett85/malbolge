@@ -51,7 +51,8 @@ public:
      *
      * @return True if help requested
      */
-    bool help() const
+    [[nodiscard]]
+    bool help() const noexcept
     {
         return help_;
     }
@@ -60,7 +61,8 @@ public:
      *
      * @return True if version requested
      */
-    bool version() const
+    [[nodiscard]]
+    bool version() const noexcept
     {
         return version_;
     }
@@ -69,7 +71,8 @@ public:
      *
      * @return Program data information
      */
-    program_data& program()
+    [[nodiscard]]
+    program_data& program() noexcept
     {
         return p_;
     }
@@ -78,7 +81,8 @@ public:
      *
      * @return Program data information
      */
-    const program_data& program() const
+    [[nodiscard]]
+    const program_data& program() const noexcept
     {
         return p_;
     }
@@ -87,7 +91,8 @@ public:
      *
      * @return Logging level
      */
-    log::level log_level() const
+    [[nodiscard]]
+    log::level log_level() const noexcept
     {
         return log_level_;
     }
@@ -97,7 +102,8 @@ public:
      *
      * @return True to force non-normalised
      */
-    bool force_non_normalised() const
+    [[nodiscard]]
+    bool force_non_normalised() const noexcept
     {
         return force_nn_;
     }
@@ -106,7 +112,8 @@ public:
      *
      * @return Debugger script path, if specified
      */
-    const std::optional<std::filesystem::path>& debugger_script() const
+    [[nodiscard]]
+    const std::optional<std::filesystem::path>& debugger_script() const noexcept
     {
         return debugger_script_;
     }

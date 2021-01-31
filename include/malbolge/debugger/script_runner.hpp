@@ -63,7 +63,8 @@ public:
      *
      * @return Argument name
      */
-    static constexpr std::string_view name()
+    [[nodiscard]]
+    static constexpr std::string_view name() noexcept
     {
         return name_type::value();
     }
@@ -72,7 +73,7 @@ public:
      *
      * @param v Value to assign
      */
-    constexpr function_argument(value_type v = static_cast<value_type>(DefaultValue{})) :
+    constexpr function_argument(value_type v = static_cast<value_type>(DefaultValue{})) noexcept :
         value(std::move(v))
     {}
 
@@ -81,7 +82,8 @@ public:
      * @param other Instance to compare against
      * @return Ordering
      */
-    auto operator<=>(const function_argument& other) const = default;
+    [[nodiscard]]
+    auto operator<=>(const function_argument& other) const noexcept = default;
 
     /** Function value.
      */
@@ -154,7 +156,7 @@ public:
      * @param cargs Constructor function arguments
      */
     template <typename... ConArgs>
-    constexpr function(ConArgs... cargs)
+    constexpr function(ConArgs... cargs) noexcept
     {
         static_assert(sizeof...(ConArgs) <= sizeof...(Args),
                       "Number of ConArgs must not be greater than Args");
@@ -178,7 +180,8 @@ public:
      * @return Argument instance reference
      */
     template <typename ArgName>
-    constexpr const auto& arg() const
+    [[nodiscard]]
+    constexpr const auto& arg() const noexcept
     {
         using index = boost::mp11::mp_find_if<
                 args_type,
@@ -198,7 +201,8 @@ public:
      * @return Argument instance value
      */
     template <typename ArgName>
-    constexpr const auto& value() const
+    [[nodiscard]]
+    constexpr const auto& value() const noexcept
     {
         return arg<ArgName>().value;
     }
@@ -207,7 +211,8 @@ public:
      *
      * @return Argument name
      */
-    static constexpr std::string_view name()
+    [[nodiscard]]
+    static constexpr std::string_view name() noexcept
     {
         return name_type::value();
     }
@@ -217,7 +222,8 @@ public:
      * @param other Instance to compare against
      * @return Ordering
      */
-    auto operator<=>(const function& other) const = default;
+    [[nodiscard]]
+    auto operator<=>(const function& other) const noexcept = default;
 
     /** Function arguments.
      */

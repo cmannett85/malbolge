@@ -25,7 +25,7 @@ constexpr auto base = std::uint8_t{3};
 
 /** Number of bits required to represent a trit.
  */
-static constexpr auto bits_per_trit = std::uint8_t{2};
+constexpr auto bits_per_trit = std::uint8_t{2};
 
 /** A trait that returns the minimum binary integral type required to represent
  * a ternary type.
@@ -102,7 +102,7 @@ public:
      * @a value is modulo-ed with max before processing
      * @param value Decimal value to initialise with
      */
-    constexpr explicit tritset(T value = 0) :
+    constexpr explicit tritset(T value = 0) noexcept :
         v_{0}
     {
         auto q = value % (max+1);
@@ -124,7 +124,7 @@ public:
      * @exception std::invalid_argument Thrown if str contains invalid
      * characters, or contains more characters than width
      */
-    explicit tritset(std::string_view str) :
+    constexpr explicit tritset(std::string_view str) :
         v_{0}
     {
         if (str.size() > width) {
@@ -145,27 +145,29 @@ public:
      *
      * @param other Instance to copy from
      */
-    tritset(const tritset& other) = default;
+    constexpr tritset(const tritset& other) noexcept = default;
 
     /** Assignment operator.
      *
      * @param other Instance to copy from
      * @return A reference to this
      */
-    tritset& operator=(const tritset& other) = default;
+    constexpr tritset& operator=(const tritset& other) noexcept = default;
 
     /** Comparison operator.
      *
      * @param other Instance to copy from
      * @return Ordering type
      */
-    auto operator<=>(const tritset& other) const = default;
+    [[nodiscard]]
+    constexpr auto operator<=>(const tritset& other) const noexcept = default;
 
     /** Return a decimal representation of the current value.
      *
      * @return Decimal
      */
-    constexpr T to_base10() const
+    [[nodiscard]]
+    constexpr T to_base10() const noexcept
     {
         auto result = T{0};
         boost::mp11::mp_for_each<boost::mp11::mp_iota_c<width>>([&](auto i) {
@@ -181,7 +183,8 @@ public:
      * @param i Trit index to return
      * @return Trit at index @a i
      */
-    constexpr std::uint8_t operator[](std::size_t i) const
+    [[nodiscard]]
+    constexpr std::uint8_t operator[](std::size_t i) const noexcept
     {
         return (v_ >> (i*trit::bits_per_trit)) & bmask;
     }
@@ -193,7 +196,7 @@ public:
      * @param value New value
      * @return A reference to this
      */
-    constexpr tritset& set(std::size_t i, std::uint8_t value)
+    constexpr tritset& set(std::size_t i, std::uint8_t value) noexcept
     {
         const auto bits = (value & bmask) << (i*trit::bits_per_trit);
         v_ |= bits;
@@ -206,7 +209,7 @@ public:
      * @param i Number of positions to rotate, modulo-ed to width before use
      * @return A reference to this
      */
-    constexpr tritset& rotate(std::size_t i = 0u)
+    constexpr tritset& rotate(std::size_t i = 0u) noexcept
     {
         i %= width;
         if (i != 0u) {
@@ -266,7 +269,7 @@ namespace literals
  * @return Tritset instance
  */
 template <char... Cs>
-constexpr auto operator"" _trit()
+constexpr auto operator"" _trit() noexcept
 {
     static_assert(((Cs == '0' || Cs == '1' || Cs == '2') && ...),
                   "All digits must be ternary (i.e. [0-3))");

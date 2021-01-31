@@ -28,7 +28,8 @@ namespace string_view_ops
 template <typename CharT,
           typename Traits = std::char_traits<CharT> ,
           typename Allocator = std::allocator<CharT>>
-std::basic_string<CharT, Traits, Allocator>
+[[nodiscard]]
+constexpr std::basic_string<CharT, Traits, Allocator>
 operator+(std::basic_string<CharT, Traits, Allocator> lhs,
           std::basic_string_view<CharT, Traits> rhs)
 {
@@ -47,7 +48,8 @@ operator+(std::basic_string<CharT, Traits, Allocator> lhs,
 template <typename CharT,
           typename Traits = std::char_traits<CharT> ,
           typename Allocator = std::allocator<CharT>>
-std::basic_string<CharT, Traits, Allocator>
+[[nodiscard]]
+constexpr std::basic_string<CharT, Traits, Allocator>
 operator+(std::basic_string_view<CharT, Traits> lhs,
           std::basic_string<CharT, Traits, Allocator> rhs)
 {

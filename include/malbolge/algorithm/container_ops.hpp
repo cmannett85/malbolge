@@ -22,7 +22,8 @@ namespace algorithm
  * @return True if @a c contains @a value
  */
 template <typename Container, typename Value>
-bool any_of(const Container& c, Value&& value)
+[[nodiscard]]
+constexpr bool any_of(const Container& c, Value&& value)
 {
     using std::begin;
     using std::end;
@@ -40,7 +41,9 @@ bool any_of(const Container& c, Value&& value)
  * @return True if @a c contains any value in @a value_container
  */
 template <typename Container, typename ValueContainer>
-bool any_of_container(const Container& c, ValueContainer&& value_container)
+[[nodiscard]]
+constexpr bool any_of_container(const Container& c,
+                                const ValueContainer& value_container)
 {
     using std::begin;
     using std::end;
