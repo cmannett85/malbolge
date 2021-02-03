@@ -61,7 +61,8 @@ void input_handler(virtual_cpu& vcpu,
     boost::ignore_unused(bytes_read);
 
     if (ec) {
-        if (ec != boost::asio::error::operation_aborted) {
+        if (ec != boost::asio::error::operation_aborted &&
+            ec != boost::asio::error::eof) {
             log::print(log::ERROR, "cin read failure: ", ec.message());
         }
         return;

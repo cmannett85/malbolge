@@ -96,8 +96,7 @@ BOOST_AUTO_TEST_CASE(load_test)
         BOOST_TEST_MESSAGE("From cin");
         try {
             // Temporarily take control of std::cin
-            auto orig_rdbuf = std::cin.rdbuf();
-            auto raii = utility::raii{[orig_rdbuf]() {
+            auto raii = utility::raii{[orig_rdbuf = std::cin.rdbuf()]() {
                 std::cin.rdbuf(orig_rdbuf);
             }};
 
