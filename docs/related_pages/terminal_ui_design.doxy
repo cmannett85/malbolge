@@ -1,0 +1,66 @@
+/* Cam Mannett 2021
+ *
+ * See LICENSE file
+ */
+
+/** @page terminal_ui Terminal UI Design
+ * @tableofcontents
+ *
+ * @section design Design
+ * @image html terminal_ui_design.svg height=600px
+ * The layout is fairly typical of an IDE.  The screen is split into various
+ * 'panes' that are used for a particular purpose.
+ *
+ * You cycle over each pane by pressing <TT>Ctrl+q</TT> which then displays
+ * the pane-specific commands (see below) in command pane at the bottom of the
+ * layout.
+ *
+ * The layout is currently fixed but resizing the terminal will cause the
+ * Output and Log, and Editor panes to maximise their horizontal space usage.
+ * The underlying software allows for an arbitrary dynamic layout, so in the
+ * future customised layouts may be user-exposed.
+ *
+ * @section ctx_menu_modes Context Menu Modes
+ * Press <TT>Ctrl+q</TT> to cycle through all the panes.  Selecting a pane
+ * will highlight the pane header in bold and configure the bottom context menu
+ * to display the available commands for the pane.
+ *
+ * Where applicable, copy and paste are handled by the terminal itself.
+ *
+ * @subsection ctx_menu_editor Editor Pane
+ * - <b><TT>Ctrl+Spacebar</TT></b> If the program is not running, this will
+ * execute the program.  Otherwise it will pause it
+ * - <b><TT>Ctrl+c</TT></b> If the program is running this will stop the
+ * program, otherwise it will exit the VM
+ * - <b><TT>Arrow keys</TT></b> Move the cursor
+ * - <b><TT>[a-zA-Z0-9\\s]</TT></b> Insert a character at the cursor
+ * - <b><TT>Backspace</TT></b> Delete the character under the cursor
+ * - <b><TT>Delete</TT></b> Delete the next character from the cursor
+ * - <b><TT>Ctrl+b</TT></b> Adds a breakpoint at the cursor position or edits an
+ * existing one (will display a options dialog)
+ * - <b><TT>Ctrl+Delete</TT></b> Deletes the breakpoint under the cursor, a no
+ * op if there is not one
+ *
+ * @subsection ctx_menu_input Input Pane
+ * - <b><TT>Arrow keys</TT></b> Move the cursor
+ * - <b><TT>[a-zA-Z0-9\\s]</TT></b> Insert a character at the cursor
+ * - <b><TT>Backspace</TT></b> Delete the character under the cursor
+ * - <b><TT>Delete</TT></b> Delete the next character from the cursor
+ * - <b><TT>Ctrl+s</TT></b> Send the input to the buffer
+ *
+ * @subsection ctx_menu_output Output Pane
+ * - <b><TT>Ctrl+r</TT></b> Clear the output
+ * - <b><TT>Ctrl+s</TT></b> Save the output to a file (will display a location
+ * dialog)
+ *
+ * @subsection ctx_menu_log Log Pane
+ * - <b><TT>Ctrl+r</TT></b> Clear the log
+ * - <b><TT>Ctrl+s</TT></b> Save the log to a file (will display a location
+ * dialog)
+ * - <b><TT>Ctrl+d</TT></b> Cycle through the debug levels
+ *
+ * @subsection ctx_menu_register Register Pane
+ * - <b><TT>Ctrl+a</TT></b> Specify an address to get the value of
+ * - <b><TT>Ctrl+Delete</TT></b> Use the last hit breakpoint's address to get
+ * the value of
+ */

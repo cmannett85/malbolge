@@ -8,6 +8,7 @@
 #include <chrono>
 #include <iomanip>
 #include <atomic>
+#include <functional>
 
 using namespace malbolge;
 
@@ -15,6 +16,7 @@ namespace
 {
 std::atomic<log::level> filter_level = log::INFO;
 std::mutex mtx;
+std::reference_wrapper<std::ostream> log_output_stream = std::clog;
 }
 
 std::ostream& log::detail::timestamp(std::ostream& stream)
@@ -42,7 +44,13 @@ std::mutex& log::detail::log_lock()
     return mtx;
 }
 
-const char* log::to_string(level lvl) noexcept
+// Not threadsafe!
+std::ostream& log::detail::log_stream() noexcept
+{
+    return log_output_stream;
+}
+
+std::string_view log::to_string(level lvl) noexcept
 {
     static_assert(NUM_LOG_LEVELS == 4, "Log levels have changed, update this");
 
@@ -68,6 +76,12 @@ log::level log::log_level() noexcept
 void log::set_log_level(level lvl) noexcept
 {
     filter_level = lvl;
+}
+
+void log::set_log_stream(std::ostream& stream) noexcept
+{
+    auto lock = std::lock_guard{detail::log_lock()};
+    log_output_stream = stream;
 }
 
 std::string_view log::detail::colour_to_ansi(colour c) noexcept

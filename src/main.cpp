@@ -6,7 +6,9 @@
 #include "malbolge/loader.hpp"
 #include "malbolge/version.hpp"
 #include "malbolge/utility/argument_parser.hpp"
+#include "malbolge/utility/stream_helpers.hpp"
 #include "malbolge/debugger/script_parser.hpp"
+#include "malbolge/ui/terminal/core.hpp"
 
 #include <boost/asio/io_context.hpp>
 #include <boost/asio/executor_work_guard.hpp>
@@ -42,7 +44,6 @@ virtual_memory load_program(argument_parser& parser)
         // Load from passed in string data
         return load(std::move(program.data), mode);
     } else {
-        // Load from stdin
         return load_from_cin(mode);
     }
 }
@@ -137,8 +138,16 @@ void run_program(virtual_memory vmem)
     ctx.run();
 }
 
-void run(argument_parser& parser, virtual_memory vmem)
+void run(argument_parser& parser)
 {
+    // If we're in interactive mode, delegate everything to the terminal UI
+    // system
+    if (parser.interactive_mode()) {
+        ui::terminal::core{std::move(parser.program())}.run();
+        return;
+    }
+
+    auto vmem = load_program(parser);
     auto script_path = parser.debugger_script();
     if (script_path) {
         run_script_runner(*script_path, std::move(vmem));
@@ -165,9 +174,7 @@ int main(int argc, char* argv[])
         }
 
         log::set_log_level(arg_parser.log_level());
-
-        auto vmem = load_program(arg_parser);
-        run(arg_parser, std::move(vmem));
+        run(arg_parser);
     } catch (system_exception& e) {
         log::print(log::ERROR, e.what());
         return e.code().value();

@@ -135,7 +135,7 @@ public:
     std::thread thread;
 
     virtual_memory vmem;
-    std::deque<input> input_queue_;
+    std::deque<input> input_queue;
     std::unordered_map<math::ternary, breakpoint> bps;
 
     // vCPU Registers
@@ -221,7 +221,7 @@ void virtual_cpu::add_input(std::string data)
 {
     impl_check();
     boost::asio::post(impl_->ctx, [impl = impl_, data = std::move(data)]() {
-        impl->input_queue_.emplace_back(std::move(data));
+        impl->input_queue.emplace_back(std::move(data));
         if (impl->state() == execution_state::WAITING_FOR_INPUT) {
             impl->set_state(execution_state::RUNNING);
             impl->run();
@@ -372,16 +372,16 @@ void virtual_cpu::impl_t::run(bool schedule_next)
         break;
     case cpu_instruction::read:
     {
-        if (input_queue_.empty()) {
+        if (input_queue.empty()) {
             set_state(virtual_cpu::execution_state::WAITING_FOR_INPUT);
             log::print(log::VERBOSE_DEBUG, "\tWaiting for input...");
             return;
         }
 
-        auto c = input_queue_.front().get();
+        auto c = input_queue.front().get();
         if (!c) {
             a = math::ternary::max;
-            input_queue_.pop_front();
+            input_queue.pop_front();
         } else {
             a = c;
         }

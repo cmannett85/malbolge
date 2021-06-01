@@ -108,6 +108,18 @@ public:
         return force_nn_;
     }
 
+    /** Enable interactive mode.
+     *
+     * This instructs the executable to go into an interactive terminal session
+     * driven by ncurses.
+     * @return True to enter interactive mode
+     */
+    [[nodiscard]]
+    bool interactive_mode() const noexcept
+    {
+        return interactive_;
+    }
+
     /** Returns the debugger script path, or an empty optional if not specified.
      *
      * @return Debugger script path, if specified
@@ -119,12 +131,15 @@ public:
     }
 
 private:
-    bool help_;
-    bool version_;
     program_data p_;
     log::level log_level_;
-    bool force_nn_;
     std::optional<std::filesystem::path> debugger_script_;
+
+    // Flags
+    std::uint8_t help_          : 1;
+    std::uint8_t version_       : 1;
+    std::uint8_t force_nn_      : 1;
+    std::uint8_t interactive_   : 1;
 };
 
 /** Prints the program source into @a stream.

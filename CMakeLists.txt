@@ -54,9 +54,11 @@ set(HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/normalise.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/traits.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/utility/argument_parser.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/utility/file_load.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/utility/from_chars.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/utility/raii.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/utility/signal.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/utility/stream_helpers.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/utility/string_constant.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/utility/string_view_ops.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/include/malbolge/utility/tuple_iterator.hpp
@@ -89,6 +91,14 @@ set(FOR_IDE
     ${CMAKE_CURRENT_SOURCE_DIR}/README.md
     ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE
     ${CMAKE_CURRENT_SOURCE_DIR}/docs/Doxyfile
+    ${CMAKE_CURRENT_SOURCE_DIR}/docs/landing_page/build_versioned_docs.sh
+    ${CMAKE_CURRENT_SOURCE_DIR}/docs/landing_page/index.html
+    ${CMAKE_CURRENT_SOURCE_DIR}/docs/landing_page/style.css
+    ${CMAKE_CURRENT_SOURCE_DIR}/docs/related_pages/images/actor_model.svg
+    ${CMAKE_CURRENT_SOURCE_DIR}/docs/related_pages/images/per_task_callback.svg
+    ${CMAKE_CURRENT_SOURCE_DIR}/docs/related_pages/architecture.doxy
+    ${CMAKE_CURRENT_SOURCE_DIR}/docs/related_pages/debugger_script_syntax.doxy
+    ${CMAKE_CURRENT_SOURCE_DIR}/docs/related_pages/terminal_ui_design.doxy
     ${CMAKE_CURRENT_SOURCE_DIR}/.github/workflows/pr_checker.yml
     ${CMAKE_CURRENT_SOURCE_DIR}/.github/workflows/docs_pusher.yml
     ${CMAKE_CURRENT_SOURCE_DIR}/.github/workflows/release_builder.yml

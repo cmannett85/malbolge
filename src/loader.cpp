@@ -4,9 +4,8 @@
  */
 
 #include "malbolge/loader.hpp"
+#include "malbolge/utility/file_load.hpp"
 
-#include <fstream>
-#include <iterator>
 #include <vector>
 
 using namespace malbolge;
@@ -42,23 +41,8 @@ virtual_memory malbolge::load(const std::filesystem::path& path,
         // load_impl, as a range requires a ForwardIterator whilst
         // istreambuf_iterator is only an InputIterator.  So we have to load
         // into an intermediary buffer first
-        const auto file_size = std::filesystem::file_size(path);
-        log::print(log::DEBUG, "File size: ", file_size);
-
-        auto data = std::vector<char>{};
-        data.reserve(file_size);
-
-        {
-            auto stream = std::ifstream{};
-            stream.exceptions(std::ios::badbit | std::ios::failbit);
-            stream.open(path, std::ios::binary);
-
-            std::copy(stream_iterator{stream},
-                      stream_iterator{},
-                      std::back_inserter(data));
-        }
-
-        log::print(log::INFO, "File loaded");
+        auto data = utility::file_load<std::vector<char>>(path);
+        log::print(log::INFO, "File loaded (", data.size(), " bytes)");
 
         return load(data.begin(), data.end(), mode);
     } catch (parse_exception& e) {

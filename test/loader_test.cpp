@@ -171,8 +171,6 @@ BOOST_AUTO_TEST_CASE(bad_file_path)
 
 BOOST_AUTO_TEST_CASE(normalisation_test)
 {
-    log::set_log_level(log::DEBUG);
-
     auto f = [](auto path, auto mode, auto fail) {
         try {
             auto vmem = load(std::filesystem::path{path}, mode);

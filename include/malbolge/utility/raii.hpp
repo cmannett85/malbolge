@@ -28,9 +28,19 @@ public:
      *
      * @param f Callable instance to execute upon destruction
      */
-    explicit raii(callable_type f) noexcept :
+    explicit raii(callable_type f = {}) noexcept :
         f_{std::move(f)}
     {}
+
+    raii(const raii& other) noexcept = default;
+
+    raii(raii&& other) noexcept = default;
+
+    raii& operator=(raii other) noexcept
+    {
+        swap(*this, other);
+        return *this;
+    }
 
     /** Destructor.
      *
@@ -39,12 +49,40 @@ public:
      */
     ~raii()
     {
+        fire();
+    }
+
+    /** Replace the callable instance with another.
+     *
+     * A default constructed callable instance effectively deactivates the
+     * raii instance.
+     * @param f Callable instance to execute upon destruction
+     */
+    void reset(callable_type f = {}) noexcept
+    {
+        f_ = std::move(f);
+    }
+
+    /** Swap function.
+     *
+     * @param a First instance
+     * @param b Second instance
+     */
+    friend void swap(raii& a, raii& b)
+    {
+        using std::swap;
+
+        swap(a.f_, b.f_);
+    }
+
+private:
+    void fire()
+    {
         if (f_) {
             f_();
         }
     }
 
-private:
     callable_type f_;
 };
 }

@@ -30,9 +30,11 @@ set(TEST_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/source_location_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/traits_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/argument_parser_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/utility/file_load_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/from_chars_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/raii_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/signal_test.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/utility/stream_helpers_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/string_constant_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/string_view_ops_test.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/utility/tuple_iterator_test.cpp

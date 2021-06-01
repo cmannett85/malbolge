@@ -149,6 +149,7 @@ virtual_memory load(R&& range,
 
 /** Loads the program data read from @a path.
  *
+ * @note There is no software defined file size limit
  * @param path Path to text file containing the program
  * @param mode Program load normalised mode
  * @return Virtual memory image with the program at the start

@@ -17,7 +17,11 @@ namespace log
 namespace detail
 {
 std::ostream& timestamp(std::ostream& stream);
+
 std::mutex& log_lock();
+
+[[nodiscard]]
+std::ostream& log_stream() noexcept;
 }
 
 /** Log level.
@@ -36,7 +40,7 @@ enum level {
  * @return String version
  */
 [[nodiscard]]
-const char* to_string(level lvl) noexcept;
+std::string_view to_string(level lvl) noexcept;
 
 /** Textual streaming operator for level.
  *
@@ -61,6 +65,13 @@ level log_level() noexcept;
  * @param lvl New minimum log level
  */
 void set_log_level(level lvl) noexcept;
+
+/** Replaces the log output stream.
+ *
+ * The default is <TT>std::clog</TT>.
+ * @param stream New log output stream
+ */
+void set_log_stream(std::ostream& stream) noexcept;
 
 /** ANSI terminal colour constants.
  */
@@ -128,7 +139,7 @@ void print(level lvl, Args&&... args)
     static_assert(sizeof...(Args) > 0, "Must be at least one argument");
 
     if (lvl >= log_level()) {
-        basic_print(std::clog, detail::log_level_to_colour(lvl),
+        basic_print(detail::log_stream(), detail::log_level_to_colour(lvl),
                     "[", lvl, "]: ",
                     std::forward<Args>(args)...);
     }

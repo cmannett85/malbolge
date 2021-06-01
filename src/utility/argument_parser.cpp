@@ -24,14 +24,16 @@ constexpr auto log_flag_prefix      = "-l";
 constexpr auto string_flag          = "--string";
 constexpr auto debugger_script_flag = "--debugger-script";
 constexpr auto force_nn_flag        = "--force-non-normalised";
+constexpr auto interactive_flag     = "-i";
 }
 
 argument_parser::argument_parser(int argc, char* argv[]) :
-    help_{false},
-    version_{false},
     p_{program_source::STDIN, ""},
     log_level_{log::ERROR},
-    force_nn_{false}
+    help_{false},
+    version_{false},
+    force_nn_{false},
+    interactive_{false}
 {
     // Convert to string_views, they're easier to work with
     auto args = std::deque<std::string_view>(argc-1);
@@ -66,6 +68,7 @@ argument_parser::argument_parser(int argc, char* argv[]) :
         args.erase(force_nn_it);
     }
 
+    // Load from string
     auto string_it = std::find(args.begin(), args.end(), string_flag);
     if (string_it != args.end()) {
         // Move the iterator forward one to extract the program data
@@ -83,6 +86,7 @@ argument_parser::argument_parser(int argc, char* argv[]) :
         args.erase(string_it);
     }
 
+    // Debugger script path
     auto debugger_script_it = std::find(args.begin(), args.end(), debugger_script_flag);
     if (debugger_script_it != args.end()) {
         // Move the iterator forward one to extract the script path
@@ -97,6 +101,20 @@ argument_parser::argument_parser(int argc, char* argv[]) :
 
         debugger_script_it = args.erase(--debugger_script_it);
         args.erase(debugger_script_it);
+    }
+
+    // Interactive mode
+    auto i_mode_it = std::find(args.begin(), args.end(), interactive_flag);
+    if (i_mode_it != args.end()) {
+        if (debugger_script_) {
+            throw system_exception{
+                "Cannot use interactive mode with a debugger script specified",
+                std::errc::invalid_argument
+            };
+        }
+
+        interactive_ = true;
+        args.erase(i_mode_it);
     }
 
     // Log level
@@ -185,5 +203,7 @@ std::ostream& malbolge::operator<<(std::ostream& stream, const argument_parser&)
                   << "\t" << debugger_script_flag
                   << "\tRun the given debugger script on the program\n"
                   << "\t" << force_nn_flag
-                  << "\tOverride normalised program detection to force to non-normalised";
+                  << "\tOverride normalised program detection to force to non-normalised\n"
+                  << "\t" << interactive_flag
+                  << "\t\t\tEnter an interactive terminal session";
 }

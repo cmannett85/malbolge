@@ -4,10 +4,16 @@
  */
 
 #include "malbolge/log.hpp"
+#include "malbolge/utility/string_view_ops.hpp"
 
 #include "test_helpers.hpp"
 
+#include <boost/algorithm/string/erase.hpp>
+#include <boost/algorithm/string/find.hpp>
+
 using namespace malbolge;
+using namespace utility::string_view_ops;
+using namespace std::string_literals;
 
 BOOST_AUTO_TEST_SUITE(log_suite)
 
@@ -52,6 +58,38 @@ BOOST_AUTO_TEST_CASE(colour_to_ansi)
             std::tuple{log::colour::NUM_COLOURS,    "\x1B[0m"},
         }
     );
+}
+
+BOOST_AUTO_TEST_CASE(set_log_stream)
+{
+    auto ss = std::stringstream{};
+    log::set_log_stream(ss);
+
+    auto f = [&](const auto& message, auto lvl) {
+        log::print(lvl, message);
+        const auto expected = "["s + to_string(lvl) + "]: " + message +
+                              log::detail::colour_to_ansi();
+
+        auto tmp = ""s;
+        std::getline(ss, tmp);
+
+        // Remove the timestamp
+        const auto it = boost::algorithm::find_nth(tmp, "[", 1);
+        auto tail = std::string_view{it.begin(), tmp.end()};
+
+        BOOST_CHECK_EQUAL(tail, expected);
+    };
+
+    test::data_set(
+        f,
+        {
+            std::tuple{"hello", log::INFO},
+            std::tuple{"goodbye", log::ERROR},
+        }
+    );
+
+    // Set the output stream back to the standard one!
+    log::set_log_stream(std::clog);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

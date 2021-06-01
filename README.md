@@ -74,7 +74,7 @@ A coverage report of the latest master commit is available [here](https://cmanne
 * Boost v1.71
 * CMake v3.12
 * Emscripten v2.0.10 (only needed for WASM build)
-* Doxygen (only needed for Documentation build)
+* Doxygen v1.8.18 (only needed for Documentation build)
 
 ---
 
